@@ -536,7 +536,11 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
         (entregada ? '&#10003;' : '') + '</div>' +
         '<div style="flex:1"><div class="task-title" style="' + (entregada ? 'text-decoration:line-through;opacity:.5' : '') + '">' +
         t.titulo + '</div>' +
-        '<div class="task-meta">Grupo ' + t.grupo + ' — ' + t.entregas + ' de ' + t.totalAlumnos + ' entregas</div></div>' +
+        // Especificación de diseño: "materia · tipo". La API de /api/tareas todavía no expone
+        // esos campos (la tabla TAREA no tiene columnas materia/tipo), así que se cae a
+        // 'General' en vez de mostrar 'undefined' — igual que pide el mismo criterio que ya
+        // usa el resto de la capa de Presentación (ver iniciales(), etiquetaSeccion(), etc.).
+        '<div class="task-meta">' + (t.subject || t.materia || 'General') + ' · ' + (t.type || t.tipo || 'General') + '</div></div>' +
         '<span class="task-due ' + c.due + '">' + t.fecha_entrega + '</span>' +
         '<span class="badge ' + c.badge + '" style="margin-left:8px">' + c.texto + '</span></div>';
     }).join('');
