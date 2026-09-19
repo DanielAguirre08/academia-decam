@@ -87,4 +87,45 @@ router.post('/', requiereRol('docente'), async (req, res) => {
   }
 });
 
+// POST /api/tareas/:id_tarea/entregas  { id_alumno }
+// Registra (o actualiza) la entrega de UN alumno para una tarea puntual.
+// UNIQUE (id_tarea, id_alumno): volver a entregar la misma tarea actualiza la fecha real,
+// no duplica la fila — así el alumno puede "reentregar" sin generar registros repetidos.
+router.post('/:id_tarea/entregas', async (req, res) => {
+  try {
+    const { id_tarea } = req.params;
+    const { id_alumno } = req.body;
+
+    if (!id_alumno) return res.status(400).json({ error: 'Debes indicar el alumno que entrega' });
+
+    const [[tarea]] = await pool.query('SELECT id_seccion FROM tarea WHERE id_tarea = ?', [id_tarea]);
+    if (!tarea) return res.status(404).json({ error: 'La tarea indicada no existe' });
+
+    const [[alumno]] = await pool.query('SELECT id_seccion FROM alumno WHERE id_alumno = ?', [id_alumno]);
+    if (!alumno) return res.status(404).json({ error: 'El alumno indicado no existe' });
+    if (alumno.id_seccion !== tarea.id_seccion) {
+      return res.status(400).json({ error: 'El alumno no pertenece al grupo de esta tarea' });
+    }
+
+    await pool.query(
+      `INSERT INTO entrega_tarea (id_tarea, id_alumno, estado, fecha_entrega_real)
+       VALUES (?, ?, 'entregada', NOW())
+       ON DUPLICATE KEY UPDATE estado = 'entregada', fecha_entrega_real = NOW()`,
+      [id_tarea, id_alumno]
+    );
+
+    const [[entrega]] = await pool.query(
+      `SELECT id_entrega, id_tarea, id_alumno, estado,
+              DATE_FORMAT(fecha_entrega_real, '%Y-%m-%d %H:%i:%s') AS fecha_entrega_real
+       FROM entrega_tarea WHERE id_tarea = ? AND id_alumno = ?`,
+      [id_tarea, id_alumno]
+    );
+
+    res.status(201).json(entrega);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error al registrar la entrega' });
+  }
+});
+
 module.exports = router;
