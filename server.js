@@ -2,12 +2,26 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const session = require('express-session');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// --- Sesión (HU-001) ---
+// La cookie solo guarda un identificador; los datos del usuario viven en el servidor.
+// MemoryStore es suficiente para desarrollo: al reiniciar el servidor hay que iniciar sesión otra vez.
+app.use(session({
+  name: 'decam.sid',
+  secret: process.env.SESSION_SECRET || 'decam-desarrollo-cambiar-en-produccion',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { httpOnly: true, sameSite: 'lax', maxAge: 8 * 60 * 60 * 1000 }
+}));
+
 // --- Rutas de la API (Capa de Lógica + Datos) ---
+// /api/auth es pública (es la que abre la sesión); el resto exige sesión y rol dentro de cada archivo.
+app.use('/api/auth', require('./routes/auth'));
 app.use('/api/secciones', require('./routes/secciones'));
 app.use('/api/calificaciones', require('./routes/calificaciones'));
 app.use('/api/asistencia', require('./routes/asistencia'));

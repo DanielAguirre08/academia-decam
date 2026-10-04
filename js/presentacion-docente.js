@@ -48,6 +48,8 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
     var respuesta = await fetch(url, opciones);
     var cuerpo = null;
     try { cuerpo = await respuesta.json(); } catch (e) { cuerpo = null; }
+    // 401 = la sesión del servidor ya no existe (se reinició o expiró): de vuelta al login.
+    if (respuesta.status === 401 && typeof window.sesionExpirada === 'function') window.sesionExpirada();
     if (!respuesta.ok) {
       throw new Error((cuerpo && cuerpo.error) || ('El servidor respondió ' + respuesta.status));
     }
@@ -545,6 +547,7 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
     var datos = {
       titulo: valorDe('tn-titulo').trim(),
       descripcion: valorDe('tn-desc').trim(),
+      tipo: valorDe('tn-tipo'),
       id_seccion: valorDe('task-group-sel'),
       fecha_entrega: valorDe('tn-fecha')
     };

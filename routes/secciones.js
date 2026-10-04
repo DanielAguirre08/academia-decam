@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
+const { requiereSesion } = require('../middleware/auth');
 
 // GET /api/secciones
 // Los combos de grupo del dashboard ('6-A', '5-A', ...) eran una lista fija en CFG.groups.
 // Ahora salen de la tabla SECCION, así que el valor que viaja a la API es el id_seccion real
 // (la clave foránea que usan CALIFICACION, ASISTENCIA y TAREA) y no una etiqueta inventada.
-router.get('/', async (req, res) => {
+// Cualquier usuario con sesión puede listar las secciones (no hay datos sensibles).
+router.get('/', requiereSesion, async (req, res) => {
   try {
     const [filas] = await pool.query(
       `SELECT id_seccion, nivel, grado, letra, turno, aula, anio_lectivo,

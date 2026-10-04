@@ -135,6 +135,13 @@ test('determinarEstadoEntrega: si ya se entregó, siempre es "entregada" (aunque
   assertEqual(L.determinarEstadoEntrega('2026-09-10', true, hoy), 'entregada');
 });
 
+test('validarTipoTarea acepta los 4 tipos del selector y rechaza cualquier otro', () => {
+  ['Tarea', 'Examen', 'Proyecto', 'Exposición'].forEach((t) => assertEqual(L.validarTipoTarea(t), true, t));
+  assertEqual(L.validarTipoTarea('Laboratorio'), false);
+  assertEqual(L.validarTipoTarea(undefined), false);
+  assertEqual(L.validarTipoTarea(''), false);
+});
+
 test('CA-002: filtrarTareasPorEstado', () => {
   const tareas = [{ status: 'pending' }, { status: 'late' }, { status: 'done' }, { status: 'late' }];
   assertEqual(L.filtrarTareasPorEstado(tareas, 'late').length, 2);

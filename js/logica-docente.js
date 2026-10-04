@@ -132,6 +132,12 @@
     return !!(tarea.titulo && tarea.titulo.trim() && tarea.id_seccion && tarea.fecha_entrega);
   }
 
+  /** HU-010: los 4 valores del selector "Tipo" (columna TAREA.tipo). */
+  var TIPOS_TAREA = ['Tarea', 'Examen', 'Proyecto', 'Exposición'];
+  function validarTipoTarea(tipo) {
+    return TIPOS_TAREA.indexOf(tipo) !== -1;
+  }
+
   /**
    * Determina el estado de cumplimiento de una tarea para un alumno (pendiente/entregada/atrasada),
    * comparando la fecha de entrega límite contra la fecha actual y si ya existe un registro
@@ -163,6 +169,7 @@
     marcarAsistenciaTodos: marcarAsistenciaTodos,
     validarEstadoAsistencia: validarEstadoAsistencia,
     validarTarea: validarTarea,
+    validarTipoTarea: validarTipoTarea,
     determinarEstadoEntrega: determinarEstadoEntrega,
     filtrarTareasPorEstado: filtrarTareasPorEstado
   };

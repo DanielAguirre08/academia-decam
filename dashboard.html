@@ -343,9 +343,9 @@ tr:hover td{background:#f8fafc}
         <button class="role-tab" id="tab-jefe" onclick="selectRole('jefe')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/><path d="M12 11v4"/><path d="M9 15h6"/></svg>Jefe Acad.</button>
         <button class="role-tab" id="tab-registrador" onclick="selectRole('registrador')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Registrador</button>
       </div>
-      <div class="form-group"><label class="form-label">Correo institucional</label><input type="email" class="form-input" id="login-email" placeholder="nombre@miescuela.edu.mx"></div>
-      <div class="form-group"><label class="form-label">Contrasena</label><input type="password" class="form-input" id="login-pass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
-      <div class="login-error" id="login-error">Correo o contrasena incorrectos.</div>
+      <div class="form-group"><label class="form-label" for="login-email">Correo institucional</label><input type="email" class="form-input" id="login-email" autocomplete="username" placeholder="nombre@miescuela.edu.mx"></div>
+      <div class="form-group"><label class="form-label" for="login-pass">Contraseña</label><input type="password" class="form-input" id="login-pass" autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
+      <div class="login-error" id="login-error" role="alert">Correo o contraseña incorrectos</div>
       <button class="login-btn" onclick="doLogin()"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Iniciar sesion</button>
       <div class="login-hint" style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-top:14px">
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:10px">Credenciales de acceso</div>
@@ -1361,7 +1361,7 @@ tr:hover td{background:#f8fafc}
   <div class="modal">
     <div class="modal-header"><h2><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nueva tarea</h2><button class="modal-close" onclick="closeModal('modal-new-task')"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
     <div class="form-group"><label class="form-label">Titulo</label><input type="text" class="form-input" id="tn-titulo" placeholder="Ej: Ejercicios capitulo 5"></div>
-    <div class="form-group"><label class="form-label">Tipo</label><select class="form-input" id="tn-tipo"><option>Tarea</option><option>Examen</option><option>Proyecto</option><option>Exposicion</option></select></div>
+    <div class="form-group"><label class="form-label">Tipo</label><select class="form-input" id="tn-tipo"><option>Tarea</option><option>Examen</option><option>Proyecto</option><option>Exposición</option></select></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div class="form-group"><label class="form-label">Grupo</label><select class="form-input" id="task-group-sel"><option value="">Seleccionar...</option></select></div>
       <div class="form-group"><label class="form-label">Fecha limite</label><input type="date" class="form-input" id="tn-fecha"></div>
@@ -1447,25 +1447,16 @@ const CFG={
     {label:'Contacto',val:'info@miescuela.edu.mx',icon:'ti-mail'}
   ]
 };
-// ══════════════════════
-// USUARIOS REGISTRADOS
-// Para agregar usuarios: copia una linea y cambia los datos
-// ══════════════════════
-const USUARIOS=[
-  // MAESTROS
-  {email:'prof@acadecam.edu.pe',pass:'decam2024',name:'Profesor Demo',initials:'PD',role:'teacher',roleLabel:'Maestro'},
-  // ALUMNOS
-  {email:'alumno@acadecam.edu.pe',pass:'alumno2024',name:'Alumno Demo',initials:'AD',role:'student',roleLabel:'Alumno - 6-A',group:'6-A'},
-  // JEFE ACADEMICO
-  {email:'jefe@acadecam.edu.pe',pass:'jefe2024',name:'Jefe Academico',initials:'JA',role:'jefe',roleLabel:'Jefe Academico'},
-  // REGISTRADOR
-  {email:'registrador@acadecam.edu.pe',pass:'reg2024',name:'Registrador',initials:'RG',role:'registrador',roleLabel:'Registrador'},
-];
-// Mantener DEMO por compatibilidad interna
-const DEMO={
-  teacher:USUARIOS.find(u=>u.role==='teacher')||{},
-  student:USUARIOS.find(u=>u.role==='student')||{}
-};
+// HU-001: los usuarios YA NO viven en el HTML. El login consulta la tabla USUARIO a traves de
+// /api/auth/login (contrasenas con bcrypt, sesion en el servidor). Aqui solo se traducen los
+// nombres de rol: la interfaz usa teacher/student/jefe y la base de datos usa el ENUM en espanol.
+const ROL_API={teacher:'docente',student:'alumno',jefe:'jefe_academico',registrador:'registrador'};
+const ROL_UI={docente:'teacher',alumno:'student',jefe_academico:'jefe',registrador:'registrador'};
+// Convierte la respuesta de la API en el objeto CU que usa el resto de la interfaz.
+function usuarioDesdeApi(u){
+  return {email:u.correo,name:u.nombreCompleto,initials:u.iniciales,role:ROL_UI[u.rol],roleLabel:u.rolEtiqueta,
+          group:u.grupo||undefined,id_docente:u.id_docente,id_alumno:u.id_alumno};
+}
 let CU=null,currentRole='teacher',allStudents=[],allGrades=[],allTasks=[],taskFilter='all',allMatriculas=[],allReclamos=[],allRegistros=[];
 
 function fillLogin(email, pass, role){
@@ -1474,21 +1465,51 @@ function fillLogin(email, pass, role){
   selectRole(role);
 }
 function selectRole(r){currentRole=r;document.getElementById('tab-teacher').classList.toggle('active',r==='teacher');document.getElementById('tab-student').classList.toggle('active',r==='student');document.getElementById('tab-jefe').classList.toggle('active',r==='jefe');document.getElementById('tab-registrador').classList.toggle('active',r==='registrador');document.getElementById('login-error').style.display='none';}
-function doLogin(){
+// CA-001 / CA-002 (HU-001): el login se valida en el servidor contra la tabla USUARIO.
+// El mensaje de error es el que devuelve la API (p. ej. "Correo o contraseña incorrectos").
+let loginEnCurso=false;
+async function doLogin(){
+  if(loginEnCurso)return;
   const em=document.getElementById('login-email').value.trim();
-  const pw=document.getElementById('login-pass').value.trim();
+  const pw=document.getElementById('login-pass').value;
   const err=document.getElementById('login-error');
-  if(!em||!pw){err.style.display='block';err.textContent='Ingresa tu correo y contrasena.';return;}
-  // Buscar en lista de usuarios registrados
-  const match=USUARIOS.find(u=>u.email===em&&u.pass===pw&&u.role===currentRole);
-  if(!match){
+  if(!em||!pw.trim()){err.style.display='block';err.textContent='Ingresa tu correo y contraseña';return;}
+  loginEnCurso=true;
+  try{
+    const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({correo:em,contrasena:pw,rol:ROL_API[currentRole]})});
+    const cuerpo=await r.json().catch(()=>null);
+    if(!r.ok){
+      err.style.display='block';
+      err.textContent=(cuerpo&&cuerpo.error)||'No se pudo iniciar sesión. Intenta de nuevo.';
+      return;
+    }
+    CU=usuarioDesdeApi(cuerpo);
+    err.style.display='none';
+    showLoadingScreen(function(){ initPortal(); });
+  }catch(e){
     err.style.display='block';
-    err.textContent='Correo o contrasena incorrectos. Verifica tus credenciales.';
-    return;
+    err.textContent='No se pudo conectar con el servidor.';
+  }finally{
+    loginEnCurso=false;
   }
-  CU={...match};
-  err.style.display='none';
-  showLoadingScreen(function(){ initPortal(); });
+}
+// Al recargar la pagina la sesion del servidor sigue viva: se recupera sin pedir el login otra vez.
+async function restaurarSesion(){
+  try{
+    const r=await fetch('/api/auth/me');
+    if(!r.ok)return;
+    CU=usuarioDesdeApi(await r.json());
+    selectRole(CU.role);
+    initPortal();
+  }catch(e){/* sin sesion o sin servidor: se queda en el login */}
+}
+// Lo llama presentacion-docente.js cuando la API responde 401 (la sesion expiro).
+function sesionExpirada(){
+  if(!CU)return;
+  doLogout();
+  const err=document.getElementById('login-error');
+  err.style.display='block';err.textContent='Tu sesión expiró. Inicia sesión de nuevo.';
 }
 document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 
@@ -1829,7 +1850,7 @@ function buildSeccion(){
   }
 }
 
-function doLogout(){CU=null;allStudents=[];allGrades=[];allTasks=[];['login-screen','portal-screen'].forEach((id,i)=>{document.getElementById(id).classList.toggle('active',i===0);});document.getElementById('login-email').value='';document.getElementById('login-pass').value='';}
+function doLogout(){fetch('/api/auth/logout',{method:'POST'}).catch(()=>{});CU=null;allStudents=[];allGrades=[];allTasks=[];['login-screen','portal-screen'].forEach((id,i)=>{document.getElementById(id).classList.toggle('active',i===0);});document.getElementById('login-email').value='';document.getElementById('login-pass').value='';}
 
 function initPortal(){
   document.getElementById('login-screen').classList.remove('active');
@@ -2411,5 +2432,6 @@ function showLogoutScreen(){
 <script src="js/logica-docente.js"></script>
 <script src="js/datos-docente.js"></script>
 <script src="js/presentacion-docente.js"></script>
+<script>restaurarSesion();</script>
 </body>
 </html>

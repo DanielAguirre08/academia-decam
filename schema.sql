@@ -2,26 +2,40 @@
 -- ACADEMIA DECAM — Esquema de Base de Datos
 -- MySQL 8.0 · InnoDB · utf8mb4
 -- Corresponde 1 a 1 con el diccionario de datos del informe (sección 4.5)
+--
+-- Es RE-EJECUTABLE: todas las tablas usan IF NOT EXISTS, así que correrlo dos veces no falla
+-- ni borra datos. Este archivo solo crea la estructura; los datos de prueba están en seed.sql.
+-- Para empezar de cero (borra TODO): mysql -u root < reset.sql
+--
+-- Cambios respecto a la versión original (actualizar el diccionario de datos del informe):
+--   usuario.intentos_fallidos  -> RNF-02, bloqueo de cuenta tras 5 intentos fallidos
+--   usuario.bloqueado_hasta    -> RNF-02, hasta cuándo dura el bloqueo
+--   tarea.tipo                 -> HU-010, Tarea / Examen / Proyecto / Exposición
 -- ============================================================
+
+-- Sin esto, un cliente mysql con otra codificación guarda "Mañana" como "MaÃ±ana".
+SET NAMES utf8mb4;
 
 CREATE DATABASE IF NOT EXISTS academia_decam
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE academia_decam;
 
 -- ---------- USUARIO ----------
-CREATE TABLE usuario (
-  id_usuario      INT AUTO_INCREMENT PRIMARY KEY,
-  nombre          VARCHAR(60)  NOT NULL,
-  apellido        VARCHAR(60)  NOT NULL,
-  correo          VARCHAR(100) NOT NULL UNIQUE,
-  contrasena_hash VARCHAR(255) NOT NULL,
-  rol             ENUM('docente','alumno','jefe_academico','registrador') NOT NULL,
-  estado          ENUM('activo','inactivo') NOT NULL DEFAULT 'activo',
-  fecha_registro  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS usuario (
+  id_usuario        INT AUTO_INCREMENT PRIMARY KEY,
+  nombre            VARCHAR(60)  NOT NULL,
+  apellido          VARCHAR(60)  NOT NULL,
+  correo            VARCHAR(100) NOT NULL UNIQUE,
+  contrasena_hash   VARCHAR(255) NOT NULL,
+  rol               ENUM('docente','alumno','jefe_academico','registrador') NOT NULL,
+  estado            ENUM('activo','inactivo') NOT NULL DEFAULT 'activo',
+  fecha_registro    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  intentos_fallidos TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  bloqueado_hasta   DATETIME NULL
 ) ENGINE=InnoDB;
 
 -- ---------- DOCENTE ----------
-CREATE TABLE docente (
+CREATE TABLE IF NOT EXISTS docente (
   id_docente    INT AUTO_INCREMENT PRIMARY KEY,
   id_usuario    INT NOT NULL,
   dni           VARCHAR(8) NOT NULL UNIQUE,
@@ -31,7 +45,7 @@ CREATE TABLE docente (
 ) ENGINE=InnoDB;
 
 -- ---------- APODERADO ----------
-CREATE TABLE apoderado (
+CREATE TABLE IF NOT EXISTS apoderado (
   id_apoderado    INT AUTO_INCREMENT PRIMARY KEY,
   id_usuario      INT NULL,
   dni             VARCHAR(8) NOT NULL UNIQUE,
@@ -42,7 +56,7 @@ CREATE TABLE apoderado (
 ) ENGINE=InnoDB;
 
 -- ---------- SECCION ----------
-CREATE TABLE seccion (
+CREATE TABLE IF NOT EXISTS seccion (
   id_seccion       INT AUTO_INCREMENT PRIMARY KEY,
   nivel            ENUM('Primaria','Secundaria') NOT NULL,
   grado            TINYINT NOT NULL,
@@ -55,7 +69,7 @@ CREATE TABLE seccion (
 ) ENGINE=InnoDB;
 
 -- ---------- ALUMNO ----------
-CREATE TABLE alumno (
+CREATE TABLE IF NOT EXISTS alumno (
   id_alumno        INT AUTO_INCREMENT PRIMARY KEY,
   id_usuario       INT NULL,
   dni              VARCHAR(8) NOT NULL UNIQUE,
@@ -72,7 +86,7 @@ CREATE TABLE alumno (
 ) ENGINE=InnoDB;
 
 -- ---------- MATRICULA ----------
-CREATE TABLE matricula (
+CREATE TABLE IF NOT EXISTS matricula (
   id_matricula     INT AUTO_INCREMENT PRIMARY KEY,
   codigo           VARCHAR(10) NOT NULL UNIQUE,
   id_alumno        INT NOT NULL,
@@ -86,7 +100,7 @@ CREATE TABLE matricula (
 ) ENGINE=InnoDB;
 
 -- ---------- CALIFICACION ----------
-CREATE TABLE calificacion (
+CREATE TABLE IF NOT EXISTS calificacion (
   id_calificacion INT AUTO_INCREMENT PRIMARY KEY,
   id_alumno       INT NOT NULL,
   id_seccion      INT NOT NULL,
@@ -102,7 +116,7 @@ CREATE TABLE calificacion (
 ) ENGINE=InnoDB;
 
 -- ---------- ASISTENCIA ----------
-CREATE TABLE asistencia (
+CREATE TABLE IF NOT EXISTS asistencia (
   id_asistencia        INT AUTO_INCREMENT PRIMARY KEY,
   id_alumno            INT NOT NULL,
   id_seccion           INT NOT NULL,
@@ -116,10 +130,11 @@ CREATE TABLE asistencia (
 ) ENGINE=InnoDB;
 
 -- ---------- TAREA ----------
-CREATE TABLE tarea (
+CREATE TABLE IF NOT EXISTS tarea (
   id_tarea          INT AUTO_INCREMENT PRIMARY KEY,
   titulo            VARCHAR(100) NOT NULL,
   descripcion       VARCHAR(300),
+  tipo              ENUM('Tarea','Examen','Proyecto','Exposición') NOT NULL DEFAULT 'Tarea',
   id_seccion        INT NOT NULL,
   id_docente        INT NOT NULL,
   fecha_asignacion  DATE NOT NULL,
@@ -129,7 +144,7 @@ CREATE TABLE tarea (
 ) ENGINE=InnoDB;
 
 -- ---------- ENTREGA_TAREA ----------
-CREATE TABLE entrega_tarea (
+CREATE TABLE IF NOT EXISTS entrega_tarea (
   id_entrega          INT AUTO_INCREMENT PRIMARY KEY,
   id_tarea            INT NOT NULL,
   id_alumno           INT NOT NULL,
@@ -142,7 +157,7 @@ CREATE TABLE entrega_tarea (
 ) ENGINE=InnoDB;
 
 -- ---------- RECLAMO ----------
-CREATE TABLE reclamo (
+CREATE TABLE IF NOT EXISTS reclamo (
   id_reclamo        INT AUTO_INCREMENT PRIMARY KEY,
   id_usuario_autor  INT NOT NULL,
   asunto            VARCHAR(120) NOT NULL,
@@ -155,7 +170,7 @@ CREATE TABLE reclamo (
 ) ENGINE=InnoDB;
 
 -- ---------- AVISO ----------
-CREATE TABLE aviso (
+CREATE TABLE IF NOT EXISTS aviso (
   id_aviso            INT AUTO_INCREMENT PRIMARY KEY,
   titulo              VARCHAR(120) NOT NULL,
   contenido           VARCHAR(500) NOT NULL,
@@ -166,7 +181,7 @@ CREATE TABLE aviso (
 ) ENGINE=InnoDB;
 
 -- ---------- MENSAJE ----------
-CREATE TABLE mensaje (
+CREATE TABLE IF NOT EXISTS mensaje (
   id_mensaje        INT AUTO_INCREMENT PRIMARY KEY,
   id_remitente      INT NOT NULL,
   id_destinatario   INT NOT NULL,
@@ -178,7 +193,7 @@ CREATE TABLE mensaje (
 ) ENGINE=InnoDB;
 
 -- ---------- HORARIO ----------
-CREATE TABLE horario (
+CREATE TABLE IF NOT EXISTS horario (
   id_horario   INT AUTO_INCREMENT PRIMARY KEY,
   id_seccion   INT NOT NULL,
   dia_semana   ENUM('Lunes','Martes','Miercoles','Jueves','Viernes') NOT NULL,
@@ -189,14 +204,3 @@ CREATE TABLE horario (
   FOREIGN KEY (id_seccion) REFERENCES seccion(id_seccion) ON UPDATE CASCADE ON DELETE RESTRICT,
   FOREIGN KEY (id_docente) REFERENCES docente(id_docente) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB;
-
--- ============================================================
--- Datos mínimos de prueba (para validar el flujo principal)
--- ============================================================
-INSERT INTO usuario (nombre, apellido, correo, contrasena_hash, rol) VALUES
-  ('Profesor', 'Demo', 'prof@acadecam.edu.pe', '$2b$10$placeholder_hash_reemplazar', 'docente');
-
-INSERT INTO docente (id_usuario, dni, especialidad) VALUES (1, '10000001', 'Matemática');
-
-INSERT INTO seccion (nivel, grado, letra, turno, id_docente_tutor, anio_lectivo) VALUES
-  ('Primaria', 6, 'A', 'Mañana', 1, 2026);
