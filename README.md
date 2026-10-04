@@ -28,9 +28,12 @@ Homebrew instala `root` **sin contraseña**; el `.env` ya lo asume.
 ## 2. Crear la base de datos y cargar datos de prueba
 ```bash
 npm run db:reset      # borra la BD, crea las 14 tablas y carga los datos de prueba
+npm run db:check      # 14 controles de integridad entre tablas (todos deben salir OK)
+npm run docs:db       # regenera el diccionario de datos y el diagrama entidad-relación
 ```
-Equivale a `reset.sql` + `schema.sql` + `seed.sql`. `schema.sql` y `seed.sql` también se pueden
-volver a correr solos sin duplicar nada (`seed.sql` además deja los usuarios desbloqueados).
+Todo lo de la base de datos vive en [`database/`](database/README.md): esquema, datos de prueba,
+controles de integridad y el [diccionario de datos](database/diccionario-de-datos.md). Después de un
+`git pull` que cambie el esquema, vuelve a correr `npm run db:reset`.
 
 ## 3. Configuración
 ```bash
@@ -56,11 +59,12 @@ Elige la pestaña del rol y entra con (el cuadro de la pantalla de login los aut
 | Jefe Académico | `jefe@acadecam.edu.pe` | `jefe2024` |
 | Registrador | `registrador@acadecam.edu.pe` | `reg2024` |
 
-Los otros 6 alumnos (`ana.torres@…`, `luis.perez@…`, etc.) usan `alumno2024`.
+Hay 3 docentes más (`rosa.quispe@…`, `jorge.mendoza@…`, `carmen.vilca@…`, con `decam2024`) y 14 alumnos más
+(`ana.torres@…`, `luis.perez@…`, etc., con `alumno2024`).
 En la base las contraseñas están como **hash bcrypt (costo 10)**, nunca en texto plano.
 
 **Seguridad (RNF-02):** tras **5 intentos fallidos seguidos** la cuenta se bloquea **10 minutos**
-(incluso con la contraseña correcta). Para desbloquearla en desarrollo: `mysql -u root < seed.sql`.
+(incluso con la contraseña correcta). Para desbloquearla en desarrollo: `npm run db:reset`.
 
 ## 5. Pruebas unitarias de la capa de Lógica
 ```bash
@@ -96,11 +100,21 @@ curl -b cookies.txt "http://localhost:3001/api/calificaciones?estado=Desaprobado
 
 ## Cambios en el esquema (actualizar el diccionario de datos del informe)
 
-| Tabla | Columna nueva | Para qué |
-|---|---|---|
-| `usuario` | `intentos_fallidos TINYINT UNSIGNED NOT NULL DEFAULT 0` | RNF-02: cuenta los fallos seguidos |
-| `usuario` | `bloqueado_hasta DATETIME NULL` | RNF-02: hasta cuándo dura el bloqueo |
-| `tarea` | `tipo ENUM('Tarea','Examen','Proyecto','Exposición') NOT NULL DEFAULT 'Tarea'` | HU-010: el selector "Tipo" del formulario |
+Se agregaron 3 columnas (`usuario.intentos_fallidos`, `usuario.bloqueado_hasta`, `tarea.tipo`), 6 restricciones
+únicas, 13 reglas CHECK y 10 índices. La lista completa, con el motivo de cada cambio, está en
+[`database/README.md`](database/README.md#cambios-respecto-al-diccionario-de-datos-del-informe-sección-45).
+
+## Estructura del proyecto
+
+```
+dashboard.html, js/        Presentación (navegador)
+logica-*.js                Lógica de negocio: funciones puras, sin DOM ni SQL
+routes/, middleware/       API REST y control de acceso por rol
+config/db.js               Conexión a MySQL
+database/                  Esquema, datos de prueba, controles de integridad y diccionario de datos
+scripts/                   Utilidades (generador del diccionario de datos)
+tests/                     Pruebas unitarias de la capa de Lógica
+```
 
 ## Avance por historia de usuario
 
@@ -116,7 +130,8 @@ curl -b cookies.txt "http://localhost:3001/api/calificaciones?estado=Desaprobado
 ## Pendientes conocidos
 
 - El alta de alumno desde Calificaciones completa `fecha_nacimiento` y `sexo` con valores
-  provisionales (se reemplazará por el módulo de Registro). Esa cuenta nace sin contraseña utilizable.
+  provisionales y no crea su matrícula (se reemplazará por el módulo de Registro; `npm run db:check`
+  lo marca). Esa cuenta nace sin contraseña utilizable.
 - `POST /api/asistencia` todavía no valida que cada alumno pertenezca a la sección enviada.
 - Las tarjetas del Inicio siguen mostrando `?`: no están conectadas a la API.
 - El cuadro "Credenciales de acceso" de la pantalla de login muestra las contraseñas de prueba;
