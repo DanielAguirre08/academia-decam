@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
+const { responderError } = require('../middleware/errores');
 const { requiereSesion } = require('../middleware/auth');
 
 // GET /api/secciones
@@ -18,8 +19,7 @@ router.get('/', requiereSesion, async (req, res) => {
     );
     res.json(filas);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al obtener las secciones' });
+    responderError(res, err, 'Error al obtener las secciones');
   }
 });
 

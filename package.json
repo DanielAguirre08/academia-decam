@@ -6,8 +6,12 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "test": "node tests/logica-docente.test.js && node tests/logica-auth.test.js",
+    "test:unit": "node --test \"tests/*.test.js\"",
+    "test:api": "npm run db:reset:test && node --test --test-concurrency=1 \"tests/api/**/*.test.js\"",
+    "test": "npm run test:unit && npm run test:api",
+    "test:coverage": "npm run db:reset:test && node --test --test-concurrency=1 --experimental-test-coverage --test-coverage-exclude=\"tests/**\" \"tests/*.test.js\" \"tests/api/**/*.test.js\"",
     "db:reset": "mysql --default-character-set=utf8mb4 -u root < database/reset.sql && mysql --default-character-set=utf8mb4 -u root < database/schema.sql && mysql --default-character-set=utf8mb4 -u root < database/seed.sql",
+    "db:reset:test": "node scripts/preparar-bd-pruebas.js",
     "db:check": "mysql --default-character-set=utf8mb4 -u root < database/verificar-integridad.sql",
     "docs:db": "node scripts/generar-diccionario.js"
   },
@@ -18,5 +22,8 @@
     "express": "^4.19.2",
     "express-session": "^1.19.0",
     "mysql2": "^3.11.0"
+  },
+  "devDependencies": {
+    "supertest": "^7.3.1"
   }
 }

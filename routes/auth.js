@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 const pool = require('../config/db');
+const { responderError } = require('../middleware/errores');
 const A = require('../logica-auth'); // capa de lógica pura: reglas de bloqueo, roles e iniciales
 const { requiereSesion } = require('../middleware/auth');
 
@@ -97,8 +98,7 @@ router.post('/login', async (req, res) => {
       res.json(datos);
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error al iniciar sesión' });
+    responderError(res, err, 'Error al iniciar sesión');
   }
 });
 

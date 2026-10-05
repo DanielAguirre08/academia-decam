@@ -353,52 +353,6 @@ tr:hover td{background:#f8fafc}
       <div class="form-group"><label class="form-label" for="login-pass">Contraseña</label><input type="password" class="form-input" id="login-pass" autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
       <div class="login-error" id="login-error" role="alert">Correo o contraseña incorrectos</div>
       <button class="login-btn" onclick="doLogin()"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Iniciar sesion</button>
-      <div class="login-hint" style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-top:14px">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:10px">Credenciales de acceso</div>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'" onclick="fillLogin('prof@acadecam.edu.pe','decam2024','teacher')" title="Clic para autocompletar">
-            <div style="display:flex;align-items:center;gap:9px">
-              <span style="width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">PD</span>
-              <div>
-                <div style="font-size:12px;font-weight:600;color:#1e293b">Maestro</div>
-                <div style="font-size:11px;color:#64748b">prof@acadecam.edu.pe</div>
-              </div>
-            </div>
-            <span style="font-size:11px;color:#475569;font-family:monospace;background:#f1f5f9;padding:2px 7px;border-radius:5px">decam2024</span>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'" onclick="fillLogin('alumno@acadecam.edu.pe','alumno2024','student')" title="Clic para autocompletar">
-            <div style="display:flex;align-items:center;gap:9px">
-              <span style="width:28px;height:28px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">AD</span>
-              <div>
-                <div style="font-size:12px;font-weight:600;color:#1e293b">Alumno</div>
-                <div style="font-size:11px;color:#64748b">alumno@acadecam.edu.pe</div>
-              </div>
-            </div>
-            <span style="font-size:11px;color:#475569;font-family:monospace;background:#f1f5f9;padding:2px 7px;border-radius:5px">alumno2024</span>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'" onclick="fillLogin('jefe@acadecam.edu.pe','jefe2024','jefe')" title="Clic para autocompletar">
-            <div style="display:flex;align-items:center;gap:9px">
-              <span style="width:28px;height:28px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">JA</span>
-              <div>
-                <div style="font-size:12px;font-weight:600;color:#1e293b">Jefe Académico</div>
-                <div style="font-size:11px;color:#64748b">jefe@acadecam.edu.pe</div>
-              </div>
-            </div>
-            <span style="font-size:11px;color:#475569;font-family:monospace;background:#f1f5f9;padding:2px 7px;border-radius:5px">jefe2024</span>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;cursor:pointer;transition:box-shadow .15s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'" onclick="fillLogin('registrador@acadecam.edu.pe','reg2024','registrador')" title="Clic para autocompletar">
-            <div style="display:flex;align-items:center;gap:9px">
-              <span style="width:28px;height:28px;border-radius:50%;background:#0d9488;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">RG</span>
-              <div>
-                <div style="font-size:12px;font-weight:600;color:#1e293b">Registrador</div>
-                <div style="font-size:11px;color:#64748b">registrador@acadecam.edu.pe</div>
-              </div>
-            </div>
-            <span style="font-size:11px;color:#475569;font-family:monospace;background:#f1f5f9;padding:2px 7px;border-radius:5px">reg2024</span>
-          </div>
-        </div>
-        <div style="font-size:10px;color:#94a3b8;margin-top:8px;text-align:center">Clic en cualquier fila para autocompletar</div>
-      </div>
     </div>
   </div>
   <div class="login-art2">
@@ -1379,6 +1333,15 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
 </div>
+<!-- HU-010 CA-003: entregas por alumno de una tarea (lo pinta js/presentacion-docente.js) -->
+<div class="modal-overlay" id="modal-entregas">
+  <div class="modal">
+    <div class="modal-header"><h2><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Entregas</h2><button class="modal-close" onclick="closeModal('modal-entregas')"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div id="entregas-titulo" style="font-size:13px;color:var(--muted);margin-bottom:10px"></div>
+    <div id="entregas-lista" style="display:flex;flex-direction:column;gap:6px;max-height:55vh;overflow-y:auto"></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" onclick="closeModal('modal-entregas')">Cerrar</button></div>
+  </div>
+</div>
 <div class="modal-overlay" id="modal-new-msg">
   <div class="modal">
     <div class="modal-header"><h2><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>Redactar mensaje</h2><button class="modal-close" onclick="closeModal('modal-new-msg')"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
@@ -1465,11 +1428,6 @@ function usuarioDesdeApi(u){
 }
 let CU=null,currentRole='teacher',allStudents=[],allGrades=[],allTasks=[],taskFilter='all',allMatriculas=[],allReclamos=[],allRegistros=[];
 
-function fillLogin(email, pass, role){
-  document.getElementById('login-email').value = email;
-  document.getElementById('login-pass').value = pass;
-  selectRole(role);
-}
 function selectRole(r){currentRole=r;document.getElementById('tab-teacher').classList.toggle('active',r==='teacher');document.getElementById('tab-student').classList.toggle('active',r==='student');document.getElementById('tab-jefe').classList.toggle('active',r==='jefe');document.getElementById('tab-registrador').classList.toggle('active',r==='registrador');document.getElementById('login-error').style.display='none';}
 // CA-001 / CA-002 (HU-001): el login se valida en el servidor contra la tabla USUARIO.
 // El mensaje de error es el que devuelve la API (p. ej. "Correo o contraseña incorrectos").
@@ -1865,7 +1823,8 @@ function initPortal(){
   document.getElementById('school-name-sb').textContent=CFG.name;
   const now=new Date();
   document.getElementById('dash-date').textContent=now.toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
-  document.getElementById('att-date').value=now.toISOString().split('T')[0];
+  // Fecha LOCAL (toISOString es UTC: en Perú, desde las 19:00 ya daba el día siguiente). Sin días futuros (HU-008).
+  const hoyLocal=LogicaDocente.fechaLocalISO(now);const attDate=document.getElementById('att-date');attDate.value=hoyLocal;attDate.max=hoyLocal;
   applyRoleUI();buildSidebar();buildDashboard();buildSchedule();buildDirectorio();buildProfile();populateSelects();
   showPage('dashboard');
   if(window.innerWidth<=960)document.getElementById('mobile-bar').style.display='flex';
@@ -2436,7 +2395,7 @@ function showLogoutScreen(){
   </div>
 </div>
 <script src="js/logica-docente.js"></script>
-<script src="js/datos-docente.js"></script>
+<script src="js/utilidades-html.js"></script>
 <script src="js/presentacion-docente.js"></script>
 <script>restaurarSesion();</script>
 </body>

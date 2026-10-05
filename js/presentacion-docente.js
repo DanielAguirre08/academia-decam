@@ -9,21 +9,17 @@
  *
  * QUÉ CAMBIÓ EN ESTA VERSIÓN
  * --------------------------
- * Antes, los datos vivían en memoria del navegador (js/datos-docente.js). Ahora TODO sale de
- * la API REST del backend Express, que a su vez lee y escribe en MySQL:
+ * Los datos ya no viven en memoria del navegador (el prototipo usaba arrays en un archivo
+ * aparte, ya eliminado). TODO sale de la API REST del backend Express, que lee y escribe en MySQL:
  *
  *     Presentación (este archivo)  ->  fetch()  ->  Express (routes/*.js)  ->  MySQL
  *                                                        |
  *                                                        +-> logica-docente.js (reglas puras)
  *
- * js/datos-docente.js queda en el proyecto como referencia del prototipo en memoria, pero
- * este archivo ya NO lo usa: su reemplazo es el objeto `API` de aquí abajo.
+ * La capa de Lógica (js/logica-docente.js) son funciones puras sin DOM, y se ejecuta en los dos
+ * lados (navegador y servidor) con el mismo archivo.
  *
- * La capa de Lógica (js/logica-docente.js) NO cambia: sigue siendo funciones puras sin DOM,
- * y ahora se ejecuta en los dos lados (navegador y servidor) con el mismo archivo.
- *
- * Dependencias globales que ya existen en dashboard.html y que esta capa reutiliza:
-ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskFilter con
+ * ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskFilter con
  * `let` a nivel global. Un `let` global NO crea propiedad en window (a diferencia de var y
  * de function), así que window.CU o window.allGrades salen undefined. Sí se ven como
  * identificadores sueltos desde otro <script> clásico como este, porque comparten el ámbito
@@ -38,9 +34,11 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
 (function () {
   'use strict';
   var L = window.LogicaDocente;
+  // Todo dato de la BD que se pinte con innerHTML pasa por esc() (ver js/utilidades-html.js).
+  var esc = window.UtilidadesHtml.escaparHtml;
 
   // ===============================================================
-  // ACCESO A LA API REST  (lo que antes hacía DatosDocente.* en memoria)
+  // ACCESO A LA API REST
   // ===============================================================
 
   /** Envoltorio único de fetch: centraliza el JSON y el manejo de errores del servidor. */
@@ -51,7 +49,9 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
     // 401 = la sesión del servidor ya no existe (se reinició o expiró): de vuelta al login.
     if (respuesta.status === 401 && typeof window.sesionExpirada === 'function') window.sesionExpirada();
     if (!respuesta.ok) {
-      throw new Error((cuerpo && cuerpo.error) || ('El servidor respondió ' + respuesta.status));
+      var error = new Error((cuerpo && cuerpo.error) || ('El servidor respondió ' + respuesta.status));
+      error.errores = (cuerpo && cuerpo.errores) || []; // detalle por fila (p. ej. pase de lista)
+      throw error;
     }
     return cuerpo;
   }
@@ -97,6 +97,15 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
     },
     publicarTarea: function (datos) {
       return enviarJson('/api/tareas', 'POST', datos);
+    },
+    entregas: function (idTarea) {
+      return pedir('/api/tareas/' + idTarea + '/entregas');
+    },
+    registrarEntrega: function (idTarea, idAlumno) {
+      return enviarJson('/api/tareas/' + idTarea + '/entregas', 'POST', { id_alumno: idAlumno });
+    },
+    desmarcarEntrega: function (idTarea, idAlumno) {
+      return pedir('/api/tareas/' + idTarea + '/entregas/' + idAlumno, { method: 'DELETE' });
     }
   };
 
@@ -121,13 +130,15 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
   }
 
   function avisarError(e) {
-    showToast(e && e.message ? e.message : 'No se pudo conectar con el servidor');
+    var mensaje = e && e.message ? e.message : 'No se pudo conectar con el servidor';
+    var extra = e && e.errores && e.errores.length > 1 ? ' (y ' + (e.errores.length - 1) + ' error(es) más)' : '';
+    showToast(mensaje + extra);
     console.error(e);
   }
 
   function estadoVacio(colspan, titulo, texto) {
-    return '<tr><td colspan="' + colspan + '"><div class="empty-state"><h3>' + titulo + '</h3>' +
-      (texto ? '<p>' + texto + '</p>' : '') + '</div></td></tr>';
+    return '<tr><td colspan="' + colspan + '"><div class="empty-state"><h3>' + esc(titulo) + '</h3>' +
+      (texto ? '<p>' + esc(texto) + '</p>' : '') + '</div></td></tr>';
   }
 
   // ---------------------------------------------------------------
@@ -165,7 +176,7 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
     if (populateSelectsOriginal) populateSelectsOriginal(); // combos de las páginas que no son HU-005/008/010
     cargarSecciones().then(function () {
       var opciones = SECCIONES.map(function (s) {
-        return '<option value="' + s.id_seccion + '">' + s.grupo + '</option>';
+        return '<option value="' + esc(s.id_seccion) + '">' + esc(s.grupo) + '</option>';
       }).join('');
       ['grades-group-filter', 'att-group-filter', 'task-group-sel', 'ag-group'].forEach(function (id) {
         var el = document.getElementById(id);
@@ -220,6 +231,38 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
     };
   }
 
+  // Reemplaza la vista del docente de renderGrades: el original pegaba nombre, grupo e iniciales
+  // en innerHTML tal cual llegaban de la BD. Misma estructura de tabla, con cada dato escapado.
+  // La vista del alumno sigue en el renderGrades original.
+  var renderGradesOriginal = window.renderGrades;
+  var ICONO_EDITAR = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';
+  window.renderGrades = function (data) {
+    if (!CU || CU.role !== 'teacher') return renderGradesOriginal(data);
+    var tb = document.getElementById('grades-tbody');
+    if (!tb) return;
+    if (!data.length) {
+      tb.innerHTML = estadoVacio(9, 'Sin datos', 'Ajusta los filtros o registra datos.');
+      return;
+    }
+    function celdaNota(s, campo) {
+      return '<td><input class="grade-input" value="' + (s[campo] != null ? esc(s[campo]) : '') +
+        '" type="number" min="0" max="20" step="0.5" onchange="updGrade(' + Number(s.id) + ',\'' + campo + '\',this.value)"></td>';
+    }
+    tb.innerHTML = data.map(function (s, i) {
+      var promedio = calcAvg(s);
+      return '<tr><td>' + (i + 1) + '</td>' +
+        '<td><div style="display:flex;align-items:center;gap:8px">' + av(esc(s.initials)) +
+        '<span class="td-bold">' + esc(s.name) + '</span></div></td>' +
+        '<td><span class="badge b-gray">' + esc(s.group) + '</span></td>' +
+        celdaNota(s, 'e1') + celdaNota(s, 'e2') + celdaNota(s, 'tarea') + celdaNota(s, 'proyecto') +
+        '<td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill ' + getBar(promedio) +
+        '" style="width:' + (promedio ? promedio * 5 : 0) + '%"></div></div><span class="td-bold">' +
+        (promedio !== null ? promedio.toFixed(2) : '—') + '</span></div></td>' +
+        '<td><span class="badge ' + getBadge(promedio) + '">' + getStatus(promedio) + '</span></td>' +
+        '<td><button class="btn btn-sm" onclick="openEditGrade(' + Number(s.id) + ')" title="Modificar notas" style="padding:5px 8px">' + ICONO_EDITAR + '</button></td></tr>';
+    }).join('');
+  };
+
   /**
    * CA-003: los 3 filtros (grupo, estado, nombre) ahora viajan a la API.
    * El grupo se resuelve en SQL (WHERE id_seccion = ?) y estado/nombre los aplica la MISMA
@@ -256,6 +299,24 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
   window.filterGrades = function (q) {
     clearTimeout(temporizadorBusqueda);
     temporizadorBusqueda = setTimeout(function () { cargarCalificaciones(q); }, 180);
+  };
+
+  // HU-006: exporta las filas que el docente está viendo (mismos filtros). El CSV lo arma la capa
+  // de Lógica (BOM UTF-8, RFC 4180, sin fórmulas); aquí solo se descarga como archivo.
+  window.exportGrades = function () {
+    if (!allGrades || !allGrades.length) { showToast('No hay calificaciones para exportar'); return; }
+    var csv = L.exportarCalificacionesCSV(allGrades.map(function (s) {
+      return { nombreAlumno: s.name, grupo: s.group, examen1: s.e1, examen2: s.e2, tareas: s.tarea, proyecto: s.proyecto };
+    }));
+    var enlace = document.createElement('a');
+    enlace.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    var grupo = valorDe('grades-group-filter') ? '-' + etiquetaSeccion(valorDe('grades-group-filter')) : '';
+    enlace.download = 'calificaciones' + grupo + '-' + L.fechaLocalISO(new Date()) + '.csv';
+    document.body.appendChild(enlace);
+    enlace.click();
+    document.body.removeChild(enlace);
+    setTimeout(function () { URL.revokeObjectURL(enlace.href); }, 1000);
+    showToast('CSV exportado (' + allGrades.length + ' alumnos)');
   };
 
   // CA-001: modificar una nota en la tabla ahora hace PATCH y el promedio lo recalcula
@@ -398,6 +459,10 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
       tb.innerHTML = estadoVacio(6, 'Selecciona una fecha', 'Elige la fecha del pase de lista.');
       return;
     }
+    if (L.esFechaFutura(fecha, new Date())) {
+      tb.innerHTML = estadoVacio(6, 'Fecha futura', 'No se puede pasar lista de un día que aún no llega.');
+      return;
+    }
 
     var filas;
     try {
@@ -420,15 +485,18 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
         var sel = letra === letraSel ? ' ' + CLASE_POR_LETRA[letra] : '';
         return '<button class="att-r' + sel + '" onclick="setAtt(this,\'' + letra + '\')">' + texto + '</button>';
       }
+      // null = el alumno aún no tiene días registrados: se muestra "sin datos", no un % inventado.
       var pct = f.porcentajeAsistencia;
-      var claseBarra = pct >= 90 ? 'bf-ex' : pct >= 75 ? 'bf-avg' : 'bf-poor';
-      var insignia = pct >= 90 ? ['b-success', 'Normal'] : pct >= 75 ? ['b-warning', 'Regular'] : ['b-danger', 'Riesgo'];
-      return '<tr data-id-alumno="' + f.id_alumno + '"><td>' + (i + 1) + '</td>' +
-        '<td><div style="display:flex;align-items:center;gap:8px">' + av(iniciales(f.nombreAlumno)) +
-        '<span class="td-bold">' + f.nombreAlumno + '</span></div></td>' +
+      var sinDatos = pct === null || pct === undefined;
+      var claseBarra = sinDatos ? 'bf-poor' : pct >= 90 ? 'bf-ex' : pct >= 75 ? 'bf-avg' : 'bf-poor';
+      var insignia = sinDatos ? ['b-gray', 'Sin datos']
+        : pct >= 90 ? ['b-success', 'Normal'] : pct >= 75 ? ['b-warning', 'Regular'] : ['b-danger', 'Riesgo'];
+      return '<tr data-id-alumno="' + Number(f.id_alumno) + '"><td>' + (i + 1) + '</td>' +
+        '<td><div style="display:flex;align-items:center;gap:8px">' + av(esc(iniciales(f.nombreAlumno))) +
+        '<span class="td-bold">' + esc(f.nombreAlumno) + '</span></div></td>' +
         '<td><div class="att-rg">' + btn('P', 'P') + btn('A', 'A') + btn('L', 'T') + '</div></td>' +
-        '<td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill ' + claseBarra + '" style="width:' + pct + '%"></div></div><span>' + pct + '%</span></div></td>' +
-        '<td>' + f.faltas + '</td>' +
+        '<td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill ' + claseBarra + '" style="width:' + (sinDatos ? 0 : pct) + '%"></div></div><span>' + (sinDatos ? '—' : pct + '%') + '</span></div></td>' +
+        '<td>' + Number(f.faltas) + '</td>' +
         '<td><span class="badge ' + insignia[0] + '">' + insignia[1] + '</span></td></tr>';
     }).join('');
   };
@@ -458,6 +526,7 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
     var fecha = valorDe('att-date');
     if (!L.validarGrupoSeleccionado(idSeccion)) { showToast('Selecciona un grupo antes de guardar'); return; }
     if (!L.validarFechaAsistencia(fecha)) { showToast('Selecciona una fecha válida'); return; }
+    if (L.esFechaFutura(fecha, new Date())) { showToast('No se puede pasar lista de una fecha futura'); return; }
 
     var filas = document.querySelectorAll('#att-tbody tr[data-id-alumno]');
     if (!filas.length) { showToast('No hay alumnos que registrar'); return; }
@@ -506,7 +575,7 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
       renderTasks();
     } catch (e) {
       avisarError(e);
-      el.innerHTML = '<div class="empty-state"><h3>No se pudieron cargar las tareas</h3><p>' + e.message + '</p></div>';
+      el.innerHTML = '<div class="empty-state"><h3>No se pudieron cargar las tareas</h3><p>' + esc(e.message) + '</p></div>';
     }
   }
   window.cargarTareas = cargarTareas;
@@ -531,17 +600,16 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
     el.innerHTML = visibles.map(function (t) {
       var c = CLASE_POR_ESTADO[t.estado] || CLASE_POR_ESTADO.pendiente;
       var entregada = t.estado === 'entregada';
+      // CA-003: el check abre la lista del grupo para marcar quién entregó (ENTREGA_TAREA).
       return '<div class="task-item">' +
-        '<div class="task-check ' + (entregada ? 'done ' : '') + 'readonly" title="El avance se lleva en ENTREGA_TAREA, por alumno">' +
-        (entregada ? '&#10003;' : '') + '</div>' +
+        '<div class="task-check editable ' + (entregada ? 'done' : '') + '" onclick="abrirEntregas(' + Number(t.id_tarea) + ')" ' +
+        'title="Marcar entregas por alumno">' + (entregada ? '&#10003;' : '') + '</div>' +
         '<div style="flex:1"><div class="task-title" style="' + (entregada ? 'text-decoration:line-through;opacity:.5' : '') + '">' +
-        t.titulo + '</div>' +
-        // Especificación de diseño: "materia · tipo". La API de /api/tareas todavía no expone
-        // esos campos (la tabla TAREA no tiene columnas materia/tipo), así que se cae a
-        // 'General' en vez de mostrar 'undefined' — igual que pide el mismo criterio que ya
-        // usa el resto de la capa de Presentación (ver iniciales(), etiquetaSeccion(), etc.).
-        '<div class="task-meta">' + (t.subject || t.materia || 'General') + ' · ' + (t.type || t.tipo || 'General') + '</div></div>' +
-        '<span class="task-due ' + c.due + '">' + t.fecha_entrega + '</span>' +
+        esc(t.titulo) + '</div>' +
+        // Diseño de Figma: "materia · tipo". La materia es la especialidad del docente autor.
+        '<div class="task-meta">' + esc(t.materia || 'General') + ' · ' + esc(t.tipo || 'Tarea') +
+        ' · ' + esc(t.grupo) + ' · ' + Number(t.entregas) + '/' + Number(t.totalAlumnos) + ' entregas</div></div>' +
+        '<span class="task-due ' + c.due + '">' + esc(t.fecha_entrega) + '</span>' +
         '<span class="badge ' + c.badge + '" style="margin-left:8px">' + c.texto + '</span></div>';
     }).join('');
   };
@@ -555,7 +623,9 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
       id_seccion: valorDe('task-group-sel'),
       fecha_entrega: valorDe('tn-fecha')
     };
-    if (!L.validarTarea(datos)) { showToast('Completa título, grupo y fecha límite'); return; }
+    // Misma revisión que hace el servidor (capa de Lógica compartida).
+    var revision = L.revisarTarea(datos, new Date());
+    if (!revision.valido) { showToast(revision.errores[0]); return; }
 
     try {
       await API.publicarTarea(datos);
@@ -567,6 +637,62 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
     } catch (e) {
       avisarError(e);
     }
+  };
+
+  // CA-003: lista del grupo con un check por alumno. Marcar = POST, desmarcar = DELETE.
+  var tareaAbierta = null;
+  var ESTADO_ENTREGA = {
+    entregada: ['b-success', 'Entregada'],
+    pendiente: ['b-info', 'Pendiente'],
+    atrasada: ['b-danger', 'Atrasada']
+  };
+
+  async function pintarEntregas() {
+    var lista = document.getElementById('entregas-lista');
+    try {
+      var filas = await API.entregas(tareaAbierta.id_tarea);
+      if (!filas.length) {
+        lista.innerHTML = '<div class="empty-state"><h3>Sin alumnos en este grupo</h3></div>';
+        return;
+      }
+      lista.innerHTML = filas.map(function (f) {
+        var entregada = f.estado === 'entregada';
+        var insignia = ESTADO_ENTREGA[f.estado] || ESTADO_ENTREGA.pendiente;
+        return '<label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer">' +
+          '<input type="checkbox" ' + (entregada ? 'checked' : '') +
+          ' onchange="marcarEntrega(' + Number(f.id_alumno) + ', this.checked)">' +
+          av(esc(iniciales(f.nombreAlumno))) +
+          '<span class="td-bold" style="flex:1">' + esc(f.nombreAlumno) + '</span>' +
+          (f.fecha_entrega_real ? '<span style="font-size:11px;color:var(--muted)">' + esc(f.fecha_entrega_real) + '</span>' : '') +
+          '<span class="badge ' + insignia[0] + '">' + insignia[1] + '</span></label>';
+      }).join('');
+    } catch (e) {
+      avisarError(e);
+      lista.innerHTML = '<div class="empty-state"><h3>No se pudieron cargar las entregas</h3><p>' + esc(e.message) + '</p></div>';
+    }
+  }
+
+  window.abrirEntregas = async function (idTarea) {
+    tareaAbierta = (allTasks || []).filter(function (t) { return t.id_tarea === idTarea; })[0];
+    if (!tareaAbierta) return;
+    document.getElementById('entregas-titulo').textContent =
+      tareaAbierta.titulo + ' — ' + tareaAbierta.grupo + ' — vence ' + tareaAbierta.fecha_entrega;
+    document.getElementById('entregas-lista').innerHTML = '';
+    openModal('modal-entregas');
+    await pintarEntregas();
+  };
+
+  window.marcarEntrega = async function (idAlumno, entregada) {
+    if (!tareaAbierta) return;
+    try {
+      if (entregada) await API.registrarEntrega(tareaAbierta.id_tarea, idAlumno);
+      else await API.desmarcarEntrega(tareaAbierta.id_tarea, idAlumno);
+    } catch (e) {
+      avisarError(e);
+    }
+    // Siempre se relee de la BD: la lista y el contador de la tarea reflejan lo que quedó guardado.
+    await pintarEntregas();
+    await cargarTareas();
   };
 
   // ---------------------------------------------------------------
@@ -582,10 +708,5 @@ ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskF
     if (id === 'calificaciones') cargarCalificaciones();
     if (id === 'asistencia') loadAttGroup();
     if (id === 'tareas') cargarTareas();
-  };
-
-  // Reemplaza a la siembra de datos de demo del prototipo: los datos ya no viven en memoria.
-  window.sembrarDatosDemo = function () {
-    showToast('Ya no hace falta: los datos salen de MySQL. Usa "mysql -u root < seed.sql".');
   };
 })();

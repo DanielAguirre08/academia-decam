@@ -134,6 +134,3 @@ tests/                     Pruebas unitarias de la capa de Lógica
   lo marca). Esa cuenta nace sin contraseña utilizable.
 - `POST /api/asistencia` todavía no valida que cada alumno pertenezca a la sección enviada.
 - Las tarjetas del Inicio siguen mostrando `?`: no están conectadas a la API.
-- El cuadro "Credenciales de acceso" de la pantalla de login muestra las contraseñas de prueba;
-  hay que quitarlo antes de la entrega final.
-- `js/datos-docente.js` es código muerto del prototipo en memoria.
