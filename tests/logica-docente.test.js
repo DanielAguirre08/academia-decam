@@ -98,10 +98,10 @@ describe('HU-005 — calcularPromedio / determinarEstado', () => {
 });
 
 describe('HU-006 — Exportar CSV', () => {
-  test('el archivo empieza con BOM UTF-8 y usa los encabezados de la tabla', () => {
+  test('CA-001: el archivo empieza con BOM UTF-8 y trae las columnas exactas de la HU', () => {
     const csv = L.exportarCalificacionesCSV([]);
     assertEqual(csv.charCodeAt(0), 0xFEFF);
-    assertEqual(csv, '﻿Alumno,Grupo,Examen 1,Examen 2,Tareas,Proyecto,Promedio,Estado\r\n');
+    assertEqual(csv, '\uFEFF' + 'Nombre,Grupo,Examen 1,Examen 2,Tareas,Proyecto,Promedio,Estado\r\n');
   });
 
   test('una fila: notas con 2 decimales, vacías si faltan, promedio y estado oficiales', () => {
@@ -317,5 +317,15 @@ describe('HU-010 — Tareas', () => {
     const tareas = [{ status: 'pending' }, { status: 'late' }, { status: 'done' }, { status: 'late' }];
     assertEqual(L.filtrarTareasPorEstado(tareas, 'late').length, 2);
     assertEqual(L.filtrarTareasPorEstado(tareas, 'all').length, 4);
+  });
+});
+
+describe('Inicio del docente — día del horario', () => {
+  test('diaDeHorario: lunes a viernes como en HORARIO.dia_semana; fin de semana sin clases', () => {
+    assertEqual(L.diaDeHorario(new Date(2026, 9, 5)), 'Lunes');
+    assertEqual(L.diaDeHorario(new Date(2026, 9, 7)), 'Miercoles'); // sin tilde, como en la BD
+    assertEqual(L.diaDeHorario(new Date(2026, 9, 9)), 'Viernes');
+    assertEqual(L.diaDeHorario(new Date(2026, 9, 10)), null);       // sábado
+    assertEqual(L.diaDeHorario(new Date(2026, 9, 11)), null);       // domingo
   });
 });

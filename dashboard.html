@@ -376,12 +376,12 @@ tr:hover td{background:#f8fafc}
     <div class="nav-item" onclick="showPage('tareas')" data-page="tareas"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg> <span id="nlbl-tasks">Tareas</span></div>
     <div class="nav-item teacher-only" onclick="showPage('alumnos')" data-page="alumnos"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Mis Alumnos</div>
     <div class="nav-item" onclick="showPage('horario')" data-page="horario"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg> Horario</div>
-    <div class="nav-item" onclick="showPage('avisos')" data-page="avisos"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Avisos</div>
+    <div class="nav-item" onclick="showPage('avisos')" data-page="avisos"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Avisos<span class="nav-badge" id="nav-avisos-count" style="display:none"></span></div>
     <div class="nav-item" onclick="showPage('mensajes')" data-page="mensajes"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Mensajes</div>
     <div class="nav-item" id="nav-seccion" onclick="showPage('seccion')" data-page="seccion" style="display:none"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Sección</div>
     <div class="nav-item" id="nav-reclamo" onclick="showPage('reclamo')" data-page="reclamo" style="display:none"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="12" y1="7" x2="12" y2="13"/></svg> Reclamos</div>
-    <div class="nav-item jefe-only" id="nav-registro" onclick="showPage('registro')" data-page="registro" style="display:none"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8l2 2 4-4"/></svg> Registro</div>
-    <div class="nav-item admin-only" id="nav-matricula" onclick="showPage('matricula')" data-page="matricula" style="display:none"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="12" y1="12" x2="12" y2="18"/></svg> Matrícula</div>
+    <div class="nav-item registrador-only" id="nav-registro" onclick="showPage('registro')" data-page="registro" style="display:none"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8l2 2 4-4"/></svg> Registro</div>
+    <div class="nav-item registrador-only" id="nav-matricula" onclick="showPage('matricula')" data-page="matricula" style="display:none"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="12" y1="12" x2="12" y2="18"/></svg> Matrícula</div>
     <div class="sidebar-bottom">
       <div class="nav-sec">Cuenta</div>
       <div class="nav-item" onclick="showPage('perfil')" data-page="perfil"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Mi Perfil</div>
@@ -415,7 +415,6 @@ tr:hover td{background:#f8fafc}
         <div><div class="page-title" id="cal-title"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>Calificaciones</div><div class="page-sub" id="cal-sub"></div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           
-          <button class="btn btn-primary teacher-only" onclick="openModal('modal-add-grade-student')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Agregar alumno</button>
           <button class="btn teacher-only" onclick="exportGrades()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar CSV</button>
           <button class="btn btn-primary teacher-only" onclick="saveGrades(event)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Guardar</button>
         </div>
@@ -490,7 +489,7 @@ tr:hover td{background:#f8fafc}
         </div>
       </div>
       <div id="tasks-restrict-notice" class="restrict-notice" style="display:none">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Solo puedes ver las tareas asignadas. Para entregar o resolver dudas, contacta a tu maestro directamente.
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Solo puedes consultar tus tareas y marcar tus propias entregas. Para resolver dudas, contacta a tu maestro.
       </div>
       <div class="tab-bar" id="tasks-tabs">
         <button class="tab-btn active" onclick="filterTasks('all',this)"><i class="ti ti-list" style="margin-right:4px"></i>Todas</button>
@@ -545,7 +544,7 @@ tr:hover td{background:#f8fafc}
     <div class="page" id="page-avisos">
       <div class="topbar">
         <div><div class="page-title"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Avisos</div><div class="page-sub">Comunicados institucionales</div></div>
-        <button class="btn btn-primary teacher-only" onclick="openModal('modal-new-aviso')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuevo aviso</button>
+        <button class="btn btn-primary jefe-only" onclick="openModal('modal-new-aviso')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nuevo aviso</button>
       </div>
       <div class="two-col">
         <div>
@@ -591,7 +590,7 @@ tr:hover td{background:#f8fafc}
       <div class="two-col">
         <div>
           <div class="card">
-            <div class="card-header"><h2><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="10" r="3"/><line x1="9" y1="21" x2="9.01" y2="21"/><line x1="15" y1="21" x2="15.01" y2="21"/></svg>Informacion personal</h2><button class="btn btn-sm" onclick="openModal('modal-edit-profile')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</button></div>
+            <div class="card-header"><h2><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="10" r="3"/><line x1="9" y1="21" x2="9.01" y2="21"/><line x1="15" y1="21" x2="15.01" y2="21"/></svg>Informacion personal</h2></div>
             <div class="card-pad" id="profile-info-section"></div>
           </div>
         </div>
@@ -599,15 +598,11 @@ tr:hover td{background:#f8fafc}
           <div class="card">
             <div class="card-header"><h2><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Seguridad</h2></div>
             <div class="card-pad">
-              <div class="form-group"><label class="form-label">Contrasena actual</label><input type="password" class="form-input" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
-              <div class="form-group"><label class="form-label">Nueva contrasena</label><input type="password" class="form-input" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
-              <div class="form-group"><label class="form-label">Confirmar</label><input type="password" class="form-input" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
-              <button class="btn btn-primary" style="width:100%"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Cambiar contrasena</button>
+              <div class="form-group"><label class="form-label">Contraseña actual</label><input type="password" class="form-input" id="pwd-actual" autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
+              <div class="form-group"><label class="form-label">Nueva contraseña</label><input type="password" class="form-input" id="pwd-nueva" autocomplete="new-password" placeholder="Mínimo 8, con letras y números"></div>
+              <div class="form-group"><label class="form-label">Confirmar</label><input type="password" class="form-input" id="pwd-confirmar" autocomplete="new-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
+              <button class="btn btn-primary" style="width:100%" onclick="cambiarContrasena()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Cambiar contraseña</button>
             </div>
-          </div>
-          <div class="card">
-            <div class="card-header"><h2><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notificaciones</h2></div>
-            <div class="card-pad"><div style="display:flex;flex-direction:column;gap:13px" id="notif-settings"></div></div>
           </div>
         </div>
       </div>
@@ -687,7 +682,7 @@ tr:hover td{background:#f8fafc}
       </div>
       <div class="page-sub" id="reclamo-pg-sub">Gestión de reclamos académicos</div>
     </div>
-    <button class="btn btn-primary" onclick="openModal('modal-new-reclamo')">
+    <button class="btn btn-primary" id="btn-nuevo-reclamo" onclick="openModal('modal-new-reclamo')">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       <span id="reclamo-btn-text">Nuevo reclamo</span>
     </button>
@@ -721,7 +716,7 @@ tr:hover td{background:#f8fafc}
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8l2 2 4-4"/></svg>
         Registro
       </div>
-      <div class="page-sub">Módulo de registro — Jefe Académico</div>
+      <div class="page-sub">Módulo de registro — Registrador</div>
     </div>
     <button class="btn btn-primary" onclick="document.getElementById('ci-reg-nombre').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('ci-reg-nombre').focus();">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -786,18 +781,18 @@ tr:hover td{background:#f8fafc}
               <select class="form-input" id="ci-reg-tipo" onchange="toggleRegistroAlumnoFields()">
                 <option value="alumno">Alumno</option>
                 <option value="docente">Docente</option>
-                <option value="administrativo">Administrativo</option>
+                <option value="apoderado">Apoderado</option>
               </select>
             </div>
 
             <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Datos personales</div>
             <div class="form-group" style="margin:0">
               <label class="form-label">Nombre completo *</label>
-              <input type="text" class="form-input" id="ci-reg-nombre" placeholder="Apellidos y nombres">
+              <input type="text" class="form-input" id="ci-reg-nombre" placeholder="Nombres y apellidos">
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
               <div class="form-group" style="margin:0">
-                <label class="form-label">DNI</label>
+                <label class="form-label">DNI *</label>
                 <input type="text" class="form-input" id="ci-reg-dni" placeholder="00000000" maxlength="8">
               </div>
               <div class="form-group" style="margin:0" id="ci-reg-fechanac-wrap">
@@ -840,6 +835,10 @@ tr:hover td{background:#f8fafc}
                 </select>
               </div>
             </div>
+            <div class="form-group" style="margin:0;display:none" id="ci-reg-especialidad-wrap">
+              <label class="form-label">Especialidad</label>
+              <input type="text" class="form-input" id="ci-reg-especialidad" placeholder="Ej: Matemática" maxlength="80">
+            </div>
             <div class="form-group" style="margin:0" id="ci-reg-direccion-wrap">
               <label class="form-label">Dirección</label>
               <input type="text" class="form-input" id="ci-reg-direccion" placeholder="Av./Jr./Calle, N°, distrito">
@@ -860,6 +859,10 @@ tr:hover td{background:#f8fafc}
               <div class="form-group" style="margin:0">
                 <label class="form-label">Nombre del apoderado</label>
                 <input type="text" class="form-input" id="ci-reg-apoderado" placeholder="Nombre completo del apoderado">
+              </div>
+              <div class="form-group" style="margin:0">
+                <label class="form-label">DNI del apoderado</label>
+                <input type="text" class="form-input" id="ci-reg-apo-dni" placeholder="00000000" maxlength="8">
               </div>
               <div class="form-group" style="margin:0">
                 <label class="form-label">Teléfono del apoderado</label>
@@ -889,12 +892,12 @@ tr:hover td{background:#f8fafc}
           <span style="font-size:11px;color:#7c3aed;opacity:.7">Control — Lógica de negocio</span>
         </div>
         <div class="card-pad" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-          <input type="text" class="form-input" style="flex:1;min-width:140px;padding:6px 10px;font-size:12px" placeholder="Buscar por nombre o tipo..." id="registro-search" oninput="filterRegistro()">
+          <input type="text" class="form-input" style="flex:1;min-width:140px;padding:6px 10px;font-size:12px" placeholder="Buscar por nombre, DNI o correo..." id="registro-search" oninput="filterRegistro()">
           <select class="form-input" style="width:auto;padding:6px 10px;font-size:12px" id="registro-filter-tipo" onchange="filterRegistro()">
             <option value="all">Todos los tipos</option>
             <option value="alumno">Alumno</option>
             <option value="docente">Docente</option>
-            <option value="administrativo">Administrativo</option>
+            <option value="apoderado">Apoderado</option>
           </select>
           <span style="font-size:12px;color:var(--muted)" id="registro-count">0 registros</span>
         </div>
@@ -1003,21 +1006,21 @@ tr:hover td{background:#f8fafc}
             <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Datos del alumno</div>
             <div class="form-group" style="margin:0">
               <label class="form-label">Nombre completo del alumno *</label>
-              <input type="text" class="form-input" id="ci-mat-nombre" placeholder="Apellidos y nombres">
+              <input type="text" class="form-input" id="ci-mat-nombre" placeholder="Nombres y apellidos">
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
               <div class="form-group" style="margin:0">
-                <label class="form-label">DNI</label>
+                <label class="form-label">DNI *</label>
                 <input type="text" class="form-input" id="ci-mat-dni" placeholder="00000000" maxlength="8">
               </div>
               <div class="form-group" style="margin:0">
-                <label class="form-label">Fecha de nacimiento</label>
+                <label class="form-label">Fecha de nacimiento (alumno nuevo)</label>
                 <input type="date" class="form-input" id="ci-mat-fechanac">
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
               <div class="form-group" style="margin:0">
-                <label class="form-label">Sexo</label>
+                <label class="form-label">Sexo (alumno nuevo)</label>
                 <select class="form-input" id="ci-mat-sexo">
                   <option value="">Seleccionar...</option>
                   <option value="M">Masculino</option>
@@ -1072,9 +1075,9 @@ tr:hover td{background:#f8fafc}
               <div class="form-group" style="margin:0">
                 <label class="form-label">Turno</label>
                 <select class="form-input" id="ci-mat-turno">
+                  <option value="">Según la sección</option>
                   <option value="Mañana">Mañana</option>
                   <option value="Tarde">Tarde</option>
-                  <option value="Noche">Noche</option>
                 </select>
               </div>
             </div>
@@ -1086,7 +1089,7 @@ tr:hover td{background:#f8fafc}
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
               <div class="form-group" style="margin:0">
-                <label class="form-label">DNI del apoderado</label>
+                <label class="form-label">DNI del apoderado *</label>
                 <input type="text" class="form-input" id="ci-mat-apo-dni" placeholder="00000000" maxlength="8">
               </div>
               <div class="form-group" style="margin:0">
@@ -1125,12 +1128,11 @@ tr:hover td{background:#f8fafc}
           <span style="font-size:11px;color:#7c3aed;opacity:.7">Control — Lógica de negocio</span>
         </div>
         <div class="card-pad" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-          <input type="text" class="form-input" style="flex:1;min-width:140px;padding:6px 10px;font-size:12px" placeholder="Buscar por nombre o sección..." id="matricula-search" oninput="filterMatriculas()">
+          <input type="text" class="form-input" style="flex:1;min-width:140px;padding:6px 10px;font-size:12px" placeholder="Buscar por nombre, DNI, código o sección..." id="matricula-search" oninput="filterMatriculas()">
           <select class="form-input" style="width:auto;padding:6px 10px;font-size:12px" id="matricula-filter-estado" onchange="filterMatriculas()">
             <option value="all">Todos los estados</option>
             <option value="activa">Activa</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="anulada">Anulada</option>
+            <option value="inactiva">Inactiva</option>
           </select>
           <span style="font-size:12px;color:var(--muted)" id="matricula-count">0 matrículas</span>
         </div>
@@ -1189,72 +1191,6 @@ tr:hover td{background:#f8fafc}
 </div>
 
 <!-- MODALES PARA LAS NUEVAS PÁGINAS -->
-
-<!-- Modal: Nueva matrícula -->
-<div class="modal-overlay" id="modal-new-matricula">
-  <div class="modal" style="max-width:500px">
-    <div class="modal-header"><h3>Nueva Matrícula</h3><button class="modal-close" onclick="closeModal('modal-new-matricula')"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Nombre completo del alumno *</label><input type="text" class="form-input" id="mat-nombre" placeholder="Apellidos y nombres"></div>
-      <div class="form-group"><label class="form-label">DNI</label><input type="text" class="form-input" id="mat-dni" placeholder="00000000" maxlength="8"></div>
-      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="form-group" style="margin:0"><label class="form-label">Sección *</label>
-          <select class="form-input" id="mat-seccion">
-            <option value="">Seleccionar...</option>
-            <option value="6-A">6-A</option>
-            <option value="6-B">6-B</option>
-            <option value="5-A">5-A</option>
-            <option value="5-B">5-B</option>
-            <option value="4-A">4-A</option>
-          </select>
-        </div>
-        <div class="form-group" style="margin:0"><label class="form-label">Año lectivo</label>
-          <input type="text" class="form-input" id="mat-anio" value="2025" placeholder="2025">
-        </div>
-      </div>
-      <div class="form-group"><label class="form-label">Apoderado</label><input type="text" class="form-input" id="mat-apoderado" placeholder="Nombre del apoderado"></div>
-      <div class="form-group" style="margin:0"><label class="form-label">Observaciones</label><textarea class="form-input" id="mat-obs" rows="2" placeholder="Notas adicionales..." style="resize:vertical"></textarea></div>
-    </div>
-    <div style="display:flex;gap:10px;justify-content:flex-end;padding:16px 20px;border-top:1px solid var(--border)">
-      <button class="btn" onclick="closeModal('modal-new-matricula')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveMatricula()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Registrar matrícula
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal: Nuevo registro -->
-<div class="modal-overlay" id="modal-new-registro">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-header"><h3>Nuevo Registro</h3><button class="modal-close" onclick="closeModal('modal-new-registro')"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Nombre completo *</label><input type="text" class="form-input" id="reg-nombre" placeholder="Apellidos y nombres"></div>
-      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="form-group" style="margin:0"><label class="form-label">Tipo</label>
-          <select class="form-input" id="reg-tipo">
-            <option value="alumno">Alumno</option>
-            <option value="docente">Docente</option>
-            <option value="administrativo">Administrativo</option>
-          </select>
-        </div>
-        <div class="form-group" style="margin:0"><label class="form-label">DNI</label>
-          <input type="text" class="form-input" id="reg-dni" placeholder="00000000" maxlength="8">
-        </div>
-      </div>
-      <div class="form-group"><label class="form-label">Correo institucional</label><input type="email" class="form-input" id="reg-email" placeholder="nombre@acadecam.edu.pe"></div>
-      <div class="form-group" style="margin:0"><label class="form-label">Teléfono / Contacto</label><input type="text" class="form-input" id="reg-tel" placeholder="+51 999 999 999"></div>
-    </div>
-    <div style="display:flex;gap:10px;justify-content:flex-end;padding:16px 20px;border-top:1px solid var(--border)">
-      <button class="btn" onclick="closeModal('modal-new-registro')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveRegistro()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Guardar registro
-      </button>
-    </div>
-  </div>
-</div>
 
 <!-- Modal: Nuevo reclamo -->
 <div class="modal-overlay" id="modal-new-reclamo">
@@ -1357,12 +1293,12 @@ tr:hover td{background:#f8fafc}
 <div class="modal-overlay" id="modal-new-aviso">
   <div class="modal">
     <div class="modal-header"><h2><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a3 3 0 0 1 0 6"/><path d="M10 8v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8"/><path d="M12 8H6L3 5v8l3-3h9a3 3 0 0 0 0-6v6"/></svg>Nuevo aviso</h2><button class="modal-close" onclick="closeModal('modal-new-aviso')"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-    <div class="form-group"><label class="form-label">Titulo</label><input type="text" class="form-input" placeholder="Ej: Reunion de padres de familia"></div>
-    <div class="form-group"><label class="form-label">Categoria</label><select class="form-input"><option>Academico</option><option>Evento</option><option>Administrativo</option><option>Urgente</option></select></div>
-    <div class="form-group"><label class="form-label">Contenido</label><textarea class="form-input" rows="4" style="resize:vertical" placeholder="Detalle del comunicado..."></textarea></div>
+    <div class="form-group"><label class="form-label">Título *</label><input type="text" class="form-input" id="aviso-titulo" maxlength="120" placeholder="Ej: Reunión de padres de familia"></div>
+    <div class="form-group"><label class="form-label">Dirigido a</label><select class="form-input" id="aviso-destinatarios"><option value="todos">Todos</option><option value="docentes">Docentes</option><option value="alumnos">Alumnos</option></select></div>
+    <div class="form-group"><label class="form-label">Contenido *</label><textarea class="form-input" id="aviso-contenido" maxlength="500" rows="4" style="resize:vertical" placeholder="Detalle del comunicado..."></textarea></div>
     <div style="display:flex;gap:8px;justify-content:flex-end">
       <button class="btn" onclick="closeModal('modal-new-aviso')">Cancelar</button>
-      <button class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Publicar</button>
+      <button class="btn btn-primary" onclick="publicarAviso()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Publicar</button>
     </div>
   </div>
 </div>
@@ -1382,18 +1318,6 @@ tr:hover td{background:#f8fafc}
     <div style="display:flex;gap:8px;justify-content:flex-end">
       <button class="btn" onclick="closeModal('modal-new-student')">Cancelar</button>
       <button class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg> Registrar</button>
-    </div>
-  </div>
-</div>
-<div class="modal-overlay" id="modal-edit-profile">
-  <div class="modal">
-    <div class="modal-header"><h2><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar perfil</h2><button class="modal-close" onclick="closeModal('modal-edit-profile')"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-    <div class="form-group"><label class="form-label">Nombre completo</label><input type="text" class="form-input" id="edit-name"></div>
-    <div class="form-group"><label class="form-label">Correo</label><input type="email" class="form-input" id="edit-email"></div>
-    <div class="form-group"><label class="form-label">Telefono</label><input type="tel" class="form-input" id="edit-phone" placeholder="55 0000 0000"></div>
-    <div style="display:flex;gap:8px;justify-content:flex-end">
-      <button class="btn" onclick="closeModal('modal-edit-profile')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveProfile()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Guardar</button>
     </div>
   </div>
 </div>
@@ -1480,28 +1404,6 @@ document.getElementById('login-pass').addEventListener('keydown',e=>{if(e.key===
 // ========================
 // FUNCIONES NUEVAS PÁGINAS
 // ========================
-function saveMatricula(){
-  const nombre = document.getElementById('mat-nombre').value.trim();
-  const seccion = document.getElementById('mat-seccion').value;
-  if(!nombre || !seccion){alert('Completa los campos obligatorios (*)');return;}
-  const mat = {
-    id: Date.now(),
-    nro: 'MAT-' + String(allMatriculas.length+1).padStart(4,'0'),
-    nombre,
-    dni: document.getElementById('mat-dni').value.trim(),
-    seccion,
-    anio: document.getElementById('mat-anio').value||'2025',
-    apoderado: document.getElementById('mat-apoderado').value.trim(),
-    obs: document.getElementById('mat-obs').value.trim(),
-    fecha: new Date().toLocaleDateString('es-PE'),
-    estado: 'activa'
-  };
-  allMatriculas.push(mat);
-  renderMatriculas();
-  closeModal('modal-new-matricula');
-  ['mat-nombre','mat-dni','mat-apoderado','mat-obs'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('mat-seccion').value='';
-}
 // Opciones de grado según nivel (Primaria 1-6, Secundaria 1-5)
 function updateGradoOptions(nivelId, gradoId){
   const nivel = document.getElementById(nivelId)?.value;
@@ -1627,23 +1529,6 @@ function toggleMatriculaEstado(id){
 
 function filterMatriculas(){ renderMatriculas(); }
 
-function saveRegistro(){
-  const nombre = document.getElementById('reg-nombre').value.trim();
-  if(!nombre){alert('El nombre es obligatorio');return;}
-  const reg = {
-    id: Date.now(),
-    nombre,
-    tipo: document.getElementById('reg-tipo').value,
-    dni: document.getElementById('reg-dni').value.trim(),
-    email: document.getElementById('reg-email').value.trim(),
-    tel: document.getElementById('reg-tel').value.trim(),
-    fecha: new Date().toLocaleDateString('es-PE')
-  };
-  allRegistros.push(reg);
-  renderRegistro();
-  closeModal('modal-new-registro');
-  ['reg-nombre','reg-dni','reg-email','reg-tel'].forEach(id=>document.getElementById(id).value='');
-}
 // Función para el formulario inline de CI_Registro
 function toggleRegistroAlumnoFields(){
   const tipo = document.getElementById('ci-reg-tipo').value;
@@ -1857,9 +1742,11 @@ function applyRoleUI(){
   // Nuevas secciones: Sección y Reclamo visibles para teacher y student
   const showSecRec = isT || isS;
   document.getElementById('nav-seccion').style.display = showSecRec ? '' : 'none';
-  document.getElementById('nav-reclamo').style.display = showSecRec ? '' : 'none';
-  document.getElementById('nav-registro').style.display = isJ ? '' : 'none';
-  document.getElementById('nav-matricula').style.display = isAdm ? '' : 'none';
+  // HU-011: alumno y docente registran reclamos; el Jefe Académico los atiende (CA-003).
+  document.getElementById('nav-reclamo').style.display = (showSecRec || isJ) ? '' : 'none';
+  // HU-002 / HU-003 / HU-004 son del Registrador (la API también lo exige).
+  document.getElementById('nav-registro').style.display = isR ? '' : 'none';
+  document.getElementById('nav-matricula').style.display = isR ? '' : 'none';
   // Para admin: ocultar nav items de teacher/student que no aplican
   if(isAdm){
     const hideForAdmin=['calificaciones','asistencia','tareas','alumnos','horario'];
@@ -1943,6 +1830,12 @@ function buildDashboard(){
 }
 
 const SVGS={
+  // Íconos del menú lateral, reutilizados en los accesos rápidos y tarjetas de Inicio.
+  'ti-bell':'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>',
+  'ti-message-circle':'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+  'ti-user':'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  'ti-home':'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+  'ti-alert-triangle':'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
   'ti-users':'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
   'ti-clipboard-check':'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><polyline points="9 12 11 14 15 10"/></svg>',
   'ti-checklist':'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg>',
@@ -2072,7 +1965,6 @@ function buildProfile(){
   document.getElementById('edit-name').value=CU.name;
   document.getElementById('edit-email').value=CU.email;
 }
-function saveProfile(){const n=document.getElementById('edit-name').value.trim();const e=document.getElementById('edit-email').value.trim();if(n)CU.name=n;if(e)CU.email=e;buildProfile();buildSidebar();closeModal('modal-edit-profile');}
 
 function populateSelects(){
   const opts=CFG.groups.map(g=>'<option value="'+g+'">'+g+'</option>').join('');
@@ -2102,55 +1994,6 @@ function showPage(id){
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
-
-// ══════════════════════
-// CALIFICACIONES — AGREGAR ALUMNO
-// ══════════════════════
-let gradeStudentId = 1;
-
-function previewAvg(){
-  const e1=parseFloat(document.getElementById('ag-e1').value)||null;
-  const e2=parseFloat(document.getElementById('ag-e2').value)||null;
-  const t=parseFloat(document.getElementById('ag-tarea').value)||null;
-  const p=parseFloat(document.getElementById('ag-proyecto').value)||null;
-  const vals=[e1,e2,t,p].filter(x=>x!==null);
-  const preview=document.getElementById('ag-preview');
-  const avgEl=document.getElementById('ag-avg-val');
-  const badgeEl=document.getElementById('ag-avg-badge');
-  if(!vals.length){preview.style.display='none';return;}
-  const avg=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
-  preview.style.display='flex';
-  avgEl.textContent=avg.toFixed(1);
-  const status=avg>=18?'Excelente':avg>=16?'Bien':avg>=12?'Aprobado':'Desaprobado';
-  const bc=avg>=18?'b-success':avg>=16?'b-info':avg>=12?'b-warning':'b-danger';
-  badgeEl.className='badge '+bc;
-  badgeEl.textContent=status;
-}
-
-function saveGradeStudent(){
-  const name=document.getElementById('ag-name').value.trim();
-  const group=document.getElementById('ag-group').value;
-  if(!name){document.getElementById('ag-name').focus();document.getElementById('ag-name').style.borderColor='var(--danger)';return;}
-  if(!group){document.getElementById('ag-group').focus();document.getElementById('ag-group').style.borderColor='var(--danger)';return;}
-  document.getElementById('ag-name').style.borderColor='';
-  document.getElementById('ag-group').style.borderColor='';
-  const e1=document.getElementById('ag-e1').value!==''?parseFloat(document.getElementById('ag-e1').value):null;
-  const e2=document.getElementById('ag-e2').value!==''?parseFloat(document.getElementById('ag-e2').value):null;
-  const tarea=document.getElementById('ag-tarea').value!==''?parseFloat(document.getElementById('ag-tarea').value):null;
-  const proyecto=document.getElementById('ag-proyecto').value!==''?parseFloat(document.getElementById('ag-proyecto').value):null;
-  const initials=name.split(' ').map(w=>w[0]&&w[0].toUpperCase()||'').join('').slice(0,2)||'XX';
-  allGrades.push({id:gradeStudentId++,name,group,initials,e1,e2,tarea,proyecto});
-  // Reset form
-  ['ag-name','ag-e1','ag-e2','ag-tarea','ag-proyecto'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('ag-group').value='';
-  document.getElementById('ag-preview').style.display='none';
-  closeModal('modal-add-grade-student');
-  // Refresh table
-  buildGradesHeader();
-  filterGrades('');
-  // Flash success
-  showToast('Alumno registrado correctamente');
-}
 
 function showToast(msg){
   let t=document.getElementById('toast-msg');
@@ -2298,63 +2141,6 @@ function showLogoutScreen(){
 }
 </script>
 
-<!-- MODAL: AGREGAR ALUMNO CON NOTAS -->
-<div class="modal-overlay" id="modal-add-grade-student">
-  <div class="modal" style="width:520px">
-    <div class="modal-header">
-      <h2><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;vertical-align:-3px"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Registrar alumno y notas</h2>
-      <button class="modal-close" onclick="closeModal('modal-add-grade-student')"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    </div>
-    <!-- Datos del alumno -->
-    <div style="background:var(--cream);border-radius:var(--r);padding:14px 16px;margin-bottom:16px">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:12px">Datos del alumno</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="form-group" style="margin:0"><label class="form-label">Nombre completo</label><input type="text" class="form-input" id="ag-name" placeholder="Ej: Juan Perez"></div>
-        <div class="form-group" style="margin:0"><label class="form-label">Grupo</label>
-          <select class="form-input" id="ag-group"><option value="">Seleccionar...</option></select>
-        </div>
-      </div>
-    </div>
-    <!-- Calificaciones -->
-    <div style="background:var(--cream);border-radius:var(--r);padding:14px 16px;margin-bottom:16px">
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:12px">Calificaciones (0 – 20)</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="form-group" style="margin:0">
-          <label class="form-label">Examen 1</label>
-          <input type="number" class="form-input" id="ag-e1" placeholder="—" min="0" max="20" step="0.5" oninput="previewAvg()">
-        </div>
-        <div class="form-group" style="margin:0">
-          <label class="form-label">Examen 2</label>
-          <input type="number" class="form-input" id="ag-e2" placeholder="—" min="0" max="20" step="0.5" oninput="previewAvg()">
-        </div>
-        <div class="form-group" style="margin:0">
-          <label class="form-label">Tareas</label>
-          <input type="number" class="form-input" id="ag-tarea" placeholder="—" min="0" max="20" step="0.5" oninput="previewAvg()">
-        </div>
-        <div class="form-group" style="margin:0">
-          <label class="form-label">Proyecto</label>
-          <input type="number" class="form-input" id="ag-proyecto" placeholder="—" min="0" max="20" step="0.5" oninput="previewAvg()">
-        </div>
-      </div>
-    </div>
-    <!-- Preview promedio -->
-    <div id="ag-preview" style="display:none;background:var(--accent-light);border:1px solid rgba(79,70,229,.2);border-radius:var(--r);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between">
-      <span style="font-size:13px;color:var(--accent);font-weight:500">Promedio calculado</span>
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:22px;font-weight:700;color:var(--navy)" id="ag-avg-val">—</span>
-        <span class="badge" id="ag-avg-badge">—</span>
-      </div>
-    </div>
-    <div style="display:flex;gap:10px;justify-content:flex-end">
-      <button class="btn" onclick="closeModal('modal-add-grade-student')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveGradeStudent()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Guardar registro
-      </button>
-    </div>
-  </div>
-</div>
-
 <!-- MODAL: MODIFICAR NOTAS -->
 <div class="modal-overlay" id="modal-edit-grade">
   <div class="modal" style="width:500px">
@@ -2395,8 +2181,16 @@ function showLogoutScreen(){
   </div>
 </div>
 <script src="js/logica-docente.js"></script>
+<script src="js/logica-registro.js"></script>
+<script src="js/logica-alumno.js"></script>
+<script src="js/logica-comunicacion.js"></script>
 <script src="js/utilidades-html.js"></script>
+<script src="js/api-cliente.js"></script>
 <script src="js/presentacion-docente.js"></script>
+<script src="js/presentacion-registrador.js"></script>
+<script src="js/presentacion-alumno.js"></script>
+<script src="js/presentacion-comunicacion.js"></script>
+<script src="js/presentacion-inicio.js"></script>
 <script>restaurarSesion();</script>
 </body>
 </html>

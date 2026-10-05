@@ -31,6 +31,12 @@ app.use('/api/secciones', require('./routes/secciones'));
 app.use('/api/calificaciones', require('./routes/calificaciones'));
 app.use('/api/asistencia', require('./routes/asistencia'));
 app.use('/api/tareas', require('./routes/tareas'));
+app.use('/api/registros', require('./routes/registros'));
+app.use('/api/matriculas', require('./routes/matriculas'));
+app.use('/api/mi', require('./routes/mi'));
+app.use('/api/reclamos', require('./routes/reclamos'));
+app.use('/api/avisos', require('./routes/avisos'));
+app.use('/api', require('./routes/resumen')); // GET /api/resumen y GET /api/perfil
 
 // --- Sirve el frontend existente (dashboard.html + js/) sin tocarlo ---
 // Se publican SOLO esos dos: un express.static sobre la raíz del proyecto también dejaría

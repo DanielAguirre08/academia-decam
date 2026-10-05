@@ -96,3 +96,28 @@ describe('RNF-02 — bloqueo tras 5 intentos fallidos', () => {
     assertEqual(A.minutosRestantes(null, AHORA), 0);
   });
 });
+
+describe('Cambio de contraseña (Mi Perfil)', () => {
+  test('nueva válida: 8+ caracteres, letra y número, distinta y confirmada', () => {
+    assertEqual(A.revisarCambioContrasena('decam2024', 'nueva2026', 'nueva2026').valido, true);
+  });
+
+  test('largo: 7 no, 8 sí, 72 sí, 73 no (valores límite)', () => {
+    assertEqual(A.revisarCambioContrasena('x', 'abcdef1', 'abcdef1').valido, false);
+    assertEqual(A.revisarCambioContrasena('x', 'abcdefg1', 'abcdefg1').valido, true);
+    const l72 = 'a'.repeat(71) + '1';
+    assertEqual(A.revisarCambioContrasena('x', l72, l72).valido, true);
+    assertEqual(A.revisarCambioContrasena('x', l72 + 'b', l72 + 'b').valido, false);
+  });
+
+  test('sin letra o sin número, igual a la actual o sin confirmar', () => {
+    assertEqual(A.revisarCambioContrasena('x', '12345678', '12345678').errores[0], 'La nueva contraseña debe tener al menos una letra y un número');
+    assertEqual(A.revisarCambioContrasena('x', 'abcdefgh', 'abcdefgh').valido, false);
+    assertEqual(A.revisarCambioContrasena('decam2024', 'decam2024', 'decam2024').errores[0], 'La nueva contraseña debe ser distinta de la actual');
+    assertEqual(A.revisarCambioContrasena('x', 'nueva2026', 'otra2026').errores[0], 'La confirmación no coincide con la nueva contraseña');
+  });
+
+  test('sin contraseña actual', () => {
+    assertEqual(A.revisarCambioContrasena('', 'nueva2026', 'nueva2026').errores[0], 'Ingresa tu contraseña actual');
+  });
+});

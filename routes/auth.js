@@ -110,6 +110,27 @@ router.post('/logout', function (req, res) {
   });
 });
 
+// POST /api/auth/contrasena  { actual, nueva, confirmacion }
+// "Mi Perfil": cambia la contraseña del usuario de la sesión (p. ej. la inicial que entregó el
+// Registrador). Se exige la actual: una sesión olvidada abierta no basta para cambiarla.
+router.post('/contrasena', requiereSesion, async (req, res) => {
+  try {
+    const { actual, nueva, confirmacion } = req.body || {};
+    const revision = A.revisarCambioContrasena(actual, nueva, confirmacion);
+    if (!revision.valido) return res.status(400).json({ error: revision.errores[0], errores: revision.errores });
+
+    const idUsuario = req.session.usuario.id_usuario;
+    const [[usuario]] = await pool.query('SELECT contrasena_hash FROM usuario WHERE id_usuario = ?', [idUsuario]);
+    if (!usuario || !(await bcrypt.compare(String(actual), usuario.contrasena_hash))) {
+      return res.status(400).json({ error: 'La contraseña actual no es correcta' });
+    }
+    await pool.query('UPDATE usuario SET contrasena_hash = ? WHERE id_usuario = ?', [await bcrypt.hash(nueva, 10), idUsuario]);
+    res.json({ ok: true });
+  } catch (err) {
+    responderError(res, err, 'Error al cambiar la contraseña');
+  }
+});
+
 // GET /api/auth/me — quién soy según la sesión (el navegador lo usa al recargar la página)
 router.get('/me', requiereSesion, function (req, res) {
   res.json(req.session.usuario);

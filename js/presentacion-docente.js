@@ -41,37 +41,11 @@
   // ACCESO A LA API REST
   // ===============================================================
 
-  /** Envoltorio único de fetch: centraliza el JSON y el manejo de errores del servidor. */
-  async function pedir(url, opciones) {
-    var respuesta = await fetch(url, opciones);
-    var cuerpo = null;
-    try { cuerpo = await respuesta.json(); } catch (e) { cuerpo = null; }
-    // 401 = la sesión del servidor ya no existe (se reinició o expiró): de vuelta al login.
-    if (respuesta.status === 401 && typeof window.sesionExpirada === 'function') window.sesionExpirada();
-    if (!respuesta.ok) {
-      var error = new Error((cuerpo && cuerpo.error) || ('El servidor respondió ' + respuesta.status));
-      error.errores = (cuerpo && cuerpo.errores) || []; // detalle por fila (p. ej. pase de lista)
-      throw error;
-    }
-    return cuerpo;
-  }
-
-  function enviarJson(url, metodo, datos) {
-    return pedir(url, {
-      method: metodo,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(datos)
-    });
-  }
-
-  function parametros(objeto) {
-    var qs = new URLSearchParams();
-    Object.keys(objeto).forEach(function (k) {
-      if (objeto[k] !== null && objeto[k] !== undefined && objeto[k] !== '') qs.append(k, objeto[k]);
-    });
-    var s = qs.toString();
-    return s ? '?' + s : '';
-  }
+  // Cliente HTTP compartido por todos los roles (js/api-cliente.js).
+  var pedir = window.ApiCliente.pedir;
+  var enviarJson = window.ApiCliente.enviarJson;
+  var parametros = window.ApiCliente.parametros;
+  var avisarError = window.ApiCliente.avisarError;
 
   var API = {
     secciones: function () {
@@ -82,9 +56,6 @@
     },
     actualizarNota: function (idCalificacion, campo, valor) {
       return enviarJson('/api/calificaciones/' + idCalificacion, 'PATCH', { campo: campo, valor: valor });
-    },
-    registrarAlumno: function (datos) {
-      return enviarJson('/api/calificaciones', 'POST', datos);
     },
     asistencia: function (idSeccion, fecha) {
       return pedir('/api/asistencia' + parametros({ id_seccion: idSeccion, fecha: fecha }));
@@ -129,13 +100,6 @@
       .join('').slice(0, 2) || 'XX';
   }
 
-  function avisarError(e) {
-    var mensaje = e && e.message ? e.message : 'No se pudo conectar con el servidor';
-    var extra = e && e.errores && e.errores.length > 1 ? ' (y ' + (e.errores.length - 1) + ' error(es) más)' : '';
-    showToast(mensaje + extra);
-    console.error(e);
-  }
-
   function estadoVacio(colspan, titulo, texto) {
     return '<tr><td colspan="' + colspan + '"><div class="empty-state"><h3>' + esc(titulo) + '</h3>' +
       (texto ? '<p>' + esc(texto) + '</p>' : '') + '</div></td></tr>';
@@ -178,7 +142,7 @@
       var opciones = SECCIONES.map(function (s) {
         return '<option value="' + esc(s.id_seccion) + '">' + esc(s.grupo) + '</option>';
       }).join('');
-      ['grades-group-filter', 'att-group-filter', 'task-group-sel', 'ag-group'].forEach(function (id) {
+      ['grades-group-filter', 'att-group-filter', 'task-group-sel'].forEach(function (id) {
         var el = document.getElementById(id);
         if (!el) return;
         var base = el.options[0] && el.options[0].value === '' ? el.options[0].outerHTML : '';
@@ -301,10 +265,11 @@
     temporizadorBusqueda = setTimeout(function () { cargarCalificaciones(q); }, 180);
   };
 
-  // HU-006: exporta las filas que el docente está viendo (mismos filtros). El CSV lo arma la capa
+  // HU-006: exporta las filas que el docente está viendo (mismos filtros). CA-002: sin filas no
+  // se genera el archivo y se muestra el mensaje exacto de la HU. El CSV lo arma la capa
   // de Lógica (BOM UTF-8, RFC 4180, sin fórmulas); aquí solo se descarga como archivo.
   window.exportGrades = function () {
-    if (!allGrades || !allGrades.length) { showToast('No hay calificaciones para exportar'); return; }
+    if (!allGrades || !allGrades.length) { showToast('Sin calificaciones para exportar'); return; }
     var csv = L.exportarCalificacionesCSV(allGrades.map(function (s) {
       return { nombreAlumno: s.name, grupo: s.group, examen1: s.e1, examen2: s.e2, tareas: s.tarea, proyecto: s.proyecto };
     }));
@@ -361,78 +326,21 @@
     }
   };
 
-  // CA-002: el alta de alumno inserta de verdad en USUARIO + ALUMNO + CALIFICACION.
-  window.saveGradeStudent = async function () {
-    var nombre = valorDe('ag-name').trim();
-    var idSeccion = valorDe('ag-group');
-    if (!nombre) {
-      var elN = document.getElementById('ag-name');
-      elN.focus(); elN.style.borderColor = 'var(--danger)';
-      return;
-    }
-    if (!idSeccion) {
-      var elG = document.getElementById('ag-group');
-      elG.focus(); elG.style.borderColor = 'var(--danger)';
-      return;
-    }
-    document.getElementById('ag-name').style.borderColor = '';
-    document.getElementById('ag-group').style.borderColor = '';
-
-    var notas = {
-      examen1: valorDe('ag-e1') === '' ? null : parseFloat(valorDe('ag-e1')),
-      examen2: valorDe('ag-e2') === '' ? null : parseFloat(valorDe('ag-e2')),
-      tareas: valorDe('ag-tarea') === '' ? null : parseFloat(valorDe('ag-tarea')),
-      proyecto: valorDe('ag-proyecto') === '' ? null : parseFloat(valorDe('ag-proyecto'))
-    };
-    var invalida = Object.keys(notas).filter(function (k) { return !L.validarNota(notas[k]); })[0];
-    if (invalida) { showToast('La nota de ' + invalida + ' debe estar entre 0 y 20'); return; }
-
-    try {
-      var creado = await API.registrarAlumno(Object.assign({ nombreAlumno: nombre, id_seccion: idSeccion }, notas));
-      ['ag-name', 'ag-e1', 'ag-e2', 'ag-tarea', 'ag-proyecto'].forEach(function (id) {
-        document.getElementById(id).value = '';
-      });
-      document.getElementById('ag-group').value = '';
-      document.getElementById('ag-preview').style.display = 'none';
-      closeModal('modal-add-grade-student');
-      await cargarCalificaciones();
-      showToast(creado.nombreAlumno + ' registrado correctamente (' + creado.estado + ')');
-    } catch (e) {
-      avisarError(e);
-    }
-  };
-
-
-  // Los dos modales pintan un promedio "en vivo" mientras se teclean las notas. El original
-  // redondeaba a entero y usaba 4 niveles (Excelente/Bien/Aprobado/Desaprobado); se alinean
-  // con CA-001 para que el modal no diga algo distinto a lo que después muestra la tabla.
-  function pintarPreview(ids, idValor, idInsignia, idContenedor) {
-    var notas = {
-      examen1: valorDe(ids[0]), examen2: valorDe(ids[1]),
-      tareas: valorDe(ids[2]), proyecto: valorDe(ids[3])
-    };
-    var promedio = L.calcularPromedio(notas);
-    var elValor = document.getElementById(idValor);
-    var elInsignia = document.getElementById(idInsignia);
-    var contenedor = idContenedor ? document.getElementById(idContenedor) : null;
-    if (promedio === null) {
-      if (contenedor) contenedor.style.display = 'none';
-      if (elValor) elValor.textContent = '—';
-      if (elInsignia) { elInsignia.className = 'badge b-gray'; elInsignia.textContent = '—'; }
-      return;
-    }
-    if (contenedor) contenedor.style.display = 'flex';
-    if (elValor) elValor.textContent = promedio.toFixed(2);
+  // El modal "Modificar notas" pinta el promedio "en vivo" mientras se teclean las notas. El
+  // original redondeaba a entero y usaba 4 niveles; se alinea con CA-001 para que el modal no diga
+  // algo distinto a lo que después muestra la tabla.
+  window.previewEditAvg = function () {
+    var promedio = L.calcularPromedio({
+      examen1: valorDe('eg-e1'), examen2: valorDe('eg-e2'),
+      tareas: valorDe('eg-tarea'), proyecto: valorDe('eg-proyecto')
+    });
+    var elValor = document.getElementById('eg-avg-val');
+    var elInsignia = document.getElementById('eg-avg-badge');
+    if (elValor) elValor.textContent = promedio === null ? '—' : promedio.toFixed(2);
     if (elInsignia) {
       elInsignia.className = 'badge ' + window.getBadge(promedio);
-      elInsignia.textContent = L.determinarEstado(promedio);
+      elInsignia.textContent = promedio === null ? '—' : L.determinarEstado(promedio);
     }
-  }
-  window.previewAvg = function () {
-    pintarPreview(['ag-e1', 'ag-e2', 'ag-tarea', 'ag-proyecto'], 'ag-avg-val', 'ag-avg-badge', 'ag-preview');
-  };
-  window.previewEditAvg = function () {
-    pintarPreview(['eg-e1', 'eg-e2', 'eg-tarea', 'eg-proyecto'], 'eg-avg-val', 'eg-avg-badge', null);
   };
 
   // ---------------------------------------------------------------

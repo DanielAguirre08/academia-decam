@@ -117,22 +117,22 @@ INSERT IGNORE INTO alumno (id_alumno, id_usuario, dni, fecha_nacimiento, sexo, d
 -- ============================================================================
 -- 4. MATRÍCULAS (una por alumno, código correlativo MAT-NNNN)
 -- ============================================================================
-INSERT IGNORE INTO matricula (id_matricula, codigo, id_alumno, id_seccion, anio_lectivo, fecha_matricula, estado, observaciones) VALUES
-  (1,  'MAT-0001', 1,  1, 2026, '2026-02-16', 'activa',   NULL),
-  (2,  'MAT-0002', 2,  1, 2026, '2026-02-16', 'activa',   NULL),
-  (3,  'MAT-0003', 3,  1, 2026, '2026-02-17', 'activa',   NULL),
-  (4,  'MAT-0004', 4,  1, 2026, '2026-02-18', 'activa',   NULL),
-  (5,  'MAT-0005', 5,  2, 2026, '2026-02-19', 'activa',   NULL),
-  (6,  'MAT-0006', 6,  2, 2026, '2026-02-19', 'activa',   NULL),
-  (7,  'MAT-0007', 7,  1, 2026, '2026-02-23', 'activa',   'Alumno nuevo'),
-  (8,  'MAT-0008', 8,  2, 2026, '2026-02-23', 'activa',   'Traslado de otro colegio'),
-  (9,  'MAT-0009', 9,  2, 2026, '2026-02-24', 'inactiva', 'Matrícula anulada por traslado de ciudad'),
-  (10, 'MAT-0010', 10, 3, 2026, '2026-02-25', 'activa',   NULL),
-  (11, 'MAT-0011', 11, 3, 2026, '2026-02-26', 'activa',   'Promoción interna'),
-  (12, 'MAT-0012', 12, 3, 2026, '2026-02-26', 'activa',   NULL),
-  (13, 'MAT-0013', 13, 4, 2026, '2026-03-02', 'activa',   NULL),
-  (14, 'MAT-0014', 14, 4, 2026, '2026-03-02', 'activa',   NULL),
-  (15, 'MAT-0015', 15, 4, 2026, '2026-03-03', 'activa',   NULL);
+INSERT IGNORE INTO matricula (id_matricula, codigo, id_alumno, id_seccion, anio_lectivo, fecha_matricula, estado, procedencia, observaciones) VALUES
+  (1,  'MAT-0001', 1,  1, 2026, '2026-02-16', 'activa',   'nuevo',     NULL),
+  (2,  'MAT-0002', 2,  1, 2026, '2026-02-16', 'activa',   'nuevo',     NULL),
+  (3,  'MAT-0003', 3,  1, 2026, '2026-02-17', 'activa',   'nuevo',     NULL),
+  (4,  'MAT-0004', 4,  1, 2026, '2026-02-18', 'activa',   'nuevo',     NULL),
+  (5,  'MAT-0005', 5,  2, 2026, '2026-02-19', 'activa',   'nuevo',     NULL),
+  (6,  'MAT-0006', 6,  2, 2026, '2026-02-19', 'activa',   'nuevo',     NULL),
+  (7,  'MAT-0007', 7,  1, 2026, '2026-02-23', 'activa',   'nuevo',     NULL),
+  (8,  'MAT-0008', 8,  2, 2026, '2026-02-23', 'activa',   'traslado',  NULL),
+  (9,  'MAT-0009', 9,  2, 2026, '2026-02-24', 'inactiva', 'nuevo',     'Matrícula anulada por traslado de ciudad'),
+  (10, 'MAT-0010', 10, 3, 2026, '2026-02-25', 'activa',   'nuevo',     NULL),
+  (11, 'MAT-0011', 11, 3, 2026, '2026-02-26', 'activa',   'promocion', NULL),
+  (12, 'MAT-0012', 12, 3, 2026, '2026-02-26', 'activa',   'nuevo',     NULL),
+  (13, 'MAT-0013', 13, 4, 2026, '2026-03-02', 'activa',   'nuevo',     NULL),
+  (14, 'MAT-0014', 14, 4, 2026, '2026-03-02', 'activa',   'nuevo',     NULL),
+  (15, 'MAT-0015', 15, 4, 2026, '2026-03-03', 'activa',   'nuevo',     NULL);
 
 -- ============================================================================
 -- 5. CALIFICACIONES del Bimestre I (promedio = media de las notas registradas, 2 decimales)

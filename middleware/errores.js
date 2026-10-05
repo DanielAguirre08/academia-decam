@@ -14,10 +14,22 @@ const ERRORES_DE_DATOS = {
 };
 
 /**
+ * Regla de negocio incumplida que se detecta en medio de una operación (p. ej. dentro de una
+ * transacción): se lanza con su código HTTP y responderError la responde tal cual.
+ */
+class ErrorDeNegocio extends Error {
+  constructor(status, mensaje) {
+    super(mensaje);
+    this.status = status;
+  }
+}
+
+/**
  * Responde un error capturado en una ruta. `mensaje500` es el texto para el caso inesperado
  * (el detalle técnico va al log del servidor, nunca al navegador).
  */
 function responderError(res, err, mensaje500) {
+  if (err instanceof ErrorDeNegocio) return res.status(err.status).json({ error: err.message });
   const conocido = err && ERRORES_DE_DATOS[err.code];
   if (conocido) return res.status(conocido.status).json({ error: conocido.error });
   console.error(err);
@@ -33,4 +45,4 @@ function manejadorFinal(err, req, res, next) {
   responderError(res, err);
 }
 
-module.exports = { responderError, manejadorFinal };
+module.exports = { ErrorDeNegocio, responderError, manejadorFinal };

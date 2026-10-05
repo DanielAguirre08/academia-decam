@@ -2,7 +2,7 @@
 
 > Generado automáticamente desde la base de datos `academia_decam` con `npm run docs:db`. No lo edites a mano: cambia los `COMMENT` de `database/schema.sql` y vuelve a generarlo.
 
-**Motor:** MySQL 8 · InnoDB · utf8mb4 · **14 tablas**, 103 columnas, 23 llaves foráneas, 13 reglas CHECK.
+**Motor:** MySQL 8 · InnoDB · utf8mb4 · **14 tablas**, 106 columnas, 23 llaves foráneas, 14 reglas CHECK.
 
 ## Contenido
 
@@ -71,11 +71,14 @@ _Responsable legal de uno o más alumnos_
 | `nombre_completo` | `varchar(120)` | No | — | — | Nombres y apellidos del apoderado |
 | `telefono` | `varchar(15)` | No | — | — | Teléfono de contacto |
 | `direccion` | `varchar(150)` | Sí | — | NULL | Domicilio del apoderado |
+| `correo` | `varchar(100)` | Sí | — | NULL | Correo de contacto (lo pide el formulario de matrícula, HU-003) |
+| `fecha_registro` | `datetime` | No | — | CURRENT_TIMESTAMP | Fecha en que se registró (el listado de Registro la muestra, HU-002 CA-001) |
 
 **Restricciones e índices**
 
 - **Clave foránea** `fk_apoderado_usuario`: `id_usuario` → `usuario(id_usuario)` · ON UPDATE CASCADE, ON DELETE SET NULL
 - **Única** `uq_apoderado_dni`: (dni)
+- **Verificación** `chk_apoderado_correo`: `((correo is null) or regexp_like(correo,'^[^@ ]+@[^@ ]+[.][^@ ]+$'))`
 - **Verificación** `chk_apoderado_dni`: `regexp_like(dni,'^[0-9]{8}$')`
 
 ### 2. Organización académica
@@ -142,6 +145,7 @@ _Inscripción de un alumno en una sección durante un año lectivo (una por alum
 | `anio_lectivo` | `year` | No | — | — | Año lectivo de la matrícula |
 | `fecha_matricula` | `date` | No | — | — | Fecha en que se registró la matrícula |
 | `estado` | `enum('activa','inactiva')` | No | — | activa | activa = vigente; inactiva = anulada o retirada (HU-004 CA-002) |
+| `procedencia` | `enum('nuevo','traslado','promocion')` | No | — | nuevo | Alumno nuevo, traslado de otro colegio o promoción interna (formulario de matrícula, HU-003) |
 | `observaciones` | `varchar(200)` | Sí | — | NULL | Notas libres: procedencia, motivo de retiro, etc. |
 
 **Restricciones e índices**

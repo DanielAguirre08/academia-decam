@@ -59,3 +59,26 @@ test('logout cierra la sesión', async () => {
   assert.equal((await agente.post('/api/auth/logout')).status, 200);
   assert.equal((await agente.get('/api/auth/me')).status, 401);
 });
+
+test('cambio de contraseña: exige sesión, la actual correcta y una nueva válida', async () => {
+  assert.equal((await H.anonimo().post('/api/auth/contrasena').send({})).status, 401);
+
+  const cuenta = { correo: 'carmen.vilca@acadecam.edu.pe', rol: 'docente' };
+  // Agente propio con otra docente, para no cambiar la contraseña de las cuentas que usan las demás pruebas.
+  const carmen = require('supertest').agent(H.app);
+  assert.equal((await carmen.post('/api/auth/login').send(Object.assign({ contrasena: 'decam2024' }, cuenta))).status, 200);
+
+  const mala = await carmen.post('/api/auth/contrasena').send({ actual: 'incorrecta', nueva: 'nueva2026', confirmacion: 'nueva2026' });
+  assert.equal(mala.status, 400);
+  assert.equal(mala.body.error, 'La contraseña actual no es correcta');
+
+  const debil = await carmen.post('/api/auth/contrasena').send({ actual: 'decam2024', nueva: 'corta1', confirmacion: 'corta1' });
+  assert.equal(debil.status, 400);
+
+  const ok = await carmen.post('/api/auth/contrasena').send({ actual: 'decam2024', nueva: 'nueva2026', confirmacion: 'nueva2026' });
+  assert.equal(ok.status, 200);
+
+  // La anterior ya no sirve y la nueva sí.
+  assert.equal((await H.anonimo().post('/api/auth/login').send(Object.assign({ contrasena: 'decam2024' }, cuenta))).status, 401);
+  assert.equal((await H.anonimo().post('/api/auth/login').send(Object.assign({ contrasena: 'nueva2026' }, cuenta))).status, 200);
+});

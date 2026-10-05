@@ -17,6 +17,7 @@ const CUENTAS = {
   docente:        { correo: 'prof@acadecam.edu.pe',        contrasena: 'decam2024',  rol: 'docente' },        // id_docente 1
   docente2:       { correo: 'rosa.quispe@acadecam.edu.pe', contrasena: 'decam2024',  rol: 'docente' },        // id_docente 2
   alumno:         { correo: 'alumno@acadecam.edu.pe',      contrasena: 'alumno2024', rol: 'alumno' },         // id_alumno 7, sección 1
+  alumnoRetirado: { correo: 'mateo.castro@acadecam.edu.pe', contrasena: 'alumno2024', rol: 'alumno' },        // id_alumno 9, inactivo (5-A)
   jefe:           { correo: 'jefe@acadecam.edu.pe',        contrasena: 'jefe2024',   rol: 'jefe_academico' },
   registrador:    { correo: 'registrador@acadecam.edu.pe', contrasena: 'reg2024',    rol: 'registrador' }
 };
@@ -62,6 +63,9 @@ async function crearSeccionSoloDelDocente1() {
                     VALUES (190, 'Prueba', 'Seccion Noventa', 'prueba.90@acadecam.edu.pe', 'sin-acceso', 'alumno')`);
   await pool.query(`INSERT IGNORE INTO alumno (id_alumno, id_usuario, dni, fecha_nacimiento, sexo, nivel, id_seccion, id_apoderado, estado)
                     VALUES (90, 190, '79000090', '2016-04-04', 'F', 'Primaria', 90, 1, 'activo')`);
+  // Con su matrícula activa, para que la base siga cumpliendo el control 02 (alumno activo con sección).
+  await pool.query(`INSERT IGNORE INTO matricula (id_matricula, codigo, id_alumno, id_seccion, anio_lectivo, fecha_matricula, estado)
+                    VALUES (90, 'MAT-0090', 90, 90, 2026, CURDATE(), 'activa')`);
   await pool.query(`INSERT IGNORE INTO tarea (id_tarea, titulo, tipo, id_seccion, id_docente, fecha_asignacion, fecha_entrega)
                     VALUES (90, 'Tarea de la sección 90', 'Tarea', 90, 1, CURDATE(), CURDATE() + INTERVAL 7 DAY)`);
   await pool.query(`INSERT IGNORE INTO calificacion (id_calificacion, id_alumno, id_seccion, examen1, examen2, tareas, proyecto, promedio, periodo)

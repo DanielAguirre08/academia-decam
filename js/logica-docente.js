@@ -102,8 +102,8 @@
   // HU-006 — Exportar calificaciones a CSV
   // ---------------------------------------------------------------
 
-  /** Encabezados del CSV: los mismos que la tabla de Calificaciones que ve el docente. */
-  var ENCABEZADOS_CSV_CALIFICACIONES = ['Alumno', 'Grupo', 'Examen 1', 'Examen 2', 'Tareas', 'Proyecto', 'Promedio', 'Estado'];
+  /** Encabezados exactos del CSV (HU-006 CA-001). */
+  var ENCABEZADOS_CSV_CALIFICACIONES = ['Nombre', 'Grupo', 'Examen 1', 'Examen 2', 'Tareas', 'Proyecto', 'Promedio', 'Estado'];
 
   /**
    * Escapa un campo según RFC 4180: si tiene coma, comillas o salto de línea va entre comillas
@@ -126,7 +126,7 @@
     var lineas = [encabezados].concat(filas || []).map(function (fila) {
       return fila.map(escaparCampoCSV).join(',');
     });
-    return '﻿' + lineas.join('\r\n') + '\r\n';
+    return '\uFEFF' + lineas.join('\r\n') + '\r\n';
   }
 
   /** Nota con 2 decimales (como DECIMAL(4,2)) o vacío si aún no está registrada. */
@@ -301,6 +301,15 @@
     return limite.getTime() < hoy.getTime() ? 'atrasada' : 'pendiente';
   }
 
+  /**
+   * Inicio del docente: nombre del día tal como lo guarda HORARIO.dia_semana
+   * ('Lunes'..'Viernes'; 'Miercoles' sin tilde). Sábado y domingo -> null (no hay clases).
+   */
+  var DIAS_HORARIO = [null, 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', null];
+  function diaDeHorario(fecha) {
+    return DIAS_HORARIO[(fecha || new Date()).getDay()];
+  }
+
   /** CA-002 (HU-010): filtra tareas por su estado ('todas' no filtra). */
   function filtrarTareasPorEstado(tareas, estado) {
     if (!estado || estado === 'all' || estado === 'todas') return tareas || [];
@@ -322,6 +331,7 @@
     validarGrupoSeleccionado: validarGrupoSeleccionado,
     fechaLocalISO: fechaLocalISO,
     validarFechaAsistencia: validarFechaAsistencia,
+    validarFechaISO: validarFechaAsistencia, // mismo formato estricto, para otros módulos (p. ej. Registro)
     esFechaFutura: esFechaFutura,
     marcarAsistenciaTodos: marcarAsistenciaTodos,
     validarEstadoAsistencia: validarEstadoAsistencia,
@@ -330,6 +340,7 @@
     validarTipoTarea: validarTipoTarea,
     revisarTarea: revisarTarea,
     determinarEstadoEntrega: determinarEstadoEntrega,
-    filtrarTareasPorEstado: filtrarTareasPorEstado
+    filtrarTareasPorEstado: filtrarTareasPorEstado,
+    diaDeHorario: diaDeHorario
   };
 });
