@@ -2,10 +2,15 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const L = require('../logica-docente'); // la MISMA capa de lógica pura del frontend, reusada tal cual
+const { requiereRol } = require('../middleware/auth');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 // GET /api/calificaciones?id_seccion=1&grupo=&estado=&busqueda=
 // CA-003: filtros por grupo, estado y nombre
-router.get('/', async (req, res) => {
+// RF-07: el cuadro completo es solo del docente y del jefe académico; un alumno NO entra aquí
+// (sus propias notas las verá por un endpoint aparte que siempre filtra por su sesión).
+router.get('/', requiereRol('docente', 'jefe_academico'), async (req, res) => {
   try {
     const { id_seccion, estado, busqueda } = req.query;
     let sql = `SELECT c.id_calificacion, c.id_alumno, c.id_seccion, c.examen1, c.examen2,
@@ -30,7 +35,7 @@ router.get('/', async (req, res) => {
 
 // PATCH /api/calificaciones/:id  { campo, valor }
 // CA-001: recalcula promedio y estado inmediatamente tras modificar una nota
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', requiereRol('docente'), async (req, res) => {
   try {
     const { id } = req.params;
     const { campo, valor } = req.body; // campo: examen1 | examen2 | tareas | proyecto
@@ -57,7 +62,7 @@ router.patch('/:id', async (req, res) => {
 // POST /api/calificaciones  { nombreAlumno, id_seccion, examen1, examen2, tareas, proyecto, periodo }
 // CA-002 (HU-005): da de alta a un alumno en el cuadro de notas. Toca 3 tablas (USUARIO, ALUMNO
 // y CALIFICACION), así que va en una transacción: o entran las tres filas o no entra ninguna.
-router.post('/', async (req, res) => {
+router.post('/', requiereRol('docente'), async (req, res) => {
   const conexion = await pool.getConnection();
   try {
     const { nombreAlumno, id_seccion, examen1, examen2, tareas, proyecto } = req.body;
@@ -95,7 +100,9 @@ router.post('/', async (req, res) => {
     const [resUsuario] = await conexion.query(
       `INSERT INTO usuario (nombre, apellido, correo, contrasena_hash, rol)
        VALUES (?, ?, ?, ?, 'alumno')`,
-      [nombre, apellido, 'alumno.' + dni + '@acadecam.edu.pe', '$2b$10$placeholder_hash_reemplazar']
+      // Contraseña aleatoria que nadie conoce: la cuenta no puede iniciar sesión hasta que el
+      // módulo de Registro le asigne una real (el hash falso de antes ya no sirve con bcrypt).
+      [nombre, apellido, 'alumno.' + dni + '@acadecam.edu.pe', bcrypt.hashSync(crypto.randomBytes(16).toString('hex'), 10)]
     );
 
     // fecha_nacimiento y sexo son NOT NULL en el diccionario de datos pero el modal

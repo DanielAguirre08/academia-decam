@@ -1,0 +1,11 @@
+-- ============================================================
+-- ACADEMIA DECAM — Reinicio total de la base de datos
+-- BORRA la base academia_decam completa (tablas y datos). Úsalo solo en desarrollo.
+--
+-- Para dejar todo como nuevo, en este orden:
+--   mysql --default-character-set=utf8mb4 -u root < reset.sql
+--   mysql --default-character-set=utf8mb4 -u root < schema.sql
+--   mysql --default-character-set=utf8mb4 -u root < seed.sql
+-- (o simplemente: npm run db:reset)
+-- ============================================================
+DROP DATABASE IF EXISTS academia_decam;
