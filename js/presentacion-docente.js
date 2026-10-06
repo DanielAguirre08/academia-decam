@@ -36,6 +36,7 @@
   var L = window.LogicaDocente;
   // Todo dato de la BD que se pinte con innerHTML pasa por esc() (ver js/utilidades-html.js).
   var esc = window.UtilidadesHtml.escaparHtml;
+  var iniciales = window.UtilidadesHtml.iniciales;
 
   // ===============================================================
   // ACCESO A LA API REST
@@ -94,12 +95,6 @@
     return (v === null || v === undefined || v === '') ? null : Number(v);
   }
 
-  function iniciales(nombre) {
-    return (nombre || '').split(' ')
-      .map(function (p) { return p[0] ? p[0].toUpperCase() : ''; })
-      .join('').slice(0, 2) || 'XX';
-  }
-
   function estadoVacio(colspan, titulo, texto) {
     return '<tr><td colspan="' + colspan + '"><div class="empty-state"><h3>' + esc(titulo) + '</h3>' +
       (texto ? '<p>' + esc(texto) + '</p>' : '') + '</div></td></tr>';
@@ -135,9 +130,8 @@
 
   // Los combos de grupo de las 3 HU pasan a llevar el id_seccion REAL como value
   // (es la clave foránea que esperan CALIFICACION, ASISTENCIA y TAREA) y el '6-A' como texto.
-  var populateSelectsOriginal = window.populateSelects;
   window.populateSelects = function () {
-    if (populateSelectsOriginal) populateSelectsOriginal(); // combos de las páginas que no son HU-005/008/010
+    if (!CU || CU.role !== 'teacher') return; // los combos de grupo son del Docente
     cargarSecciones().then(function () {
       var opciones = SECCIONES.map(function (s) {
         return '<option value="' + esc(s.id_seccion) + '">' + esc(s.grupo) + '</option>';
@@ -508,7 +502,7 @@
     el.innerHTML = visibles.map(function (t) {
       var c = CLASE_POR_ESTADO[t.estado] || CLASE_POR_ESTADO.pendiente;
       var entregada = t.estado === 'entregada';
-      // CA-003: el check abre la lista del grupo para marcar quién entregó (ENTREGA_TAREA).
+      // Seguimiento del cumplimiento (HU-010): el check abre la lista del grupo para marcar quién entregó.
       return '<div class="task-item">' +
         '<div class="task-check editable ' + (entregada ? 'done' : '') + '" onclick="abrirEntregas(' + Number(t.id_tarea) + ')" ' +
         'title="Marcar entregas por alumno">' + (entregada ? '&#10003;' : '') + '</div>' +
@@ -547,7 +541,7 @@
     }
   };
 
-  // CA-003: lista del grupo con un check por alumno. Marcar = POST, desmarcar = DELETE.
+  // Seguimiento de entregas (HU-010): lista del grupo con un check por alumno. Marcar = POST, desmarcar = DELETE.
   var tareaAbierta = null;
   var ESTADO_ENTREGA = {
     entregada: ['b-success', 'Entregada'],

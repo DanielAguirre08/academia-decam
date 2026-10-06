@@ -76,6 +76,14 @@ describe('HU-002 — Registro de personas', () => {
     assert.equal(lista.body.length, 1);
   });
 
+  test('un nombre con HTML se rechaza (400) y no llega a la base (XSS almacenado)', async () => {
+    const res = await registrador.post('/api/registros').send({
+      tipo: 'docente', nombre: 'Ana <img/src/onerror=alert(1)>', dni: '10000097', correo: 'ana.xss@acadecam.edu.pe'
+    });
+    assert.equal(res.status, 400);
+    assert.equal((await H.consultar("SELECT 1 FROM usuario WHERE correo = 'ana.xss@acadecam.edu.pe'")).length, 0);
+  });
+
   test('DNI repetido -> 409 y no se duplica', async () => {
     const res = await registrador.post('/api/registros').send({ tipo: 'apoderado', nombre: 'Otra Persona', dni: '41000001', telefono: '999000111' });
     assert.equal(res.status, 409);
@@ -234,7 +242,9 @@ describe('HU-003 — Registro de matrícula', () => {
 
   test('concurrencia: 5 matrículas simultáneas reciben 5 códigos distintos y consecutivos', async () => {
     const pedidos = [1, 2, 3, 4, 5].map((i) => registrador.post('/api/matriculas').send(mat({
-      nombre: 'Alumno Concurrente ' + i, dni: '7300000' + i, apoderado_dni: '4300000' + i, procedencia: 'nuevo'
+      // El nombre solo admite letras: por eso Uno..Cinco y no 1..5.
+      nombre: 'Alumno Concurrente ' + ['Uno', 'Dos', 'Tres', 'Cuatro', 'Cinco'][i - 1],
+      dni: '7300000' + i, apoderado_dni: '4300000' + i, procedencia: 'nuevo'
     })));
     const respuestas = await Promise.all(pedidos);
     respuestas.forEach((r) => assert.equal(r.status, 201, JSON.stringify(r.body)));

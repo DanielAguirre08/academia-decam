@@ -250,7 +250,7 @@ _Tarea, examen, proyecto o exposición asignado a una sección (HU-010)_
 
 #### entrega_tarea
 
-_Cumplimiento de una tarea por un alumno (HU-010 CA-003)_
+_Cumplimiento de una tarea por un alumno (HU-010)_
 
 | Campo | Tipo | Nulo | Clave | Por defecto | Descripción |
 |---|---|---|---|---|---|

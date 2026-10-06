@@ -29,3 +29,14 @@ describe('escaparHtml', () => {
     assert.equal(escaparHtml(15.5), '15.5');
   });
 });
+
+describe('iniciales', () => {
+  test('primera letra de las dos primeras palabras, en mayúscula', () => {
+    const { iniciales } = require('../js/utilidades-html.js');
+    assert.equal(iniciales('Ana Torres Medina'), 'AT');
+    assert.equal(iniciales('  sofía   vargas '), 'SV');
+    assert.equal(iniciales('Ana'), 'A');
+    assert.equal(iniciales(''), '');
+    assert.equal(iniciales(null), '');
+  });
+});

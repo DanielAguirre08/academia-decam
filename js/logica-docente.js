@@ -262,6 +262,14 @@
   var LARGO_DESCRIPCION = 300;
 
   /**
+   * Largo en CARACTERES, como cuenta MySQL un VARCHAR(n) en utf8mb4. String.length cuenta unidades
+   * UTF-16 y un emoji vale 2: un texto válido para la base se rechazaría.
+   */
+  function largo(t) {
+    return Array.from(t).length;
+  }
+
+  /**
    * CA-001 (HU-010): una tarea nueva necesita título, grupo y fecha límite válidos.
    * Devuelve { valido, errores[] } con un mensaje por problema.
    * La fecha límite no puede ser anterior a hoy (la tarea se publica hoy: control 14 de
@@ -274,10 +282,10 @@
     var descripcion = typeof tarea.descripcion === 'string' ? tarea.descripcion.trim() : '';
 
     if (!titulo) errores.push('El título es obligatorio');
-    else if (titulo.length > LARGO_TITULO) errores.push('El título admite como máximo ' + LARGO_TITULO + ' caracteres');
+    else if (largo(titulo) > LARGO_TITULO) errores.push('El título admite como máximo ' + LARGO_TITULO + ' caracteres');
     if (tarea.descripcion !== undefined && tarea.descripcion !== null && typeof tarea.descripcion !== 'string') {
       errores.push('La descripción debe ser texto');
-    } else if (descripcion.length > LARGO_DESCRIPCION) {
+    } else if (largo(descripcion) > LARGO_DESCRIPCION) {
       errores.push('La descripción admite como máximo ' + LARGO_DESCRIPCION + ' caracteres');
     }
     if (!esIdValido(tarea.id_seccion)) errores.push('Debes seleccionar un grupo');
@@ -308,6 +316,32 @@
   var DIAS_HORARIO = [null, 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', null];
   function diaDeHorario(fecha) {
     return DIAS_HORARIO[(fecha || new Date()).getDay()];
+  }
+
+  var DIAS_LECTIVOS = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
+
+  /**
+   * Horario (consulta): ordena los bloques de HORARIO en una grilla día x hora de inicio.
+   * Devuelve { dias, horas, celdas } donde celdas['Lunes|07:00'] es el bloque de esa celda.
+   */
+  function organizarHorario(bloques) {
+    var horas = [];
+    var celdas = {};
+    (bloques || []).forEach(function (b) {
+      if (horas.indexOf(b.hora_inicio) === -1) horas.push(b.hora_inicio);
+      celdas[b.dia_semana + '|' + b.hora_inicio] = b;
+    });
+    horas.sort();
+    return { dias: DIAS_LECTIVOS.slice(), horas: horas, celdas: celdas };
+  }
+
+  /**
+   * Mis Alumnos: etiqueta de desempeño del filtro del directorio, a partir del nivel visual
+   * (excelente >= 18, bien >= 16, aprobado >= 11, desaprobado < 11). "En riesgo" = Desaprobado.
+   */
+  var ETIQUETA_DESEMPENO = { excelente: 'Excelente', bien: 'Bien', aprobado: 'Regular', desaprobado: 'En riesgo', 'sin-datos': 'Sin datos' };
+  function etiquetaDesempeno(promedio) {
+    return ETIQUETA_DESEMPENO[obtenerNivelDesempeno(promedio)];
   }
 
   /** CA-002 (HU-010): filtra tareas por su estado ('todas' no filtra). */
@@ -341,6 +375,8 @@
     revisarTarea: revisarTarea,
     determinarEstadoEntrega: determinarEstadoEntrega,
     filtrarTareasPorEstado: filtrarTareasPorEstado,
-    diaDeHorario: diaDeHorario
+    diaDeHorario: diaDeHorario,
+    organizarHorario: organizarHorario,
+    etiquetaDesempeno: etiquetaDesempeno
   };
 });

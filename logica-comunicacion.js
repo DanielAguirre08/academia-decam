@@ -29,6 +29,14 @@
   }
 
   /**
+   * Largo en CARACTERES, como cuenta MySQL un VARCHAR(n) en utf8mb4. String.length cuenta unidades
+   * UTF-16 y un emoji vale 2: un texto válido para la base se rechazaría.
+   */
+  function largo(t) {
+    return Array.from(t).length;
+  }
+
+  /**
    * HU-011: revisa el formulario de reclamo. CA-002: sin asunto o sin descripción, el único error
    * es el mensaje de la HU. Tipo y prioridad son opcionales (tienen valor por defecto) pero, si
    * vienen, deben ser de la lista. Devuelve { valido, errores[] }.
@@ -37,8 +45,8 @@
     datos = datos || {};
     if (!texto(datos.asunto) || !texto(datos.descripcion)) return { valido: false, errores: [MSJ_CAMPOS_OBLIGATORIOS] };
     var errores = [];
-    if (texto(datos.asunto).length > 120) errores.push('El asunto admite como máximo 120 caracteres');
-    if (texto(datos.descripcion).length > 500) errores.push('La descripción admite como máximo 500 caracteres');
+    if (largo(texto(datos.asunto)) > 120) errores.push('El asunto admite como máximo 120 caracteres');
+    if (largo(texto(datos.descripcion)) > 500) errores.push('La descripción admite como máximo 500 caracteres');
     if (datos.tipo !== undefined && TIPOS_RECLAMO.indexOf(datos.tipo) === -1) errores.push('Tipo de reclamo inválido');
     if (datos.prioridad !== undefined && PRIORIDADES.indexOf(datos.prioridad) === -1) errores.push('Prioridad inválida');
     return { valido: errores.length === 0, errores: errores };
@@ -66,9 +74,9 @@
     datos = datos || {};
     var errores = [];
     if (!texto(datos.titulo)) errores.push('El título del aviso es obligatorio');
-    else if (texto(datos.titulo).length > 120) errores.push('El título admite como máximo 120 caracteres');
+    else if (largo(texto(datos.titulo)) > 120) errores.push('El título admite como máximo 120 caracteres');
     if (!texto(datos.contenido)) errores.push('El contenido del aviso es obligatorio');
-    else if (texto(datos.contenido).length > 500) errores.push('El contenido admite como máximo 500 caracteres');
+    else if (largo(texto(datos.contenido)) > 500) errores.push('El contenido admite como máximo 500 caracteres');
     if (datos.destinatarios !== undefined && DESTINATARIOS.indexOf(datos.destinatarios) === -1) errores.push('Destinatarios inválidos');
     return { valido: errores.length === 0, errores: errores };
   }
@@ -83,7 +91,24 @@
     return DESTINATARIOS.slice();
   }
 
+  /**
+   * Mensajes: destinatario por correo institucional, contenido de 1 a 1000 caracteres
+   * (MENSAJE.contenido VARCHAR(1000)) y nunca a uno mismo (control 12 de verificar-integridad.sql).
+   */
+  function revisarMensaje(datos, correoPropio) {
+    datos = datos || {};
+    var errores = [];
+    var para = texto(datos.para).toLowerCase();
+    if (!para) errores.push('Indica el correo del destinatario');
+    else if (!/^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(para)) errores.push('El correo del destinatario no es válido');
+    else if (correoPropio && para === String(correoPropio).toLowerCase()) errores.push('No puedes enviarte un mensaje a ti mismo');
+    if (!texto(datos.contenido)) errores.push('Escribe el mensaje');
+    else if (largo(texto(datos.contenido)) > 1000) errores.push('El mensaje admite como máximo 1000 caracteres');
+    return { valido: errores.length === 0, errores: errores };
+  }
+
   return {
+    revisarMensaje: revisarMensaje,
     TIPOS_RECLAMO: TIPOS_RECLAMO,
     PRIORIDADES: PRIORIDADES,
     DESTINATARIOS: DESTINATARIOS,

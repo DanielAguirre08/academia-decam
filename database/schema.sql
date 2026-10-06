@@ -328,7 +328,7 @@ CREATE TABLE IF NOT EXISTS entrega_tarea (
     ON UPDATE CASCADE ON DELETE RESTRICT,
   CONSTRAINT fk_entrega_alumno FOREIGN KEY (id_alumno) REFERENCES alumno(id_alumno)
     ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE=InnoDB COMMENT='Cumplimiento de una tarea por un alumno (HU-010 CA-003)';
+) ENGINE=InnoDB COMMENT='Cumplimiento de una tarea por un alumno (HU-010)';
 
 -- ============================================================================
 -- 4. COMUNICACIÓN

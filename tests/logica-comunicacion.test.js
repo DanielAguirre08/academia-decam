@@ -67,3 +67,32 @@ describe('HU-012 — Avisos', () => {
     assert.deepEqual(C.destinatariosVisibles('registrador'), ['todos', 'docentes', 'alumnos']);
   });
 });
+
+describe('Mensajes', () => {
+  test('mensaje válido', () => {
+    assert.equal(C.revisarMensaje({ para: 'jefe@acadecam.edu.pe', contenido: 'Hola' }, 'prof@acadecam.edu.pe').valido, true);
+  });
+
+  test('destinatario obligatorio, con formato y distinto de uno mismo', () => {
+    assert.equal(C.revisarMensaje({ contenido: 'Hola' }).errores[0], 'Indica el correo del destinatario');
+    assert.equal(C.revisarMensaje({ para: 'jefe', contenido: 'Hola' }).errores[0], 'El correo del destinatario no es válido');
+    assert.equal(C.revisarMensaje({ para: 'PROF@acadecam.edu.pe', contenido: 'Hola' }, 'prof@acadecam.edu.pe').errores[0], 'No puedes enviarte un mensaje a ti mismo');
+  });
+
+  test('contenido de 1 a 1000 caracteres (valores límite)', () => {
+    assert.equal(C.revisarMensaje({ para: 'a@b.pe', contenido: '   ' }).valido, false);
+    assert.equal(C.revisarMensaje({ para: 'a@b.pe', contenido: 'x'.repeat(1000) }).valido, true);
+    assert.equal(C.revisarMensaje({ para: 'a@b.pe', contenido: 'x'.repeat(1001) }).valido, false);
+  });
+});
+
+describe('Largo en caracteres (como VARCHAR de MySQL), no en unidades UTF-16', () => {
+  test('1000 emoji caben en MENSAJE.contenido VARCHAR(1000); 1001 no', () => {
+    assert.equal(C.revisarMensaje({ para: 'a@b.pe', contenido: '😀'.repeat(1000) }).valido, true);
+    assert.equal(C.revisarMensaje({ para: 'a@b.pe', contenido: '😀'.repeat(1001) }).valido, false);
+  });
+
+  test('120 emoji caben en el asunto del reclamo', () => {
+    assert.equal(C.revisarReclamo({ asunto: '📚'.repeat(120), descripcion: 'x' }).valido, true);
+  });
+});

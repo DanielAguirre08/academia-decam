@@ -3,7 +3,8 @@
  *
  *   CA-001  Publicar una tarea con título, grupo, fecha límite y tipo.
  *   CA-002  El estado (pendiente/atrasada/entregada) se deriva de la fecha y de las entregas.
- *   CA-003  Marcar las entregas por alumno.
+ *   Además, el seguimiento de entregas por alumno que hace el docente ("hacer seguimiento a su
+ *   cumplimiento", descripción de la HU). El CA-003 (restricciones del alumno) está en alumno.test.js.
  *
  * Datos (database/seed.sql): tarea 1 (6-A) vencida; tarea 3 (6-A) vigente y sin entregas.
  * 6-A tiene 5 alumnos activos: 1, 2, 3, 4 y 7. El alumno 5 es del 5-A; el 9 está retirado.
@@ -110,7 +111,7 @@ describe('POST /api/tareas — CA-001', () => {
   });
 });
 
-describe('Entregas por alumno — CA-003', () => {
+describe('Seguimiento de entregas por alumno (docente)', () => {
   const entregar = (agente, idTarea, idAlumno) => agente.post('/api/tareas/' + idTarea + '/entregas').send({ id_alumno: idAlumno });
 
   test('GET lista a los 5 alumnos activos del grupo con su estado', async () => {

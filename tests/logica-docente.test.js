@@ -329,3 +329,26 @@ describe('Inicio del docente — día del horario', () => {
     assertEqual(L.diaDeHorario(new Date(2026, 9, 11)), null);       // domingo
   });
 });
+
+describe('Consultas del docente — horario y desempeño', () => {
+  test('organizarHorario: grilla día x hora ordenada', () => {
+    const g = L.organizarHorario([
+      { dia_semana: 'Martes', hora_inicio: '08:30', curso: 'Comunicación' },
+      { dia_semana: 'Lunes', hora_inicio: '07:00', curso: 'Matemática' }
+    ]);
+    assertEqual(g.dias.join(','), 'Lunes,Martes,Miercoles,Jueves,Viernes');
+    assertEqual(g.horas.join(','), '07:00,08:30');
+    assertEqual(g.celdas['Lunes|07:00'].curso, 'Matemática');
+    assertEqual(g.celdas['Lunes|08:30'], undefined);
+  });
+
+  test('etiquetaDesempeno: valores límite 18, 16 y 11', () => {
+    assertEqual(L.etiquetaDesempeno(18), 'Excelente');
+    assertEqual(L.etiquetaDesempeno(17.99), 'Bien');
+    assertEqual(L.etiquetaDesempeno(16), 'Bien');
+    assertEqual(L.etiquetaDesempeno(15.99), 'Regular');
+    assertEqual(L.etiquetaDesempeno(11), 'Regular');
+    assertEqual(L.etiquetaDesempeno(10.99), 'En riesgo');
+    assertEqual(L.etiquetaDesempeno(null), 'Sin datos');
+  });
+});

@@ -1,5 +1,5 @@
 /**
- * ACADEMIA DECAM — utilidades puras para la capa de Presentación
+ * ACADEMIA DECAM — utilidades puras para la capa de Presentación (escape de HTML e iniciales)
  * ---------------------------------------------------------------
  * Todo dato que viene de la base de datos (nombres, títulos, mensajes de error) y se pinta con
  * innerHTML debe pasar por escaparHtml: si no, un alumno registrado como
@@ -24,5 +24,12 @@
     return String(valor).replace(/[&<>"']/g, function (c) { return ENTIDADES[c]; });
   }
 
-  return { escaparHtml: escaparHtml };
+  /** Iniciales para los avatares: primera letra de las dos primeras palabras ("Ana Torres" -> "AT"). */
+  function iniciales(nombre) {
+    return String(nombre || '').trim().split(/\s+/)
+      .map(function (p) { return p ? p.charAt(0).toUpperCase() : ''; })
+      .join('').slice(0, 2);
+  }
+
+  return { escaparHtml: escaparHtml, iniciales: iniciales };
 });

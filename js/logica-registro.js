@@ -38,6 +38,14 @@
     return typeof valor === 'string' ? valor.trim() : '';
   }
 
+  /**
+   * Largo en CARACTERES, como cuenta MySQL un VARCHAR(n) en utf8mb4. String.length cuenta unidades
+   * UTF-16 y un emoji vale 2: un texto válido para la base se rechazaría.
+   */
+  function largo(t) {
+    return Array.from(t).length;
+  }
+
   /** DNI peruano: exactamente 8 dígitos (CHECK de ALUMNO, DOCENTE y APODERADO). */
   function validarDni(dni) {
     return typeof dni === 'string' && /^[0-9]{8}$/.test(dni);
@@ -45,7 +53,7 @@
 
   /** Mismo patrón que el CHECK chk_usuario_correo, y como máximo 100 caracteres. */
   function validarCorreo(correo) {
-    return typeof correo === 'string' && correo.length <= 100 && /^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(correo);
+    return typeof correo === 'string' && largo(correo) <= 100 && /^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(correo);
   }
 
   /**
@@ -64,6 +72,15 @@
    * con 3, 1 nombre + 2 apellidos; con 4 o más, 2 nombres y el resto apellidos.
    * Devuelve null si hay una sola palabra (falta el apellido).
    */
+  /**
+   * Nombre de persona: letras (con tildes, diéresis y ñ), espacios, apóstrofo, punto y guion
+   * ("María José O'Brien-Díaz"). Cierra la puerta a que un nombre lleve HTML o scripts: el
+   * nombre se muestra en muchas pantallas y lo escribe otra persona (el Registrador).
+   */
+  function validarNombrePersona(nombre) {
+    return typeof nombre === 'string' && /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ'. -]+$/.test(nombre.trim());
+  }
+
   function separarNombreCompleto(nombreCompleto) {
     var partes = texto(nombreCompleto).split(/\s+/).filter(Boolean);
     if (partes.length < 2) return null;
@@ -109,7 +126,7 @@
   }
 
   function revisarLargo(valor, maximo, etiqueta, errores) {
-    if (texto(valor).length > maximo) errores.push(etiqueta + ' admite como máximo ' + maximo + ' caracteres');
+    if (largo(texto(valor)) > maximo) errores.push(etiqueta + ' admite como máximo ' + maximo + ' caracteres');
   }
 
   /** Grado y sección van juntos: los dos o ninguno; si vienen, deben calzar con el nivel. */
@@ -124,6 +141,7 @@
 
   function revisarApoderadoDelAlumno(datos, errores) {
     if (!texto(datos.apoderado_nombre)) errores.push('El nombre del apoderado es obligatorio');
+    else if (!validarNombrePersona(datos.apoderado_nombre)) errores.push('El nombre del apoderado solo admite letras, espacios, apóstrofo, punto y guion');
     revisarLargo(datos.apoderado_nombre, 120, 'El nombre del apoderado', errores);
     if (!validarDni(datos.apoderado_dni)) errores.push('El DNI del apoderado debe tener 8 dígitos');
     if (texto(datos.apoderado_telefono) && !normalizarTelefono(datos.apoderado_telefono)) {
@@ -147,6 +165,7 @@
     var nombre = texto(datos.nombre);
 
     if (!nombre) return { valido: false, errores: [MSJ_NOMBRE_OBLIGATORIO] };
+    if (!validarNombrePersona(nombre)) errores.push('El nombre solo admite letras, espacios, apóstrofo, punto y guion');
     if (TIPOS_PERSONA.indexOf(datos.tipo) === -1) errores.push('Selecciona el tipo de persona');
 
     if (datos.tipo === 'apoderado') {
@@ -200,6 +219,7 @@
 
     var errores = [];
     if (!separarNombreCompleto(datos.nombre)) errores.push('Ingresa nombres y apellidos del alumno');
+    else if (!validarNombrePersona(datos.nombre)) errores.push('El nombre solo admite letras, espacios, apóstrofo, punto y guion');
     if (!validarDni(datos.dni)) errores.push('El DNI del alumno debe tener 8 dígitos');
     if (texto(datos.fecha_nacimiento)) revisarFechaNacimiento(datos.fecha_nacimiento, hoy, errores);
     if (texto(datos.sexo) && SEXOS.indexOf(datos.sexo) === -1) errores.push('Sexo inválido');
@@ -296,6 +316,7 @@
     validarDni: validarDni,
     validarCorreo: validarCorreo,
     normalizarTelefono: normalizarTelefono,
+    validarNombrePersona: validarNombrePersona,
     separarNombreCompleto: separarNombreCompleto,
     gradosPorNivel: gradosPorNivel,
     validarGradoDeNivel: validarGradoDeNivel,

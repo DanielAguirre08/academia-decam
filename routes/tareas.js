@@ -127,7 +127,7 @@ router.post('/', requiereRol('docente'), async (req, res) => {
 });
 
 // GET /api/tareas/:id_tarea/entregas
-// HU-010 CA-003: la lista del grupo con quién entregó y quién no, para marcarla por alumno.
+// HU-010 (seguimiento del cumplimiento): la lista del grupo con quién entregó y quién no.
 router.get('/:id_tarea/entregas', requiereRol('docente', 'jefe_academico'), async (req, res) => {
   try {
     const acceso = await tareaAccesible(req.session.usuario, req.params.id_tarea);

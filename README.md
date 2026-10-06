@@ -1,15 +1,16 @@
 # Academia Decam — Backend + Frontend conectados a MySQL
 
 Plataforma de gestión académica con 4 roles (Docente, Alumno, Jefe Académico y Registrador).
-Estado actual: **login real con roles (HU-001)** y las 3 historias del Docente
-(**HU-005 Calificaciones**, **HU-008 Asistencia**, **HU-010 Tareas**) funcionando contra MySQL.
-El resto de módulos se están conectando por fases (ver "Avance por historia de usuario").
+Estado actual: **las 12 historias de usuario funcionan de punta a punta** (navegador → API REST →
+MySQL), con validaciones y permisos por rol en el servidor, lógica en funciones puras y pruebas
+unitarias y de API. El caso de uso final del curso es **HU-008**: ver [`docs/caso-hu-008.md`](docs/caso-hu-008.md)
+y la matriz HU → criterio → prueba en [`docs/trazabilidad.md`](docs/trazabilidad.md).
 
 ## Arquitectura de 3 capas
 
 | Capa | Archivo(s) | Corre en |
 |---|---|---|
-| Presentación | `dashboard.html` + `js/presentacion-docente.js` | Navegador |
+| Presentación | `dashboard.html` + `js/presentacion-*.js` (un archivo por rol o módulo) + `js/api-cliente.js` | Navegador |
 | Lógica de Negocio | `logica-docente.js` (= `js/logica-docente.js`), `logica-auth.js` | **Navegador y servidor** / servidor |
 | Datos | `routes/*.js` + `middleware/auth.js` + `config/db.js` + MySQL | Servidor |
 
@@ -104,6 +105,23 @@ Un docente solo opera sobre las secciones donde dicta (HORARIO) o de las que es 
 | GET | `/api/tareas/:id/entregas` | HU-010 | docente, jefe | Lista del grupo con quién entregó |
 | POST | `/api/tareas/:id/entregas` | HU-010 | docente | Marca la entrega de un alumno |
 | DELETE | `/api/tareas/:id/entregas/:id_alumno` | HU-010 | docente | Desmarca una entrega |
+| GET | `/api/mi/calificaciones` | HU-007 | alumno | Sus notas por periodo con promedio y estado |
+| GET | `/api/mi/asistencia` | HU-009 | alumno | Sus registros e indicadores acumulados |
+| GET | `/api/mi/tareas?estado` | HU-010 CA-003 | alumno | Tareas de su sección con el estado de SU entrega |
+| POST / DELETE | `/api/mi/tareas/:id/entrega` | HU-010 CA-003 | alumno | Marca o desmarca su propia entrega |
+| GET | `/api/reclamos?estado` | HU-011 | alumno, docente, jefe | Los propios (alumno, docente) o todos (jefe) |
+| POST | `/api/reclamos` | HU-011 CA-001/002 | alumno, docente | Registra el reclamo en estado pendiente |
+| PATCH | `/api/reclamos/:id/estado` | HU-011 CA-003 | jefe | Pendiente → En revisión → Resuelto |
+| GET | `/api/avisos` | HU-012 | con sesión | Avisos dirigidos al rol de la sesión |
+| POST | `/api/avisos` | HU-012 CA-001 | jefe | Publica un aviso |
+| GET | `/api/resumen` | Inicio | con sesión | Tarjetas y paneles de Inicio del rol |
+| GET | `/api/perfil` | Perfil | con sesión | Datos reales del perfil |
+| POST | `/api/auth/contrasena` | Perfil | con sesión | Cambia la contraseña (exige la actual) |
+| GET | `/api/horario` | — | docente, alumno | Horario semanal organizado por día y hora |
+| GET | `/api/seccion` | — | docente, alumno | Sección de la que es tutor / su sección |
+| GET | `/api/alumnos` | — | docente | Directorio de sus alumnos con promedio, asistencia y desempeño |
+| GET / POST | `/api/mensajes` | — | con sesión | Bandejas de recibidos/enviados y envío de mensajes |
+| PATCH | `/api/mensajes/:id/leido` | — | destinatario | Marca un mensaje como leído |
 
 Comprobación rápida sin navegador:
 ```bash
@@ -140,11 +158,13 @@ tests/                     Pruebas unitarias (Lógica) y tests/api/ (API contra 
 | HU-001 Login con acceso por rol | Hecho (bcrypt, sesión, permisos por rol en el servidor, bloqueo por intentos) |
 | HU-002 / HU-003 / HU-004 (Registrador) | Hecho: registro, matrícula con código correlativo y control de estado, contra MySQL |
 | HU-005 / HU-006 / HU-008 / HU-010 (Docente) | Hecho: notas, exportación CSV, asistencia y tareas con entregas por alumno |
-| HU-007 / HU-009 (Alumno) | Pendiente: aún no hay endpoints propios del alumno |
-| HU-011 Reclamos / HU-012 Avisos | Pendiente |
+| HU-007 / HU-009 / HU-010 CA-003 (Alumno) | Hecho: sus notas, su calendario de asistencia y el marcado de sus entregas |
+| HU-011 Reclamos / HU-012 Avisos | Hecho: el Jefe atiende reclamos y publica avisos; cada rol ve los suyos |
+| Pantallas sin HU (Inicio, Perfil, Horario, Sección, Mis Alumnos, Mensajes) | Con datos reales de la BD; sin botones falsos |
 
 ## Pendientes conocidos
 
-- Las tarjetas del Inicio siguen mostrando `?`: no están conectadas a la API.
-- No hay opción para cambiar la contraseña: alumnos y docentes nuevos reciben una contraseña inicial
-  aleatoria que el Registrador ve una sola vez al registrarlos.
+- La etiqueta de grupo (`grado-letra`, p. ej. "6-A") no distingue el nivel: Primaria 1-A y Secundaria
+  1-A se verían igual (los datos de prueba evitan esa coincidencia).
+- La sesión vive en memoria del servidor (MemoryStore): al reiniciar el servidor hay que volver a iniciar
+  sesión. Para producción conviene un almacén persistente (p. ej. MySQL).

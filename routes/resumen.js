@@ -5,6 +5,7 @@ const L = require('../logica-docente');
 const A = require('../logica-alumno');
 const { requiereSesion, seccionesPermitidas } = require('../middleware/auth');
 const { responderError } = require('../middleware/errores');
+const D = require('../datos/consultas');
 
 // Cifras de la página de Inicio y datos del perfil, según el rol de la sesión.
 // Reemplazan a los "?" y "0" fijos del prototipo. Las reglas (promedio, % de asistencia, estado
@@ -38,10 +39,7 @@ async function resumenDocente(usuario) {
     `SELECT COUNT(*) AS dias, SUM(estado = 'presente') AS presentes, SUM(estado = 'tardanza') AS tardanzas
      FROM asistencia WHERE id_seccion IN (?)`, [hayIds]
   );
-  const [promedios] = await pool.query(
-    `SELECT c.promedio FROM calificacion c JOIN alumno a ON a.id_alumno = c.id_alumno
-     WHERE a.estado = 'activo' AND c.id_seccion IN (?)`, [hayIds]
-  );
+  const promedios = await D.promediosGeneralesPorAlumno(ids);
   const estados = await tareasConEstado(ids);
   const dia = L.diaDeHorario(new Date());
   const [clases] = dia ? await pool.query(
@@ -64,8 +62,8 @@ async function resumenDocente(usuario) {
     alumnosActivos: Number(alumnos.n),
     asistenciaPromedio: L.calcularPorcentajeAsistencia(asis.presentes, asis.tardanzas, asis.dias),
     tareasAtrasadas: estados.filter((e) => e === 'atrasada').length,
-    // "En riesgo" = Desaprobado según la regla oficial (promedio < 11.00, HU-005 CA-001).
-    alumnosEnRiesgo: promedios.filter((p) => L.determinarEstado(p.promedio === null ? null : Number(p.promedio)) === 'Desaprobado').length,
+    // "En riesgo": misma regla y mismo cálculo que Mis Alumnos (datos/consultas.js).
+    alumnosEnRiesgo: Object.values(promedios).filter(D.estaEnRiesgo).length,
     clasesHoy: clases,
     ultimasEntregas: entregas
   };
@@ -75,18 +73,10 @@ async function resumenAlumno(usuario) {
   const [[alumno]] = await pool.query('SELECT id_alumno, id_seccion FROM alumno WHERE id_alumno = ?', [usuario.id_alumno]);
   if (!alumno) return {};
 
-  const [misCalif] = await pool.query('SELECT examen1, examen2, tareas, proyecto FROM calificacion WHERE id_alumno = ?', [alumno.id_alumno]);
-  const miPromedio = A.promedioGeneral(misCalif.map((c) => L.calcularPromedio(c)));
-
-  // Promedio general de cada compañero activo de la sección (para el puesto en el grupo).
-  const [delGrupo] = await pool.query(
-    `SELECT c.id_alumno, c.examen1, c.examen2, c.tareas, c.proyecto
-     FROM calificacion c JOIN alumno a ON a.id_alumno = c.id_alumno
-     WHERE a.id_seccion = ? AND a.estado = 'activo'`, [alumno.id_seccion || 0]
-  );
-  const porAlumno = {};
-  delGrupo.forEach((c) => { (porAlumno[c.id_alumno] = porAlumno[c.id_alumno] || []).push(L.calcularPromedio(c)); });
-  const promediosGrupo = Object.keys(porAlumno).map((id) => A.promedioGeneral(porAlumno[id]));
+  // Promedio general de cada compañero activo de la sección (mismo cálculo que Mis Alumnos).
+  const delGrupo = alumno.id_seccion ? await D.promediosGeneralesPorAlumno([alumno.id_seccion]) : {};
+  const miPromedio = delGrupo[alumno.id_alumno] === undefined ? null : delGrupo[alumno.id_alumno];
+  const promediosGrupo = Object.values(delGrupo);
 
   const [registros] = await pool.query('SELECT estado FROM asistencia WHERE id_alumno = ?', [alumno.id_alumno]);
   const [tareas] = await pool.query(

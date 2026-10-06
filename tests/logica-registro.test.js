@@ -225,3 +225,27 @@ describe('HU-004 — estado, búsqueda y filtro de matrículas', () => {
     assert.equal(R.filtrarRegistros(regs, { tipo: 'apoderado' }).length, 0);
   });
 });
+
+describe('Nombres de persona (defensa contra HTML/scripts en el nombre)', () => {
+  test('acepta tildes, ñ, diéresis, apóstrofo, punto y guion', () => {
+    for (const n of ['María José Núñez', "Liam O'Brien", 'Ana Pérez-Díaz', 'Güido Peña', 'Ma. Elena Ríos']) {
+      assert.equal(R.validarNombrePersona(n), true, n);
+    }
+  });
+
+  test('rechaza etiquetas, signos y números', () => {
+    for (const n of ['Ana <img/src/onerror=alert(1)>', 'Ana <b>Torres</b>', 'Ana Torres2', 'Ana "Torres"', 'Ana;Torres']) {
+      assert.equal(R.validarNombrePersona(n), false, n);
+    }
+  });
+
+  test('revisarRegistro y revisarMatricula rechazan el nombre con HTML', () => {
+    const r = R.revisarRegistro({ tipo: 'docente', nombre: 'Ana <img/src/onerror=x>', dni: '10000099', correo: 'a@b.pe' }, HOY);
+    assert.equal(r.valido, false);
+    assert.ok(r.errores.includes('El nombre solo admite letras, espacios, apóstrofo, punto y guion'));
+    const m = R.revisarMatricula({ nombre: 'Rosa <svg/onload=x>', dni: '71000001', nivel: 'Primaria', grado: '6', seccion: 'A',
+      anio_lectivo: '2026', apoderado_nombre: 'Carmen <b>Paz</b>', apoderado_dni: '41000001' }, HOY);
+    assert.equal(m.valido, false);
+    assert.equal(m.errores.length, 2);
+  });
+});
