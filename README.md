@@ -24,6 +24,8 @@ echo 'export PATH="/opt/homebrew/opt/mysql@8.4/bin:$PATH"' >> ~/.zprofile
 brew services start mysql@8.4
 mysql -u root -e "SELECT VERSION();"     # debe mostrar 8.4.x
 ```
+El esquema requiere **MySQL 8.0.19 o superior** (CHECK aplicados, `WITH RECURSIVE` y alias en
+`ON DUPLICATE KEY UPDATE`). Las pruebas de este repositorio se corrieron sobre MySQL 9.7.1.
 Homebrew instala `root` **sin contraseña**; el `.env` ya lo asume.
 
 ## 2. Crear la base de datos y cargar datos de prueba

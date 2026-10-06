@@ -113,7 +113,7 @@ Pruebas unitarias en `tests/logica-docente.test.js › HU-008 — Asistencia` (1
 
 ## 7. Resultados
 
-- `npm test`: **286 pruebas, 286 pasan** (131 unitarias + 155 de API), sobre MySQL 8.4 real.
+- `npm test`: **286 pruebas, 286 pasan** (131 unitarias + 155 de API), sobre MySQL real (servidor 9.7.1 en el equipo de desarrollo; el esquema requiere MySQL 8.0.19 o superior).
 - HU-008: 14 pruebas unitarias + 34 de API.
 - Cobertura (`npm run test:coverage`): `routes/asistencia.js` **96.6 % de líneas / 87.5 % de ramas**
   (lo único sin cubrir son los `catch` de error 500); `js/logica-docente.js` **99.5 % de líneas**.
