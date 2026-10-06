@@ -32,6 +32,19 @@ router.get('/', requiereSesion, async (req, res) => {
   }
 });
 
+// GET /api/mensajes/no-leidos — cuántos mensajes recibidos faltan abrir (contador del menú).
+// Usa el índice idx_mensaje_bandeja (id_destinatario, leido, ...): es barato aunque se consulte cada minuto.
+router.get('/no-leidos', requiereSesion, async (req, res) => {
+  try {
+    const [[fila]] = await pool.query(
+      'SELECT COUNT(*) AS n FROM mensaje WHERE id_destinatario = ? AND leido = FALSE', [req.session.usuario.id_usuario]
+    );
+    res.json({ no_leidos: Number(fila.n) });
+  } catch (err) {
+    responderError(res, err, 'Error al contar los mensajes no leídos');
+  }
+});
+
 // GET /api/mensajes/destinatarios?q=ana — sugerencias del buscador "Para" (HU-013).
 // Con menos de 2 letras responde [] (no es un error: el usuario aún está escribiendo).
 router.get('/destinatarios', requiereSesion, async (req, res) => {

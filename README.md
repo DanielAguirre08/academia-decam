@@ -125,6 +125,7 @@ Un docente solo opera sobre las secciones donde dicta (HORARIO) o de las que es 
 | GET / POST | `/api/mensajes` | HU-013 CA-002/003 | con sesión | Bandejas de recibidos/enviados; envío a uno o varios destinatarios (`para`: lista de `id_usuario`, o un correo) |
 | GET | `/api/mensajes/destinatarios?q=` | HU-013 CA-001/002 | con sesión | Sugerencias del campo «Para» (máx. 8), solo personas a las que puede escribir |
 | PATCH | `/api/mensajes/:id/leido` | — | destinatario | Marca un mensaje como leído |
+| GET | `/api/mensajes/no-leidos` | HU-013 CA-004 | con sesión | `{ no_leidos }`: contador del menú (se consulta cada 60 s con la pestaña visible) |
 
 Comprobación rápida sin navegador:
 ```bash

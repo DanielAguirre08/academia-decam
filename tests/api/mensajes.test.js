@@ -1,5 +1,5 @@
 /**
- * Pruebas de API — HU-013 Mensajes con buscador de destinatarios.
+ * Pruebas de API — HU-013 Mensajes con buscador de destinatarios y contador de no leídos.
  *
  * Datos (database/seed.sql): los 4 docentes dictan en las 4 secciones. Usuarios: 1 Profesor Demo
  * (docente 1), 2 Jefe, 3 Registrador, 4 Rosa Quispe (docente 2, Comunicación), 101 Ana Torres
@@ -139,5 +139,44 @@ describe('HU-013 — Envío a varios destinatarios', () => {
   test('la base sigue íntegra: nadie se envía mensajes a sí mismo (control 12)', async () => {
     const [{ n }] = await H.consultar('SELECT COUNT(*) AS n FROM mensaje WHERE id_remitente = id_destinatario');
     assert.equal(Number(n), 0);
+  });
+});
+
+describe('HU-013 — Contador de mensajes no leídos', () => {
+  async function noLeidos(agente) {
+    const res = await agente.get('/api/mensajes/no-leidos');
+    assert.equal(res.status, 200);
+    return res.body.no_leidos;
+  }
+
+  test('sin sesión 401', async () => {
+    assert.equal((await H.anonimo().get('/api/mensajes/no-leidos')).status, 401);
+  });
+
+  test('cuenta solo los recibidos sin abrir del propio usuario', async () => {
+    const [{ n }] = await H.consultar('SELECT COUNT(*) AS n FROM mensaje WHERE id_destinatario = 4 AND leido = FALSE');
+    assert.equal(await noLeidos(docente2), Number(n));
+  });
+
+  test('sube cuando otro le escribe, no con lo que uno envía, y baja al marcarlo como leído', async () => {
+    const antes = await noLeidos(docente2);
+    const deJefe = await jefe.post('/api/mensajes').send({ para: [4], contenido: 'Revise el horario, por favor.' });
+    assert.equal(deJefe.status, 201);
+    assert.equal(await noLeidos(docente2), antes + 1);
+
+    const propio = await docente2.post('/api/mensajes').send({ para: [2], contenido: 'Visto, lo reviso hoy.' });
+    assert.equal(propio.status, 201);
+    assert.equal(await noLeidos(docente2), antes + 1, 'lo que envía no le suma');
+
+    assert.equal((await docente2.patch('/api/mensajes/' + deJefe.body.id_mensaje + '/leido')).status, 200);
+    assert.equal(await noLeidos(docente2), antes);
+  });
+
+  test('un envío a varios suma 1 a cada destinatario', async () => {
+    const antesAlumno = await noLeidos(alumno);
+    const antesRosa = await noLeidos(docente2);
+    assert.equal((await jefe.post('/api/mensajes').send({ para: [107, 4], contenido: 'Mañana no hay clases.' })).status, 201);
+    assert.equal(await noLeidos(alumno), antesAlumno + 1);
+    assert.equal(await noLeidos(docente2), antesRosa + 1);
   });
 });

@@ -169,13 +169,14 @@
       return;
     }
     if (miPedido !== pedidoMensajes) return; // llegó tarde: ya hay un pedido más nuevo
+    if (cual === 'recibidos') pintarNoLeidos(mensajes.filter(function (m) { return !m.leido; }).length);
     if (!mensajes.length) {
       lista.innerHTML = '<div class="empty-state"><h3>Bandeja vacía</h3><p>' + (cual === 'enviados' ? 'Aún no has enviado mensajes.' : 'Los mensajes aparecerán aquí.') + '</p></div>';
       return;
     }
     lista.innerHTML = mensajes.map(function (m) {
       var noLeido = cual === 'recibidos' && !m.leido;
-      return '<div class="msg-item"' + (noLeido ? ' onclick="marcarLeido(' + Number(m.id_mensaje) + ')" title="Marcar como leído"' : '') + '>' +
+      return '<div class="msg-item' + (noLeido ? ' unread' : '') + '"' + (noLeido ? ' onclick="marcarLeido(' + Number(m.id_mensaje) + ')" title="Marcar como leído"' : '') + '>' +
         '<div class="msg-av">' + esc(iniciales(m.otro)) + '</div>' +
         '<div style="min-width:0;flex:1"><div class="msg-sender">' + (cual === 'enviados' ? 'Para: ' : '') + esc(m.otro) + '</div>' +
         '<div class="msg-subj" style="font-weight:400;color:var(--muted)">' + esc(m.correoOtro) + '</div>' +
@@ -183,6 +184,34 @@
         '<span class="msg-time">' + esc(m.fecha_envio) + '</span>' + (noLeido ? '<div class="msg-dot"></div>' : '') + '</div>';
     }).join('');
   }
+
+  // ---------------------------------------------------------------
+  // Contador de no leídos del menú (HU-013)
+  // ---------------------------------------------------------------
+  var CADA_CUANTO_MS = 60 * 1000; // sin WebSockets: se vuelve a preguntar cada minuto con la pestaña visible
+
+  function pintarNoLeidos(n) {
+    var badge = el('nav-mensajes-count');
+    badge.textContent = n > 99 ? '99+' : String(n);
+    badge.title = n + (n === 1 ? ' mensaje sin leer' : ' mensajes sin leer');
+    badge.style.display = n ? '' : 'none';
+  }
+
+  async function actualizarNoLeidos() {
+    if (!CU) { pintarNoLeidos(0); return; } // tras cerrar sesión no queda el número del usuario anterior
+    try {
+      pintarNoLeidos((await pedir('/api/mensajes/no-leidos')).no_leidos);
+    } catch (e) {
+      console.error(e); // un fallo del contador no merece un aviso en pantalla cada minuto
+    }
+  }
+
+  setInterval(function () {
+    if (document.visibilityState === 'visible') actualizarNoLeidos();
+  }, CADA_CUANTO_MS);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') actualizarNoLeidos();
+  });
 
   window.verBandeja = function (cual) {
     bandeja = cual;
@@ -368,5 +397,6 @@
     if (id === 'seccion') buildSeccion();
     if (id === 'alumnos' && CU.role === 'teacher') cargarMisAlumnos();
     if (id === 'mensajes') verBandeja('recibidos');
+    else if (id === 'dashboard') actualizarNoLeidos(); // al entrar al portal
   };
 })();
