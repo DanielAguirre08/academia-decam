@@ -113,6 +113,17 @@ La notación `archivo › describe › prueba` permite buscar la prueba exacta c
 | CA-001 Publica con fecha, aparece en el listado y en el contador del menú | **U** `logica-comunicacion.test.js › HU-012 — Avisos` · **API** `comunicacion.test.js › CA-001: el jefe publica con fecha del servidor…`, `CA-001: cada rol ve los avisos dirigidos a él` · **UI** el contador del menú sube de 5 a 6. |
 | CA-002 Alumno y docente solo consultan; el botón de publicar está oculto | **API** `CA-002: alumno, docente y registrador consultan pero no publican (403)`, `la base sigue íntegra: todo aviso lo publicó un Jefe Académico (control 11)` · **UI** sin botón «Nuevo aviso». |
 
+## HU-013 — Mensajes con buscador de destinatarios  *(nueva, no está en el informe del curso)*
+
+El campo «Para» de Redactar ya no pide el correo exacto: sugiere personas mientras se escribe, como
+en un aula virtual. La regla de alcance está en `datos/destinatarios.js`.
+
+| CA | Evidencia |
+|---|---|
+| CA-001 Sugiere desde 2 letras, por nombre, apellido o correo, sin distinguir mayúsculas ni tildes; como máximo 8 | **U** `logica-comunicacion.test.js › HU-013 — Buscador de destinatarios` · **API** `mensajes.test.js › con menos de 2 letras…`, `sin distinguir mayúsculas ni tildes…`, `varias palabras en cualquier orden…`, `"%" y "_" se buscan literalmente…`, `nunca aparece uno mismo, y como máximo 8 resultados` · **UI** «ana» muestra a Ana Torres (Alumno · 6-A); Enter o clic la agrega como etiqueta; ↑/↓ mueven la selección; Esc cierra la lista sin cerrar el modal; Backspace con el campo vacío quita la última etiqueta. |
+| CA-002 Solo se puede escribir a quien comparte clases (alumno → sus docentes y el personal; docente → sus alumnos, docentes y personal; jefe y registrador → todos), al buscar y al enviar | **API** `alumno: encuentra a los docentes de su sección…`, `docente: solo los alumnos de las secciones donde dicta o es tutor`, `docente: el alumno retirado ya no aparece`, `fuera de su alcance o inexistente -> 404 con el mismo texto…`, `la regla es simétrica…` |
+| CA-003 Un mensaje a varios destinatarios (1 a 20, sin repetir), todos o ninguno | **U** `HU-013: lista de id_usuario…`, `HU-013: máximo 20 destinatarios DISTINTOS…`, `HU-013: destinatariosUnicos…` · **API** `un mensaje por destinatario (sin repetir)…`, `lista inválida -> 400 sin guardar nada` |
+
 ---
 
 ## Controles de integridad de la base (`npm run db:check`)

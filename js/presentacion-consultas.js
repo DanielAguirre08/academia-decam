@@ -3,7 +3,8 @@
  * ---------------------------------------------------------------------------
  * Horario, Mi Sección, Mis Alumnos y Mensajes mostraban datos fijos o vacíos en el prototipo.
  * Aquí leen la base real (GET /api/horario, /api/seccion, /api/alumnos y /api/mensajes).
- * Son de solo lectura, salvo enviar un mensaje y marcarlo como leído.
+ * Son de solo lectura, salvo enviar un mensaje y marcarlo como leído. El campo "Para" de
+ * Redactar sugiere destinatarios mientras se escribe (HU-013, GET /api/mensajes/destinatarios).
  */
 (function () {
   'use strict';
@@ -13,6 +14,7 @@
   var iniciales = window.UtilidadesHtml.iniciales;
   var pedir = window.ApiCliente.pedir;
   var enviarJson = window.ApiCliente.enviarJson;
+  var parametros = window.ApiCliente.parametros;
   var avisarError = window.ApiCliente.avisarError;
 
   function el(id) { return document.getElementById(id); }
@@ -199,17 +201,154 @@
     cargarMensajes();
   };
 
-  window.enviarMensaje = async function () {
-    var datos = { para: el('msg-para').value.trim(), contenido: el('msg-contenido').value.trim() };
-    var revision = C.revisarMensaje(datos, CU.email);
-    if (!revision.valido) { showToast(revision.errores[0]); return; }
+  // ---------------------------------------------------------------
+  // Campo "Para": buscador de destinatarios (HU-013)
+  // ---------------------------------------------------------------
+  var ESPERA_BUSQUEDA_MS = 250; // se busca cuando el usuario deja de teclear, no en cada letra
+  var elegidos = [];            // [{ id_usuario, nombre }] en el orden en que se eligieron
+  var sugerencias = [];         // resultados visibles de la última búsqueda
+  var resaltada = -1;           // sugerencia marcada con las flechas
+  var temporizador = null;
+  var busquedaEnCurso = null;   // AbortController del pedido anterior: una respuesta vieja no pisa a la nueva
+
+  function cerrarSugerencias() {
+    var lista = el('msg-para-lista');
+    lista.hidden = true;
+    lista.innerHTML = '';
+    el('msg-para-buscar').setAttribute('aria-expanded', 'false');
+    el('msg-para-buscar').removeAttribute('aria-activedescendant');
+    sugerencias = [];
+    resaltada = -1;
+  }
+
+  function pintarElegidos() {
+    el('msg-para-chips').innerHTML = elegidos.map(function (d) {
+      return '<span class="dest-chip"><span>' + esc(d.nombre) + '</span>' +
+        '<button type="button" onclick="quitarDestinatario(' + Number(d.id_usuario) + ')" aria-label="Quitar a ' + esc(d.nombre) + '">×</button></span>';
+    }).join('');
+    el('msg-para-buscar').placeholder = elegidos.length ? '' : 'Escribe un nombre o correo...';
+  }
+
+  function pintarSugerencias(textoBuscado) {
+    var lista = el('msg-para-lista');
+    var campo = el('msg-para-buscar');
+    lista.innerHTML = sugerencias.length
+      ? sugerencias.map(function (d, i) {
+        // mousedown con preventDefault: el campo no pierde el foco (y la lista no se cierra) antes del clic.
+        return '<div class="dest-op" role="option" id="msg-dest-op-' + i + '" aria-selected="' + (i === resaltada) + '"' +
+          ' onmousedown="event.preventDefault()" onclick="elegirDestinatario(' + i + ')">' +
+          '<div class="msg-av">' + esc(iniciales(d.nombre)) + '</div>' +
+          '<div style="min-width:0"><div class="dest-op-nombre">' + esc(d.nombre) + '</div>' +
+          '<div class="dest-op-detalle">' + esc(d.detalle) + ' · ' + esc(d.correo) + '</div></div></div>';
+      }).join('')
+      : '<div class="dest-vacio">No encontramos a nadie con «' + esc(textoBuscado) + '» entre las personas a las que puedes escribir.</div>';
+    lista.hidden = false;
+    campo.setAttribute('aria-expanded', 'true');
+    if (resaltada >= 0) {
+      campo.setAttribute('aria-activedescendant', 'msg-dest-op-' + resaltada);
+      el('msg-dest-op-' + resaltada).scrollIntoView({ block: 'nearest' });
+    } else {
+      campo.removeAttribute('aria-activedescendant');
+    }
+  }
+
+  async function buscarDestinatarios() {
+    var q = el('msg-para-buscar').value;
+    if (busquedaEnCurso) busquedaEnCurso.abort();
+    busquedaEnCurso = null;
+    if (!C.palabrasDeBusqueda(q).length) { cerrarSugerencias(); return; }
+    var control = busquedaEnCurso = new AbortController();
+    var resultado;
     try {
-      await enviarJson('/api/mensajes', 'POST', datos);
-      el('msg-para').value = '';
-      el('msg-contenido').value = '';
+      resultado = await pedir('/api/mensajes/destinatarios' + parametros({ q: q.trim() }), { signal: control.signal });
+    } catch (e) {
+      if (e.name !== 'AbortError') avisarError(e);
+      return;
+    }
+    if (control !== busquedaEnCurso) return;
+    busquedaEnCurso = null;
+    var ya = elegidos.map(function (d) { return d.id_usuario; });
+    sugerencias = resultado.filter(function (d) { return ya.indexOf(d.id_usuario) === -1; });
+    resaltada = sugerencias.length ? 0 : -1;
+    pintarSugerencias(q.trim());
+  }
+
+  window.elegirDestinatario = function (i) {
+    var d = sugerencias[i];
+    if (!d) return;
+    if (elegidos.length >= C.MAX_DESTINATARIOS) {
+      showToast('Puedes escribir a ' + C.MAX_DESTINATARIOS + ' destinatarios como máximo');
+      return;
+    }
+    elegidos.push({ id_usuario: d.id_usuario, nombre: d.nombre });
+    el('msg-para-buscar').value = '';
+    cerrarSugerencias();
+    pintarElegidos();
+    el('msg-para-buscar').focus();
+  };
+
+  window.quitarDestinatario = function (id) {
+    elegidos = elegidos.filter(function (d) { return d.id_usuario !== id; });
+    pintarElegidos();
+    el('msg-para-buscar').focus();
+  };
+
+  function limpiarRedaccion() {
+    elegidos = [];
+    pintarElegidos();
+    el('msg-para-buscar').value = '';
+    el('msg-contenido').value = '';
+    cerrarSugerencias();
+  }
+
+  (function engancharBuscador() {
+    var campo = el('msg-para-buscar');
+    campo.addEventListener('input', function () {
+      clearTimeout(temporizador);
+      temporizador = setTimeout(buscarDestinatarios, ESPERA_BUSQUEDA_MS);
+    });
+    campo.addEventListener('keydown', function (e) {
+      var abierta = !el('msg-para-lista').hidden && sugerencias.length > 0;
+      if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && abierta) {
+        e.preventDefault();
+        var paso = e.key === 'ArrowDown' ? 1 : -1;
+        resaltada = (resaltada + paso + sugerencias.length) % sugerencias.length;
+        pintarSugerencias(campo.value.trim());
+      } else if (e.key === 'Enter' && abierta && resaltada >= 0) {
+        e.preventDefault();
+        elegirDestinatario(resaltada);
+      } else if (e.key === 'Escape' && !el('msg-para-lista').hidden) {
+        e.preventDefault();
+        e.stopPropagation();
+        cerrarSugerencias();
+      } else if (e.key === 'Backspace' && !campo.value && elegidos.length) {
+        quitarDestinatario(elegidos[elegidos.length - 1].id_usuario); // como en el correo: borra la última etiqueta
+      }
+    });
+    campo.addEventListener('blur', function () {
+      clearTimeout(temporizador);
+      cerrarSugerencias();
+    });
+    // Un clic en cualquier parte del recuadro (entre etiquetas) lleva el foco al campo.
+    el('msg-para-box').addEventListener('mousedown', function (e) {
+      if (e.target === el('msg-para-box')) { e.preventDefault(); campo.focus(); }
+    });
+  })();
+
+  window.enviarMensaje = async function () {
+    var datos = { para: elegidos.map(function (d) { return d.id_usuario; }), contenido: el('msg-contenido').value.trim() };
+    var revision = C.revisarMensaje(datos, CU.email);
+    if (!revision.valido) {
+      // Escribió un nombre pero no lo eligió de la lista: se lo decimos en vez de "elige un destinatario".
+      showToast(!datos.para.length && el('msg-para-buscar').value.trim() ? 'Elige al destinatario de la lista de sugerencias' : revision.errores[0]);
+      return;
+    }
+    try {
+      var r = await enviarJson('/api/mensajes', 'POST', datos);
+      limpiarRedaccion();
       closeModal('modal-new-msg');
       verBandeja('enviados');
-      showToast('Mensaje enviado');
+      showToast(r.enviados > 1 ? 'Mensaje enviado a ' + r.enviados + ' destinatarios' : 'Mensaje enviado');
     } catch (e) {
       avisarError(e);
     }

@@ -2,6 +2,7 @@
  * ACADEMIA DECAM — CAPA DE LÓGICA DE NEGOCIO (comunicación)
  * ----------------------------------------------------------
  * HU-011 Registro y seguimiento de reclamos · HU-012 Publicación de avisos institucionales
+ * HU-013 Mensajes con buscador de destinatarios
  *
  * Funciones puras, sin DOM ni SQL. Se ejecuta en el navegador (js/logica-comunicacion.js) y en
  * el servidor. Longitudes y valores permitidos tomados de database/schema.sql.
@@ -91,17 +92,67 @@
     return DESTINATARIOS.slice();
   }
 
+  // ---------- HU-013 Mensajes ----------
+  var MIN_BUSQUEDA = 2;        // con una sola letra la lista no ayuda a elegir
+  var MAX_PALABRAS_BUSQUEDA = 4;
+  var MAX_DESTINATARIOS = 20;  // un mensaje a toda una sección (hasta ~20 alumnos) cabe
+  var MSJ_SIN_DESTINATARIO = 'Elige al menos un destinatario';
+  var ETIQUETA_ROL = { docente: 'Docente', alumno: 'Alumno', jefe_academico: 'Jefe Académico', registrador: 'Registrador' };
+
+  /** id_usuario válido: entero positivo (número o texto de dígitos) que cabe en un INT de MySQL. */
+  function esIdUsuario(valor) {
+    var n = typeof valor === 'string' && /^[0-9]+$/.test(valor) ? Number(valor) : valor;
+    return typeof n === 'number' && Number.isInteger(n) && n > 0 && n <= 2147483647;
+  }
+
+  /** Los ids sin repetir, como números y en el orden en que se eligieron. */
+  function destinatariosUnicos(ids) {
+    var unicos = [];
+    (ids || []).forEach(function (id) {
+      var n = Number(id);
+      if (unicos.indexOf(n) === -1) unicos.push(n);
+    });
+    return unicos;
+  }
+
   /**
-   * Mensajes: destinatario por correo institucional, contenido de 1 a 1000 caracteres
-   * (MENSAJE.contenido VARCHAR(1000)) y nunca a uno mismo (control 12 de verificar-integridad.sql).
+   * HU-013: el texto del buscador "Para", partido en palabras ("  ana   TOR " -> ['ana', 'TOR']).
+   * Cada palabra debe aparecer en el nombre, el apellido o el correo, así "torres ana" también
+   * encuentra a Ana Torres. Devuelve [] si el texto es demasiado corto para buscar.
    */
-  function revisarMensaje(datos, correoPropio) {
+  function palabrasDeBusqueda(q) {
+    var t = Array.from(texto(q).replace(/\s+/g, ' ')).slice(0, 60).join('').trim();
+    if (largo(t) < MIN_BUSQUEDA) return [];
+    return t.split(' ').slice(0, MAX_PALABRAS_BUSQUEDA);
+  }
+
+  /** HU-013: segunda línea de cada sugerencia ("Docente · Matemática", "Alumno · 6-A", "Registrador"). */
+  function detalleDestinatario(d) {
+    d = d || {};
+    var rol = ETIQUETA_ROL[d.rol] || '';
+    var extra = d.rol === 'docente' ? d.especialidad : d.rol === 'alumno' ? d.grupo : null;
+    return extra ? rol + ' · ' + extra : rol;
+  }
+
+  /**
+   * Mensajes: `para` es la lista de id_usuario elegidos en el buscador (HU-013, de 1 a 20, sin
+   * uno mismo) o, por compatibilidad, un correo institucional. Contenido de 1 a 1000 caracteres
+   * (MENSAJE.contenido VARCHAR(1000)). Nunca a uno mismo (control 12 de verificar-integridad.sql).
+   */
+  function revisarMensaje(datos, correoPropio, idPropio) {
     datos = datos || {};
     var errores = [];
-    var para = texto(datos.para).toLowerCase();
-    if (!para) errores.push('Indica el correo del destinatario');
-    else if (!/^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(para)) errores.push('El correo del destinatario no es válido');
-    else if (correoPropio && para === String(correoPropio).toLowerCase()) errores.push('No puedes enviarte un mensaje a ti mismo');
+    if (Array.isArray(datos.para)) {
+      if (!datos.para.length) errores.push(MSJ_SIN_DESTINATARIO);
+      else if (!datos.para.every(esIdUsuario)) errores.push('Algún destinatario no es válido');
+      else if (destinatariosUnicos(datos.para).length > MAX_DESTINATARIOS) errores.push('Puedes escribir a ' + MAX_DESTINATARIOS + ' destinatarios como máximo');
+      else if (idPropio && destinatariosUnicos(datos.para).indexOf(Number(idPropio)) !== -1) errores.push('No puedes enviarte un mensaje a ti mismo');
+    } else {
+      var para = texto(datos.para).toLowerCase();
+      if (!para) errores.push(MSJ_SIN_DESTINATARIO);
+      else if (!/^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(para)) errores.push('El correo del destinatario no es válido');
+      else if (correoPropio && para === String(correoPropio).toLowerCase()) errores.push('No puedes enviarte un mensaje a ti mismo');
+    }
     if (!texto(datos.contenido)) errores.push('Escribe el mensaje');
     else if (largo(texto(datos.contenido)) > 1000) errores.push('El mensaje admite como máximo 1000 caracteres');
     return { valido: errores.length === 0, errores: errores };
@@ -109,6 +160,12 @@
 
   return {
     revisarMensaje: revisarMensaje,
+    MIN_BUSQUEDA: MIN_BUSQUEDA,
+    MAX_DESTINATARIOS: MAX_DESTINATARIOS,
+    esIdUsuario: esIdUsuario,
+    destinatariosUnicos: destinatariosUnicos,
+    palabrasDeBusqueda: palabrasDeBusqueda,
+    detalleDestinatario: detalleDestinatario,
     TIPOS_RECLAMO: TIPOS_RECLAMO,
     PRIORIDADES: PRIORIDADES,
     DESTINATARIOS: DESTINATARIOS,

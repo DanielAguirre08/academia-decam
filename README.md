@@ -122,7 +122,8 @@ Un docente solo opera sobre las secciones donde dicta (HORARIO) o de las que es 
 | GET | `/api/horario` | — | docente, alumno | Horario semanal organizado por día y hora |
 | GET | `/api/seccion` | — | docente, alumno | Sección de la que es tutor / su sección |
 | GET | `/api/alumnos` | — | docente | Directorio de sus alumnos con promedio, asistencia y desempeño |
-| GET / POST | `/api/mensajes` | — | con sesión | Bandejas de recibidos/enviados y envío de mensajes |
+| GET / POST | `/api/mensajes` | HU-013 CA-002/003 | con sesión | Bandejas de recibidos/enviados; envío a uno o varios destinatarios (`para`: lista de `id_usuario`, o un correo) |
+| GET | `/api/mensajes/destinatarios?q=` | HU-013 CA-001/002 | con sesión | Sugerencias del campo «Para» (máx. 8), solo personas a las que puede escribir |
 | PATCH | `/api/mensajes/:id/leido` | — | destinatario | Marca un mensaje como leído |
 
 Comprobación rápida sin navegador:

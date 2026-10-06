@@ -74,15 +74,60 @@ describe('Mensajes', () => {
   });
 
   test('destinatario obligatorio, con formato y distinto de uno mismo', () => {
-    assert.equal(C.revisarMensaje({ contenido: 'Hola' }).errores[0], 'Indica el correo del destinatario');
+    assert.equal(C.revisarMensaje({ contenido: 'Hola' }).errores[0], 'Elige al menos un destinatario');
     assert.equal(C.revisarMensaje({ para: 'jefe', contenido: 'Hola' }).errores[0], 'El correo del destinatario no es válido');
     assert.equal(C.revisarMensaje({ para: 'PROF@acadecam.edu.pe', contenido: 'Hola' }, 'prof@acadecam.edu.pe').errores[0], 'No puedes enviarte un mensaje a ti mismo');
+  });
+
+  test('HU-013: lista de id_usuario de 1 a 20, enteros positivos y sin uno mismo', () => {
+    assert.equal(C.revisarMensaje({ para: [1, '4'], contenido: 'Hola' }, 'jefe@acadecam.edu.pe', 2).valido, true);
+    assert.equal(C.revisarMensaje({ para: [], contenido: 'Hola' }).errores[0], 'Elige al menos un destinatario');
+    for (const malo of [0, -1, 1.5, 'abc', '', null, {}, 2147483648]) {
+      assert.equal(C.revisarMensaje({ para: [malo], contenido: 'Hola' }).errores[0], 'Algún destinatario no es válido', String(malo));
+    }
+    assert.equal(C.revisarMensaje({ para: [4, '2'], contenido: 'Hola' }, null, 2).errores[0], 'No puedes enviarte un mensaje a ti mismo');
+  });
+
+  test('HU-013: máximo 20 destinatarios DISTINTOS (valores límite)', () => {
+    const veinte = Array.from({ length: 20 }, (_, i) => i + 1);
+    assert.equal(C.revisarMensaje({ para: veinte, contenido: 'Hola' }).valido, true);
+    assert.equal(C.revisarMensaje({ para: veinte.concat(1, 2), contenido: 'Hola' }).valido, true, 'los repetidos no cuentan');
+    assert.equal(C.revisarMensaje({ para: veinte.concat(21), contenido: 'Hola' }).errores[0], 'Puedes escribir a 20 destinatarios como máximo');
+  });
+
+  test('HU-013: destinatariosUnicos quita repetidos y conserva el orden', () => {
+    assert.deepEqual(C.destinatariosUnicos([107, '4', 107, 4, 101]), [107, 4, 101]);
+    assert.deepEqual(C.destinatariosUnicos(undefined), []);
   });
 
   test('contenido de 1 a 1000 caracteres (valores límite)', () => {
     assert.equal(C.revisarMensaje({ para: 'a@b.pe', contenido: '   ' }).valido, false);
     assert.equal(C.revisarMensaje({ para: 'a@b.pe', contenido: 'x'.repeat(1000) }).valido, true);
     assert.equal(C.revisarMensaje({ para: 'a@b.pe', contenido: 'x'.repeat(1001) }).valido, false);
+  });
+});
+
+describe('HU-013 — Buscador de destinatarios', () => {
+  test('palabrasDeBusqueda: sin espacios de más; [] con menos de 2 caracteres', () => {
+    assert.deepEqual(C.palabrasDeBusqueda('  ana   TOR '), ['ana', 'TOR']);
+    assert.deepEqual(C.palabrasDeBusqueda('an'), ['an']);
+    assert.deepEqual(C.palabrasDeBusqueda(' a '), []);
+    assert.deepEqual(C.palabrasDeBusqueda(undefined), []);
+    assert.deepEqual(C.palabrasDeBusqueda(['ana']), [], 'un ?q= repetido llega como arreglo');
+  });
+
+  test('palabrasDeBusqueda: como máximo 4 palabras y 60 caracteres', () => {
+    assert.deepEqual(C.palabrasDeBusqueda('a b c d e f'), ['a', 'b', 'c', 'd']);
+    assert.equal(C.palabrasDeBusqueda('x'.repeat(100))[0].length, 60);
+    assert.equal(Array.from(C.palabrasDeBusqueda('😀'.repeat(100))[0]).length, 60, 'no parte un emoji por la mitad');
+  });
+
+  test('detalleDestinatario: rol y, si corresponde, especialidad o grupo', () => {
+    assert.equal(C.detalleDestinatario({ rol: 'docente', especialidad: 'Matemática' }), 'Docente · Matemática');
+    assert.equal(C.detalleDestinatario({ rol: 'alumno', grupo: '6-A' }), 'Alumno · 6-A');
+    assert.equal(C.detalleDestinatario({ rol: 'alumno', grupo: null }), 'Alumno');
+    assert.equal(C.detalleDestinatario({ rol: 'jefe_academico' }), 'Jefe Académico');
+    assert.equal(C.detalleDestinatario({ rol: 'registrador', especialidad: 'x' }), 'Registrador');
   });
 });
 

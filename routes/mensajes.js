@@ -3,10 +3,16 @@ const router = express.Router();
 const pool = require('../config/db');
 const C = require('../logica-comunicacion');
 const LD = require('../logica-docente');
+const Destinatarios = require('../datos/destinatarios');
+const { enTransaccion } = require('../datos/transaccion');
 const { requiereSesion } = require('../middleware/auth');
 const { responderError } = require('../middleware/errores');
 
-// Mensajes directos entre usuarios. Cada uno ve SOLO los mensajes que envió o recibió.
+// Mensajes directos entre usuarios. Cada uno ve SOLO los mensajes que envió o recibió, y solo
+// puede escribir a quien comparte clases con él (HU-013, regla en datos/destinatarios.js).
+
+// Mismo texto para "no existe" y "no puedes escribirle": no se revela quién existe fuera de tu alcance.
+const MSJ_DESTINO_INVALIDO = 'El destinatario no existe o no puedes escribirle';
 
 // GET /api/mensajes?bandeja=recibidos|enviados
 router.get('/', requiereSesion, async (req, res) => {
@@ -26,26 +32,51 @@ router.get('/', requiereSesion, async (req, res) => {
   }
 });
 
-// POST /api/mensajes  { para (correo), contenido } — el remitente sale de la sesión.
+// GET /api/mensajes/destinatarios?q=ana — sugerencias del buscador "Para" (HU-013).
+// Con menos de 2 letras responde [] (no es un error: el usuario aún está escribiendo).
+router.get('/destinatarios', requiereSesion, async (req, res) => {
+  try {
+    res.json(await Destinatarios.buscar(req.session.usuario, req.query.q));
+  } catch (err) {
+    responderError(res, err, 'Error al buscar destinatarios');
+  }
+});
+
+// POST /api/mensajes  { para: [id_usuario, ...] | correo, contenido } — el remitente sale de la sesión.
+// Con varios destinatarios se guarda un mensaje por cada uno, todos o ninguno (transacción).
 router.post('/', requiereSesion, async (req, res) => {
   try {
     const u = req.session.usuario;
-    const revision = C.revisarMensaje(req.body, u.correo);
+    const revision = C.revisarMensaje(req.body, u.correo, u.id_usuario);
     if (!revision.valido) return res.status(400).json({ error: revision.errores[0], errores: revision.errores });
 
-    const [[destino]] = await pool.query(
-      "SELECT id_usuario FROM usuario WHERE correo = ? AND estado = 'activo'", [req.body.para.trim().toLowerCase()]
-    );
-    if (!destino) return res.status(404).json({ error: 'No existe un usuario activo con ese correo' });
-    // La comparación de textos de la capa de Lógica no basta: la intercalación utf8mb4_unicode_ci
-    // de MySQL trata "próf@" igual que "prof@". La regla definitiva es por id (control 12).
-    if (destino.id_usuario === u.id_usuario) return res.status(400).json({ error: 'No puedes enviarte un mensaje a ti mismo' });
+    let ids;
+    if (Array.isArray(req.body.para)) {
+      ids = C.destinatariosUnicos(req.body.para);
+    } else {
+      const [[destino]] = await pool.query(
+        "SELECT id_usuario FROM usuario WHERE correo = ? AND estado = 'activo'", [req.body.para.trim().toLowerCase()]
+      );
+      if (!destino) return res.status(404).json({ error: MSJ_DESTINO_INVALIDO });
+      // La comparación de textos de la capa de Lógica no basta: la intercalación utf8mb4_unicode_ci
+      // de MySQL trata "próf@" igual que "prof@". La regla definitiva es por id (control 12).
+      if (destino.id_usuario === u.id_usuario) return res.status(400).json({ error: 'No puedes enviarte un mensaje a ti mismo' });
+      ids = [destino.id_usuario];
+    }
+    if (await Destinatarios.contarPermitidos(u, ids) !== ids.length) return res.status(404).json({ error: MSJ_DESTINO_INVALIDO });
 
-    const [r] = await pool.query(
-      'INSERT INTO mensaje (id_remitente, id_destinatario, contenido) VALUES (?, ?, ?)',
-      [u.id_usuario, destino.id_usuario, req.body.contenido.trim()]
-    );
-    res.status(201).json({ id_mensaje: r.insertId });
+    const contenido = req.body.contenido.trim();
+    const idsMensaje = await enTransaccion(async (conexion) => {
+      const creados = [];
+      for (const id of ids) {
+        const [r] = await conexion.query(
+          'INSERT INTO mensaje (id_remitente, id_destinatario, contenido) VALUES (?, ?, ?)', [u.id_usuario, id, contenido]
+        );
+        creados.push(r.insertId);
+      }
+      return creados;
+    });
+    res.status(201).json({ id_mensaje: idsMensaje[0], ids_mensaje: idsMensaje, enviados: idsMensaje.length });
   } catch (err) {
     responderError(res, err, 'Error al enviar el mensaje');
   }
