@@ -1,6 +1,6 @@
 # Base de datos — Academia Decam
 
-MySQL 8 · InnoDB · utf8mb4 · **14 tablas**, 103 columnas, 23 llaves foráneas, 13 reglas CHECK.
+MySQL 8 · InnoDB · utf8mb4 · **14 tablas**, 106 columnas, 23 llaves foráneas, 14 reglas CHECK.
 
 ## Contenido de la carpeta
 
@@ -42,13 +42,16 @@ Convención de nombres de las restricciones: `uq_` única, `chk_` verificación,
 Los nombres de tablas y columnas del esquema original del proyecto (que corresponde al diccionario del
 informe) se respetan. Lo siguiente es **lo que se agregó** y debe reflejarse en el informe:
 
-**3 columnas nuevas**
+**6 columnas nuevas**
 
 | Tabla | Columna | Motivo |
 |---|---|---|
 | `usuario` | `intentos_fallidos TINYINT UNSIGNED NOT NULL DEFAULT 0` | RNF-02: cuenta los fallos de inicio de sesión |
 | `usuario` | `bloqueado_hasta DATETIME NULL` | RNF-02: hasta cuándo dura el bloqueo de la cuenta |
 | `tarea` | `tipo ENUM('Tarea','Examen','Proyecto','Exposición') NOT NULL DEFAULT 'Tarea'` | HU-010: el formulario pide el tipo |
+| `apoderado` | `correo VARCHAR(100) NULL` (con `chk_apoderado_correo`) | HU-003: el formulario de matrícula pide el correo del apoderado |
+| `apoderado` | `fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP` | HU-002 CA-001: el listado de Registro muestra la fecha de creación de cada persona |
+| `matricula` | `procedencia ENUM('nuevo','traslado','promocion') NOT NULL DEFAULT 'nuevo'` | HU-003: el formulario de matrícula pide la procedencia del alumno |
 
 **6 restricciones únicas nuevas**
 
@@ -59,12 +62,13 @@ informe) se respetan. Lo siguiente es **lo que se agregó** y debe reflejarse en
 | `matricula` | `(id_alumno, anio_lectivo)`: una matrícula por alumno y año |
 | `horario` | `(id_seccion, dia_semana, hora_inicio)` y `(id_docente, dia_semana, hora_inicio)`: una sección no tiene dos clases a la vez ni un docente está en dos aulas |
 
-**13 reglas CHECK nuevas**
+**14 reglas CHECK nuevas**
 
 | Tabla | Regla |
 |---|---|
 | `usuario` | `correo` con formato válido (`chk_usuario_correo`); `intentos_fallidos <= 5` |
 | `docente`, `apoderado`, `alumno` | `dni` de exactamente 8 dígitos |
+| `apoderado` | `correo` vacío o con formato válido (`chk_apoderado_correo`) |
 | `seccion` | Grado 1–6 en Primaria y 1–5 en Secundaria (HU-003 CA-002); letra de la A a la Z |
 | `matricula` | `codigo` con formato `MAT-NNNN` (HU-003 CA-001) |
 | `calificacion` | Notas y promedio entre 0 y 20; periodo `Bimestre I` a `Bimestre IV` |
@@ -109,7 +113,5 @@ demo siempre se vea al día (qué tarea está "atrasada" depende de la fecha act
 
 ## Limitaciones conocidas
 
-- El alta de alumno desde Calificaciones aún no crea su matrícula: `npm run db:check` lo marcará
-  (control 02) hasta que el módulo de Registro/Matrícula (HU-002/HU-003) la reemplace.
 - La etiqueta de grupo (`grado-letra`, p. ej. "6-A") no distingue el nivel: Primaria 1-A y Secundaria
   1-A se mostrarían igual. Los datos de prueba evitan esa coincidencia.

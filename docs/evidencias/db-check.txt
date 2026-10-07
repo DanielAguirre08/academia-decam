@@ -1,0 +1,16 @@
+# npm run db:check — 2026-10-05 23:20
+control	filas_con_error	resultado
+01 Alumno con nivel distinto al de su sección	0	OK
+02 Alumno activo con sección pero sin matrícula activa en ella	0	OK
+03 Matrícula activa de un alumno que no está activo	0	OK
+04 Promedio que no coincide con la media de las notas registradas	0	OK
+05 Calificación en una sección distinta a la del alumno	0	OK
+06 Asistencia en una sección distinta a la del alumno	0	OK
+07 Entrega de un alumno que no pertenece a la sección de la tarea	0	OK
+08 Usuario con rol docente sin perfil en DOCENTE	0	OK
+09 Usuario con rol alumno sin perfil en ALUMNO	0	OK
+10 Perfil de docente o alumno cuyo usuario tiene otro rol	0	OK
+11 Aviso publicado por alguien que no es Jefe Académico (RF-12)	0	OK
+12 Mensaje de un usuario a sí mismo	0	OK
+13 Horario con un curso distinto a la especialidad del docente	0	OK
+14 Tarea que vence antes de publicarse	0	OK

@@ -88,8 +88,32 @@
     return '';
   }
 
+  // bcrypt solo usa los primeros 72 bytes: una contraseña más larga daría una falsa sensación de seguridad.
+  var LARGO_MINIMO_CONTRASENA = 8;
+  var LARGO_MAXIMO_CONTRASENA = 72;
+
+  /**
+   * Cambio de contraseña desde "Mi Perfil": exige la actual, una nueva de 8 a 72 caracteres con al
+   * menos una letra y un número, distinta de la actual, y que la confirmación coincida.
+   * (Que la actual sea la correcta lo comprueba el servidor con bcrypt.) Devuelve { valido, errores[] }.
+   */
+  function revisarCambioContrasena(actual, nueva, confirmacion) {
+    var errores = [];
+    if (typeof actual !== 'string' || !actual) errores.push('Ingresa tu contraseña actual');
+    if (typeof nueva !== 'string' || nueva.length < LARGO_MINIMO_CONTRASENA || nueva.length > LARGO_MAXIMO_CONTRASENA) {
+      errores.push('La nueva contraseña debe tener entre ' + LARGO_MINIMO_CONTRASENA + ' y ' + LARGO_MAXIMO_CONTRASENA + ' caracteres');
+    } else if (!/[A-Za-zÁÉÍÓÚáéíóúÑñ]/.test(nueva) || !/[0-9]/.test(nueva)) {
+      errores.push('La nueva contraseña debe tener al menos una letra y un número');
+    } else if (nueva === actual) {
+      errores.push('La nueva contraseña debe ser distinta de la actual');
+    }
+    if (nueva !== confirmacion) errores.push('La confirmación no coincide con la nueva contraseña');
+    return { valido: errores.length === 0, errores: errores };
+  }
+
   return {
     MAX_INTENTOS_FALLIDOS: MAX_INTENTOS_FALLIDOS,
+    revisarCambioContrasena: revisarCambioContrasena,
     MINUTOS_BLOQUEO: MINUTOS_BLOQUEO,
     validarCredenciales: validarCredenciales,
     validarRol: validarRol,

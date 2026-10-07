@@ -90,7 +90,12 @@ CREATE TABLE IF NOT EXISTS apoderado (
                   COMMENT 'Teléfono de contacto',
   direccion       VARCHAR(150)
                   COMMENT 'Domicilio del apoderado',
+  correo          VARCHAR(100)
+                  COMMENT 'Correo de contacto (lo pide el formulario de matrícula, HU-003)',
+  fecha_registro  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+                  COMMENT 'Fecha en que se registró (el listado de Registro la muestra, HU-002 CA-001)',
   CONSTRAINT uq_apoderado_dni UNIQUE (dni),
+  CONSTRAINT chk_apoderado_correo CHECK (correo IS NULL OR correo REGEXP '^[^@ ]+@[^@ ]+[.][^@ ]+$'),
   CONSTRAINT chk_apoderado_dni CHECK (dni REGEXP '^[0-9]{8}$'),
   CONSTRAINT fk_apoderado_usuario FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
     ON UPDATE CASCADE ON DELETE SET NULL
@@ -176,6 +181,8 @@ CREATE TABLE IF NOT EXISTS matricula (
                    COMMENT 'Fecha en que se registró la matrícula',
   estado           ENUM('activa','inactiva') NOT NULL DEFAULT 'activa'
                    COMMENT 'activa = vigente; inactiva = anulada o retirada (HU-004 CA-002)',
+  procedencia      ENUM('nuevo','traslado','promocion') NOT NULL DEFAULT 'nuevo'
+                   COMMENT 'Alumno nuevo, traslado de otro colegio o promoción interna (formulario de matrícula, HU-003)',
   observaciones    VARCHAR(200)
                    COMMENT 'Notas libres: procedencia, motivo de retiro, etc.',
   CONSTRAINT uq_matricula_codigo UNIQUE (codigo),
@@ -321,7 +328,7 @@ CREATE TABLE IF NOT EXISTS entrega_tarea (
     ON UPDATE CASCADE ON DELETE RESTRICT,
   CONSTRAINT fk_entrega_alumno FOREIGN KEY (id_alumno) REFERENCES alumno(id_alumno)
     ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE=InnoDB COMMENT='Cumplimiento de una tarea por un alumno (HU-010 CA-003)';
+) ENGINE=InnoDB COMMENT='Cumplimiento de una tarea por un alumno (HU-010)';
 
 -- ============================================================================
 -- 4. COMUNICACIÓN

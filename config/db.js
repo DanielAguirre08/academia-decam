@@ -1,5 +1,5 @@
 // Capa de Datos — conexión real a MySQL 8.0 (reemplaza a los arrays en memoria
-// que usaba datos-docente.js en el prototipo del navegador).
+// que usaba el prototipo del navegador).
 require('dotenv').config();
 const mysql = require('mysql2/promise');
 
