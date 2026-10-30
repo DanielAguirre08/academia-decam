@@ -24,12 +24,14 @@ function requiereRol(...rolesPermitidos) {
  * ¿Puede este usuario operar sobre la sección? El jefe académico ve todas; un docente solo las
  * secciones donde dicta (tiene bloques en HORARIO) o de las que es tutor. Cualquier otro rol, no.
  * Las rutas la llaman DESPUÉS de comprobar que la sección existe, para responder 404 antes que 403.
+ * Dentro de una transacción hay que pasarle su `conexion`: si pidiera otra al pool mientras la
+ * transacción retiene la suya, con el pool lleno se quedaría esperando para siempre (DEF-01).
  */
-async function puedeOperarEnSeccion(usuario, idSeccion) {
+async function puedeOperarEnSeccion(usuario, idSeccion, conexion = pool) {
   if (!usuario) return false;
   if (usuario.rol === 'jefe_academico') return true;
   if (usuario.rol !== 'docente' || !usuario.id_docente) return false;
-  const [[fila]] = await pool.query(
+  const [[fila]] = await conexion.query(
     `SELECT 1 AS si FROM seccion s
      WHERE s.id_seccion = ?
        AND (s.id_docente_tutor = ?

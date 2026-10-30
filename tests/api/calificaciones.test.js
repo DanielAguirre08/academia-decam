@@ -132,6 +132,20 @@ describe('PATCH /api/calificaciones/:id — CA-001', () => {
     assert.equal(Number(fila.promedio), 13); // (20 + 9 + 10) / 3
   });
 
+  // DEF-01: con más cambios simultáneos que conexiones del pool (10), la transacción que tenía el
+  // bloqueo de la fila pedía otra conexión para revisar el permiso y se quedaba esperando para siempre.
+  test('DEF-01: 40 cambios simultáneos de la misma nota responden los 40 con 200', { timeout: 20000 }, async () => {
+    const valores = Array.from({ length: 40 }, (_, i) => 10 + (i % 10));
+    const respuestas = await Promise.all(valores.map((valor) =>
+      docente.patch('/api/calificaciones/1').send({ campo: 'examen1', valor })));
+    assert.deepEqual(respuestas.map((r) => r.status), valores.map(() => 200));
+    assert.ok(valores.includes(Number((await filaDe(1)).examen1)), 'queda guardado uno de los valores enviados');
+
+    // Deja a Ana como en database/seed.sql (15, 16, 18, 17 -> 16.50) para las demás pruebas.
+    const res = await docente.patch('/api/calificaciones/1').send({ campo: 'examen1', valor: 15 });
+    assert.equal(res.body.promedio, 16.5);
+  });
+
   test('la base sigue íntegra: todo promedio coincide con sus notas (control 04)', async () => {
     const [fila] = await H.consultar(`
       SELECT COUNT(*) AS n FROM calificacion c

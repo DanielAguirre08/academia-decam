@@ -14,7 +14,7 @@
   --navy:#0F172A;--navy2:#1E293B;
   --accent:#4F46E5;--accent2:#6366F1;--accent-light:#EEF2FF;
   --cream:#F8FAFC;--white:#fff;
-  --slate:#475569;--muted:#94A3B8;--border:#E2E8F0;--border2:#CBD5E1;
+  --slate:#475569;--muted:#5B6577;--border:#E2E8F0;--border2:#CBD5E1;
   --success:#10B981;--success-bg:#ECFDF5;--success-text:#065F46;
   --danger:#EF4444;--danger-bg:#FEF2F2;--danger-text:#7F1D1D;
   --warning:#F59E0B;--warning-bg:#FFFBEB;--warning-text:#78350F;
@@ -74,13 +74,13 @@ body{font-family:var(--font);background:var(--cream);color:var(--navy);min-heigh
 .sidebar-logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center}
 .sidebar-logo-icon i{color:#fff;font-size:16px}
 .sidebar-brand{font-family:var(--fd);font-size:14px;font-weight:700;color:#fff}
-.sidebar-sub{font-size:10px;color:rgba(255,255,255,.3)}
+.sidebar-sub{font-size:10px;color:rgba(255,255,255,.6)}
 .sidebar-user{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:12px 10px;background:rgba(255,255,255,.05);border-radius:var(--r);border:1px solid rgba(255,255,255,.06)}
 .u-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
 .av-t{background:var(--accent);color:#fff}.av-s{background:var(--teal);color:#fff}.av-admin{background:#7c3aed;color:#fff}
 .u-name{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.u-role{font-size:10px;color:rgba(255,255,255,.4)}
-.nav-sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.25);padding:12px 16px 4px}
+.u-role{font-size:10px;color:rgba(255,255,255,.6)}
+.nav-sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.6);padding:12px 16px 4px}
 .nav-item{position:relative;display:flex;align-items:center;gap:9px;padding:8px 12px 8px 22px;color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;font-size:13.5px;margin:1px 8px;border-radius:8px;user-select:none}
 .nav-item i{font-size:17px;flex-shrink:0}
 .nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
@@ -93,7 +93,7 @@ body{font-family:var(--font);background:var(--cream);color:var(--navy);min-heigh
 
 
 
-.sidebar-logout{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,.35);cursor:pointer;font-size:13px;transition:all .15s;border-radius:8px;padding:9px 12px;margin:0 8px}
+.sidebar-logout{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,.6);cursor:pointer;font-size:13px;transition:all .15s;border-radius:8px;padding:9px 12px;margin:0 8px}
 .sidebar-logout:hover{color:#fca5a5;background:rgba(239,68,68,.1)}
 .sidebar-logout i{font-size:17px}
 
@@ -139,7 +139,7 @@ tr:hover td{background:#f8fafc}
 .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:500;white-space:nowrap}
 .b-success{background:var(--success-bg);color:var(--success-text)}.b-warning{background:var(--warning-bg);color:var(--warning-text)}
 .b-danger{background:var(--danger-bg);color:var(--danger-text)}.b-info{background:var(--info-bg);color:var(--info-text)}
-.b-purple{background:var(--purple-bg);color:var(--purple-text)}.b-gray{background:#F1F5F9;color:#64748B}
+.b-purple{background:var(--purple-bg);color:var(--purple-text)}.b-gray{background:#F1F5F9;color:#475569}
 .b-teal{background:var(--teal-bg);color:var(--teal-text)}.b-accent{background:var(--accent-light);color:var(--accent)}
 
 /* PROGRESS */
@@ -736,8 +736,8 @@ tr:hover td{background:#f8fafc}
     <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:var(--accent-light);color:var(--accent);font-weight:600;border:1px solid rgba(79,70,229,.2)">● CI_MenuPrincipal</span>
     <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:var(--accent-light);color:var(--accent);font-weight:600;border:1px solid rgba(79,70,229,.2)">● CI_Registro</span>
     <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#ede9fe;color:#7c3aed;font-weight:600;border:1px solid rgba(124,58,237,.2)">● CC_Registro</span>
-    <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#16a34a;font-weight:600;border:1px solid rgba(22,163,74,.2)">● DT.Registro</span>
-    <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#16a34a;font-weight:600;border:1px solid rgba(22,163,74,.2)">● Registro</span>
+    <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#15803d;font-weight:600;border:1px solid rgba(22,163,74,.2)">● DT.Registro</span>
+    <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#15803d;font-weight:600;border:1px solid rgba(22,163,74,.2)">● Registro</span>
   </div>
   <!-- ── CI_MenuPrincipal ──────────────────────────── -->
   <div class="card" style="border-left:4px solid var(--accent);margin-bottom:8px">
@@ -783,7 +783,7 @@ tr:hover td{background:#f8fafc}
           <div style="display:flex;flex-direction:column;gap:10px">
 
             <div class="form-group" style="margin:0">
-              <label class="form-label">Tipo de registro</label>
+              <label class="form-label" for="ci-reg-tipo">Tipo de registro</label>
               <select class="form-input" id="ci-reg-tipo" onchange="toggleRegistroAlumnoFields()">
                 <option value="alumno">Alumno</option>
                 <option value="docente">Docente</option>
@@ -802,13 +802,13 @@ tr:hover td{background:#f8fafc}
                 <input type="text" class="form-input" id="ci-reg-dni" placeholder="00000000" maxlength="8">
               </div>
               <div class="form-group" style="margin:0" id="ci-reg-fechanac-wrap">
-                <label class="form-label">Fecha de nacimiento</label>
+                <label class="form-label" for="ci-reg-fechanac">Fecha de nacimiento</label>
                 <input type="date" class="form-input" id="ci-reg-fechanac">
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="ci-reg-sexo-wrap">
               <div class="form-group" style="margin:0">
-                <label class="form-label">Sexo</label>
+                <label class="form-label" for="ci-reg-sexo">Sexo</label>
                 <select class="form-input" id="ci-reg-sexo">
                   <option value="">Seleccionar...</option>
                   <option value="M">Masculino</option>
@@ -818,7 +818,7 @@ tr:hover td{background:#f8fafc}
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px" id="ci-reg-seccion-wrap">
               <div class="form-group" style="margin:0">
-                <label class="form-label">Nivel</label>
+                <label class="form-label" for="ci-reg-nivel">Nivel</label>
                 <select class="form-input" id="ci-reg-nivel" onchange="updateGradoOptions('ci-reg-nivel','ci-reg-grado')">
                   <option value="">Seleccionar...</option>
                   <option value="Primaria">Primaria</option>
@@ -826,13 +826,13 @@ tr:hover td{background:#f8fafc}
                 </select>
               </div>
               <div class="form-group" style="margin:0">
-                <label class="form-label">Grado</label>
+                <label class="form-label" for="ci-reg-grado">Grado</label>
                 <select class="form-input" id="ci-reg-grado" disabled>
                   <option value="">Nivel primero</option>
                 </select>
               </div>
               <div class="form-group" style="margin:0">
-                <label class="form-label">Sección</label>
+                <label class="form-label" for="ci-reg-seccionletra">Sección</label>
                 <select class="form-input" id="ci-reg-seccionletra">
                   <option value="">Seleccionar...</option>
                   <option value="A">A</option>
@@ -895,11 +895,11 @@ tr:hover td{background:#f8fafc}
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
             CC_Registro
           </h2>
-          <span style="font-size:11px;color:#7c3aed;opacity:.7">Control — Lógica de negocio</span>
+          <span style="font-size:11px;color:#6d28d9">Control — Lógica de negocio</span>
         </div>
         <div class="card-pad" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
           <input type="text" class="form-input" style="flex:1;min-width:140px;padding:6px 10px;font-size:12px" placeholder="Buscar por nombre, DNI o correo..." id="registro-search" oninput="filterRegistro()">
-          <select class="form-input" style="width:auto;padding:6px 10px;font-size:12px" id="registro-filter-tipo" onchange="filterRegistro()">
+          <select class="form-input" style="width:auto;padding:6px 10px;font-size:12px" id="registro-filter-tipo" aria-label="Filtrar por tipo de registro" onchange="filterRegistro()">
             <option value="all">Todos los tipos</option>
             <option value="alumno">Alumno</option>
             <option value="docente">Docente</option>
@@ -912,11 +912,11 @@ tr:hover td{background:#f8fafc}
       <!-- DT.Registro: Entidad detalle -->
       <div class="card" style="border-left:4px solid #16a34a">
         <div class="card-header" style="background:#f0fdf4">
-          <h2 style="color:#16a34a">
+          <h2 style="color:#15803d">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
             DT.Registro
           </h2>
-          <span style="font-size:11px;color:#16a34a;opacity:.7">Entity — Detalle del registro seleccionado</span>
+          <span style="font-size:11px;color:#15803d">Entity — Detalle del registro seleccionado</span>
         </div>
         <div class="card-pad" id="dt-registro-detalle">
           <div style="font-size:12px;color:var(--muted);text-align:center;padding:12px 0">Selecciona un registro de la lista para ver su detalle.</div>
@@ -926,11 +926,11 @@ tr:hover td{background:#f8fafc}
       <!-- Registro: Entidad lista -->
       <div class="card" style="border-left:4px solid #16a34a">
         <div class="card-header" style="background:#f0fdf4">
-          <h2 style="color:#16a34a">
+          <h2 style="color:#15803d">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             Registro
           </h2>
-          <span style="font-size:11px;color:#16a34a;opacity:.7">Entity — Tabla de registros</span>
+          <span style="font-size:11px;color:#15803d">Entity — Tabla de registros</span>
         </div>
         <div class="card-pad" id="registro-list">
           <div class="empty-state">
@@ -966,8 +966,8 @@ tr:hover td{background:#f8fafc}
     <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:var(--accent-light);color:var(--accent);font-weight:600;border:1px solid rgba(79,70,229,.2)">● CI_MenuPrincipal</span>
     <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:var(--accent-light);color:var(--accent);font-weight:600;border:1px solid rgba(79,70,229,.2)">● CI_Matricula</span>
     <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#ede9fe;color:#7c3aed;font-weight:600;border:1px solid rgba(124,58,237,.2)">● CC_Matricula</span>
-    <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#16a34a;font-weight:600;border:1px solid rgba(22,163,74,.2)">● Matricula</span>
-    <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#16a34a;font-weight:600;border:1px solid rgba(22,163,74,.2)">● DT.Matricula</span>
+    <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#15803d;font-weight:600;border:1px solid rgba(22,163,74,.2)">● Matricula</span>
+    <span style="font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#15803d;font-weight:600;border:1px solid rgba(22,163,74,.2)">● DT.Matricula</span>
   </div>
 
   <!-- ── CI_MenuPrincipal ──────────────────────────── -->
@@ -1020,13 +1020,13 @@ tr:hover td{background:#f8fafc}
                 <input type="text" class="form-input" id="ci-mat-dni" placeholder="00000000" maxlength="8">
               </div>
               <div class="form-group" style="margin:0">
-                <label class="form-label">Fecha de nacimiento (alumno nuevo)</label>
+                <label class="form-label" for="ci-mat-fechanac">Fecha de nacimiento (alumno nuevo)</label>
                 <input type="date" class="form-input" id="ci-mat-fechanac">
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
               <div class="form-group" style="margin:0">
-                <label class="form-label">Sexo (alumno nuevo)</label>
+                <label class="form-label" for="ci-mat-sexo">Sexo (alumno nuevo)</label>
                 <select class="form-input" id="ci-mat-sexo">
                   <option value="">Seleccionar...</option>
                   <option value="M">Masculino</option>
@@ -1034,7 +1034,7 @@ tr:hover td{background:#f8fafc}
                 </select>
               </div>
               <div class="form-group" style="margin:0">
-                <label class="form-label">Procedencia</label>
+                <label class="form-label" for="ci-mat-procedencia">Procedencia</label>
                 <select class="form-input" id="ci-mat-procedencia">
                   <option value="nuevo">Alumno nuevo</option>
                   <option value="traslado">Traslado de otro colegio</option>
@@ -1050,7 +1050,7 @@ tr:hover td{background:#f8fafc}
             <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-top:8px">Datos académicos</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
               <div class="form-group" style="margin:0">
-                <label class="form-label">Nivel *</label>
+                <label class="form-label" for="ci-mat-nivel">Nivel *</label>
                 <select class="form-input" id="ci-mat-nivel" onchange="updateGradoOptions('ci-mat-nivel','ci-mat-grado')">
                   <option value="">Seleccionar...</option>
                   <option value="Primaria">Primaria</option>
@@ -1058,13 +1058,13 @@ tr:hover td{background:#f8fafc}
                 </select>
               </div>
               <div class="form-group" style="margin:0">
-                <label class="form-label">Grado *</label>
+                <label class="form-label" for="ci-mat-grado">Grado *</label>
                 <select class="form-input" id="ci-mat-grado" disabled>
                   <option value="">Selecciona nivel primero</option>
                 </select>
               </div>
               <div class="form-group" style="margin:0">
-                <label class="form-label">Sección *</label>
+                <label class="form-label" for="ci-mat-seccion">Sección *</label>
                 <select class="form-input" id="ci-mat-seccion">
                   <option value="">Seleccionar...</option>
                   <option value="A">A</option>
@@ -1075,11 +1075,11 @@ tr:hover td{background:#f8fafc}
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
               <div class="form-group" style="margin:0">
-                <label class="form-label">Año lectivo</label>
+                <label class="form-label" for="ci-mat-anio">Año lectivo</label>
                 <input type="text" class="form-input" id="ci-mat-anio" value="2026">
               </div>
               <div class="form-group" style="margin:0">
-                <label class="form-label">Turno</label>
+                <label class="form-label" for="ci-mat-turno">Turno</label>
                 <select class="form-input" id="ci-mat-turno">
                   <option value="">Según la sección</option>
                   <option value="Mañana">Mañana</option>
@@ -1131,11 +1131,11 @@ tr:hover td{background:#f8fafc}
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
             CC_Matricula
           </h2>
-          <span style="font-size:11px;color:#7c3aed;opacity:.7">Control — Lógica de negocio</span>
+          <span style="font-size:11px;color:#6d28d9">Control — Lógica de negocio</span>
         </div>
         <div class="card-pad" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
           <input type="text" class="form-input" style="flex:1;min-width:140px;padding:6px 10px;font-size:12px" placeholder="Buscar por nombre, DNI, código o sección..." id="matricula-search" oninput="filterMatriculas()">
-          <select class="form-input" style="width:auto;padding:6px 10px;font-size:12px" id="matricula-filter-estado" onchange="filterMatriculas()">
+          <select class="form-input" style="width:auto;padding:6px 10px;font-size:12px" id="matricula-filter-estado" aria-label="Filtrar por estado de matrícula" onchange="filterMatriculas()">
             <option value="all">Todos los estados</option>
             <option value="activa">Activa</option>
             <option value="inactiva">Inactiva</option>
@@ -1147,11 +1147,11 @@ tr:hover td{background:#f8fafc}
       <!-- Matricula: Entidad tabla -->
       <div class="card" style="border-left:4px solid #16a34a">
         <div class="card-header" style="background:#f0fdf4">
-          <h2 style="color:#16a34a">
+          <h2 style="color:#15803d">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
             Matricula
           </h2>
-          <span style="font-size:11px;color:#16a34a;opacity:.7">Entity — Tabla de matrículas</span>
+          <span style="font-size:11px;color:#15803d">Entity — Tabla de matrículas</span>
         </div>
         <div style="overflow-x:auto">
           <table style="width:100%;border-collapse:collapse;font-size:13px" id="matricula-table">
@@ -1181,11 +1181,11 @@ tr:hover td{background:#f8fafc}
       <!-- DT.Matricula: Entidad detalle -->
       <div class="card" style="border-left:4px solid #16a34a">
         <div class="card-header" style="background:#f0fdf4">
-          <h2 style="color:#16a34a">
+          <h2 style="color:#15803d">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="10" r="3"/><line x1="9" y1="21" x2="9.01" y2="21"/><line x1="15" y1="21" x2="15.01" y2="21"/></svg>
             DT.Matricula
           </h2>
-          <span style="font-size:11px;color:#16a34a;opacity:.7">Entity — Detalle de matrícula seleccionada</span>
+          <span style="font-size:11px;color:#15803d">Entity — Detalle de matrícula seleccionada</span>
         </div>
         <div class="card-pad" id="dt-matricula-detalle">
           <div style="font-size:12px;color:var(--muted);text-align:center;padding:12px 0">Haz clic en <b>Ver</b> en la tabla para ver el detalle completo de una matrícula.</div>

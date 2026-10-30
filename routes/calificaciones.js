@@ -66,7 +66,8 @@ router.patch('/:id', requiereRol('docente'), async (req, res) => {
       'SELECT id_seccion, examen1, examen2, tareas, proyecto FROM calificacion WHERE id_calificacion = ? FOR UPDATE', [id]
     );
     if (!fila) { await conexion.rollback(); return res.status(404).json({ error: 'La calificación indicada no existe' }); }
-    if (!(await puedeOperarEnSeccion(req.session.usuario, fila.id_seccion))) {
+    // Con la MISMA conexión de la transacción (DEF-01): no se pide una segunda al pool.
+    if (!(await puedeOperarEnSeccion(req.session.usuario, fila.id_seccion, conexion))) {
       await conexion.rollback();
       return res.status(403).json({ error: 'No dictas en el grupo de este alumno' });
     }

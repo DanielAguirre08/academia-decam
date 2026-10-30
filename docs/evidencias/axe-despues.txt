@@ -1,0 +1,16 @@
+
+> academia-decam-backend@1.0.0 test:a11y
+> node tests/a11y/axe.js --salida docs/evidencias/axe-despues.json
+
+Análisis de accesibilidad con axe-core 4.14.0 — reglas: wcag2a, wcag2aa, wcag21a, wcag21aa
+
+== Inicio de sesión ==
+   0 reglas violadas (0 elementos) · 13 aprobadas · 0 para revisión manual
+
+== Registro (HU-002) ==
+   0 reglas violadas (0 elementos) · 19 aprobadas · 1 para revisión manual
+
+== Matrícula (HU-003 / HU-004) ==
+   0 reglas violadas (0 elementos) · 21 aprobadas · 1 para revisión manual
+
+Total: 0 violaciones en 3 pantallas. Detalle en docs/evidencias/axe-despues.json

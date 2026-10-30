@@ -1,0 +1,31 @@
+
+> academia-decam-backend@1.0.0 test:e2e
+> node --test --test-reporter=spec tests/e2e/flujo-principal.selenium.js
+
+▶ E2E — flujo principal (Selenium)
+  ▶ TC-SEL-01 — el docente inicia sesión y toma asistencia de su grupo (HU-001 + HU-008)
+    ✔ Paso 1: abrir el portal muestra la pantalla de inicio de sesión (792.497916ms)
+    ✔ Paso 2: elegir la pestaña «Docente» (93.089125ms)
+    ✔ Paso 3: escribir el correo institucional (147.35075ms)
+    ✔ Paso 4: escribir la contraseña (45.013667ms)
+    ✔ Paso 5: pulsar «Iniciar sesión» abre el portal (HU-001 CA-001) (1560.254875ms)
+    ✔ Paso 6: el menú es el del docente (acceso por rol) (23.935125ms)
+    ✔ Paso 7: entrar a Asistencia sin grupo muestra «Selecciona un grupo» (HU-008 CA-002) (204.837584ms)
+    ✔ Paso 8: elegir el grupo 6-A carga la lista con las opciones de marcado (HU-008 CA-001) (307.653292ms)
+    ✔ Paso 9: «Todos presentes» y luego un ausente y una tardanza (HU-008 CA-003) (133.505667ms)
+    ✔ Paso 10: «Guardar» confirma y deja el pase de lista en MySQL (HU-008 CA-003) (299.1535ms)
+  ✔ TC-SEL-01 — el docente inicia sesión y toma asistencia de su grupo (HU-001 + HU-008) (3610.432792ms)
+  ▶ TC-SEL-02 — credenciales de docente en la pestaña Alumno se rechazan (HU-001 CA-002)
+    ✔ Paso 1: abrir el portal y elegir la pestaña «Alumno» (252.654166ms)
+    ✔ Paso 2: ingresar correo y contraseña VÁLIDOS de un docente y pulsar «Iniciar sesión» (180.850125ms)
+    ✔ Paso 3: se muestra «Correo o contraseña incorrectos» y no se entra al portal (232.882542ms)
+  ✔ TC-SEL-02 — credenciales de docente en la pestaña Alumno se rechazan (HU-001 CA-002) (666.909541ms)
+✔ E2E — flujo principal (Selenium) (6205.032333ms)
+ℹ tests 15
+ℹ suites 1
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6728.458625

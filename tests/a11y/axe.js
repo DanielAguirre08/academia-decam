@@ -6,8 +6,10 @@
  *   3. Matrícula  (HU-003/004)   (como Registrador)
  *
  *   npm run test:a11y
+ *   npm run test:a11y -- --salida docs/evidencias/axe-despues.json
  *
- * Imprime un resumen por pantalla y guarda el resultado completo en docs/evidencias/axe.json.
+ * Imprime un resumen por pantalla y guarda el resultado completo en docs/evidencias/axe.json
+ * (o en la ruta de --salida, para no pisar una evidencia anterior).
  * Termina con código 1 si alguna pantalla tiene violaciones.
  */
 const fs = require('fs');
@@ -18,7 +20,10 @@ const { AxeBuilder } = require('@axe-core/webdriverjs');
 const { levantarServidor } = require('../../scripts/servidor-pruebas');
 
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
-const SALIDA = path.join(__dirname, '..', '..', 'docs', 'evidencias', 'axe.json');
+const iSalida = process.argv.indexOf('--salida');
+const SALIDA = iSalida > 0 && process.argv[iSalida + 1]
+  ? path.resolve(process.argv[iSalida + 1])
+  : path.join(__dirname, '..', '..', 'docs', 'evidencias', 'axe.json');
 const ESPERA = 10000;
 const REGISTRADOR = { correo: 'registrador@acadecam.edu.pe', contrasena: 'reg2024' };
 

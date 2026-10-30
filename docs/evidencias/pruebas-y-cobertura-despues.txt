@@ -1,0 +1,514 @@
+
+> academia-decam-backend@1.0.0 test:coverage
+> npm run db:reset:test && node --test --test-concurrency=1 --experimental-test-coverage --test-coverage-exclude="tests/**" "tests/*.test.js" "tests/api/**/*.test.js"
+
+
+> academia-decam-backend@1.0.0 db:reset:test
+> node scripts/preparar-bd-pruebas.js
+
+Base de pruebas "academia_decam_test" lista.
+▶ Permisos de /api/mi
+  ✔ sin sesión -> 401; docente, jefe y registrador -> 403 (349.106958ms)
+✔ Permisos de /api/mi (632.208166ms)
+▶ HU-007 — Mis calificaciones
+  ✔ CA-001: solo sus notas, con promedio y estado oficiales (4.903291ms)
+  ✔ CA-001: no expone otras notas aunque se pida otro alumno por parámetro (IDOR) (4.550875ms)
+  ✔ CA-002: el alumno no puede editar notas ni ver el cuadro del grupo (2.391667ms)
+✔ HU-007 — Mis calificaciones (12.028583ms)
+▶ HU-009 — Mi asistencia
+  ✔ devuelve solo sus registros, sin días futuros, y los indicadores coinciden con la BD (3.304625ms)
+✔ HU-009 — Mi asistencia (3.425291ms)
+▶ HU-010 CA-003 — Mis tareas
+  ✔ solo las tareas de su sección, con el estado de SU entrega (3.717125ms)
+  ✔ filtra por estado (2.027958ms)
+  ✔ marca y desmarca SU entrega; la segunda vez que desmarca -> 404 (10.71575ms)
+  ✔ no puede marcar tareas de otra sección ni inexistentes (404) ni con id inválido (400) (4.233459ms)
+  ✔ no puede crear tareas ni marcar entregas de otros alumnos (2.144292ms)
+  ✔ un alumno retirado no puede marcar entregas (403) (112.1155ms)
+  ✔ la entrega que marca el alumno la ve el docente en la lista del grupo (5.832417ms)
+✔ HU-010 CA-003 — Mis tareas (141.138875ms)
+▶ Permisos por rol
+  ✔ GET sin sesión -> 401 (4.764958ms)
+  ✔ POST sin sesión -> 401 (1.722209ms)
+  ✔ GET como alumno -> 403 (RF-07: la lista del grupo no es del alumno) (2.056ms)
+  ✔ POST como jefe académico -> 403 (solo consulta, no pasa lista) (2.021833ms)
+  ✔ GET como jefe académico -> 200 (puede consultar cualquier grupo) (6.516167ms)
+  ✔ docente que no dicta en el grupo: GET y POST -> 403 y no se guarda nada (6.080208ms)
+✔ Permisos por rol (538.397792ms)
+▶ CA-001: lista del grupo para una fecha
+  ✔ sin nada guardado, devuelve a los 5 alumnos activos en "presente" por defecto (4.975833ms)
+  ✔ no incluye alumnos inactivos (5-A: el alumno 9 está retirado) (3.850041ms)
+  ✔ trae el % histórico calculado por la capa de Lógica (0-100) (2.983708ms)
+  ✔ alumno sin días registrados: porcentaje null (sin datos), no 100% (2.498542ms)
+✔ CA-001: lista del grupo para una fecha (14.589083ms)
+▶ CA-002: grupo y fecha obligatorios y válidos
+  ✔ GET sin grupo -> 400 (2.144833ms)
+  ✔ POST sin grupo -> 400 y no se guarda nada (1.245833ms)
+  ✔ GET grupo vacío -> 400 (0.945584ms)
+  ✔ POST grupo vacío -> 400 y no se guarda nada (1.624292ms)
+  ✔ GET grupo no numérico -> 400 (1.330209ms)
+  ✔ POST grupo no numérico -> 400 y no se guarda nada (1.09975ms)
+  ✔ GET grupo 0 -> 400 (1.026917ms)
+  ✔ POST grupo 0 -> 400 y no se guarda nada (1.030709ms)
+  ✔ GET sin fecha -> 400 (0.974916ms)
+  ✔ POST sin fecha -> 400 y no se guarda nada (0.988166ms)
+  ✔ GET fecha con otro formato -> 400 (0.908375ms)
+  ✔ POST fecha con otro formato -> 400 y no se guarda nada (0.964334ms)
+  ✔ GET fecha inexistente 2026-02-31 -> 400 (2.480583ms)
+  ✔ POST fecha inexistente 2026-02-31 -> 400 y no se guarda nada (1.149708ms)
+  ✔ GET fecha futura (mañana) -> 400 (1.014584ms)
+  ✔ POST fecha futura (mañana) -> 400 y no se guarda nada (0.968375ms)
+  ✔ grupo que no existe -> 404 (1.755542ms)
+  ✔ ninguno de los POST inválidos dejó filas para hoy en el 6-A (0.4575ms)
+✔ CA-002: grupo y fecha obligatorios y válidos (22.651958ms)
+▶ CA-003: guardar el pase de lista
+  ✔ registros inválidos -> 400 con la lista de errores, sin guardar nada (13.195875ms)
+  ✔ alumno inactivo de la sección -> 400 (5-A, alumno 9 retirado) (2.143917ms)
+  ✔ caso feliz: guarda los 5 registros en MySQL firmados por el docente de la sesión (5.763041ms)
+  ✔ CA-001 tras guardar: el GET devuelve lo guardado y marca guardado=true (4.646917ms)
+  ✔ guardar otra vez el mismo día actualiza, no duplica (UNIQUE alumno/sección/fecha) (4.001416ms)
+  ✔ la base sigue íntegra: ninguna asistencia en una sección distinta a la del alumno (0.663084ms)
+✔ CA-003: guardar el pase de lista (30.693875ms)
+✔ sin sesión, una ruta protegida responde 401 (27.40025ms)
+✔ CA-001: login correcto devuelve el usuario sin el hash y abre sesión (149.649334ms)
+✔ CA-002: correo inexistente y rol equivocado dan el mismo mensaje genérico (223.81ms)
+✔ datos incompletos responden 400 (2.035166ms)
+✔ RNF-02: el 5.º intento fallido bloquea la cuenta (423) y ni la contraseña correcta entra (580.349542ms)
+✔ logout cierra la sesión (119.15425ms)
+✔ cambio de contraseña: exige sesión, la actual correcta y una nueva válida (680.048875ms)
+▶ GET /api/calificaciones
+  ✔ sin sesión -> 401; alumno -> 403 (4.8225ms)
+  ✔ CA-003: filtra por grupo (5.16325ms)
+  ✔ CA-003: filtra por estado (Desaprobado = promedio < 11.00) (2.570042ms)
+  ✔ CA-003: filtra por nombre sin distinguir mayúsculas (2.257083ms)
+  ✔ grupo no numérico -> 400 (1.255916ms)
+  ✔ docente que no dicta en el grupo -> 403; sin filtro, no ve ese grupo (3.439791ms)
+  ✔ el jefe académico ve todos los grupos (1.514792ms)
+✔ GET /api/calificaciones (543.188875ms)
+▶ PATCH /api/calificaciones/:id — CA-001
+  ✔ sin sesión -> 401; alumno y jefe -> 403 (3.406292ms)
+  ✔ datos inválidos -> 400 y la nota no cambia (8.890875ms)
+  ✔ calificación inexistente -> 404 (no 500) (2.061375ms)
+  ✔ docente que no dicta en el grupo -> 403 y la nota no cambia (2.221833ms)
+  ✔ caso feliz: cambia la nota y persiste el promedio recalculado (2.7005ms)
+  ✔ valor límite: la nota 0 se guarda como 0, no como NULL (2.886125ms)
+(node:12621) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 listening listeners added to [Server]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12621) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 error listeners added to [Server]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+(node:12621) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [Server]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit
+  ✔ borrar una nota (null) la deja sin registrar y el promedio la ignora (2.934917ms)
+  ✔ DEF-01: 40 cambios simultáneos de la misma nota responden los 40 con 200 (62.013416ms)
+  ✔ la base sigue íntegra: todo promedio coincide con sus notas (control 04) (0.55925ms)
+✔ PATCH /api/calificaciones/:id — CA-001 (88.04825ms)
+▶ HU-011 — Reclamos
+  ✔ sin sesión -> 401; registrador -> 403 (no participa en reclamos) (7.085666ms)
+  ✔ CA-002: sin asunto o sin descripción no se registra (mensaje de la HU) (4.096292ms)
+  ✔ tipo o prioridad fuera de la lista -> 400 (2.422208ms)
+  ✔ CA-001: estado inicial pendiente; autor y fecha los pone el servidor (3.554708ms)
+  ✔ cada autor ve solo sus reclamos; el jefe ve todos (3.360208ms)
+  ✔ el docente también puede registrar reclamos (los suyos) (2.083459ms)
+  ✔ CA-003: solo el jefe avanza el estado (alumno y docente -> 403) (1.92875ms)
+  ✔ CA-003: Pendiente -> En revisión -> Resuelto, y ahí se detiene (409) (8.813958ms)
+  ✔ CA-003: el filtro por estado refleja el cambio (3.389ms)
+  ✔ reclamo inexistente -> 404; id inválido -> 400 (2.481541ms)
+✔ HU-011 — Reclamos (535.71ms)
+▶ HU-012 — Avisos
+  ✔ sin sesión -> 401 (1.260166ms)
+  ✔ CA-002: alumno, docente y registrador consultan pero no publican (403) (7.167959ms)
+  ✔ CA-001: cada rol ve los avisos dirigidos a él (3.814833ms)
+  ✔ datos inválidos -> 400 y no se publica (3.693125ms)
+  ✔ CA-001: el jefe publica con fecha del servidor y aparece primero en el listado (4.22075ms)
+  ✔ la base sigue íntegra: todo aviso lo publicó un Jefe Académico (control 11) (0.454625ms)
+✔ HU-012 — Avisos (20.84325ms)
+▶ Horario
+  ✔ sin sesión 401; jefe 403 (5.378833ms)
+  ✔ docente: solo sus bloques, organizados por día y hora (5.757125ms)
+  ✔ alumno: el horario de su sección con todos los cursos (3.495ms)
+✔ Horario (394.510709ms)
+▶ Mi Sección
+  ✔ docente: sus secciones como tutor y el detalle real de la elegida (6.899541ms)
+  ✔ docente: sin parámetro, siempre la misma sección; una de la que no es tutor -> 403 (7.484958ms)
+  ✔ alumno: su propia sección; sin datos sensibles de los compañeros (2.779083ms)
+✔ Mi Sección (17.360125ms)
+▶ Mis Alumnos
+  ✔ solo el docente (alumno 403) (1.435208ms)
+  ✔ directorio con promedio, asistencia, tareas pendientes y desempeño (7.42225ms)
+✔ Mis Alumnos (9.000208ms)
+▶ Mensajes
+  ✔ sin sesión 401 (1.6ms)
+  ✔ recibidos y enviados: solo los propios (3.804625ms)
+  ✔ enviar: valida, rechaza correo inexistente y a uno mismo, y llega al destinatario (8.852959ms)
+  ✔ no se puede enviar a uno mismo ni con tildes o mayúsculas en el correo (intercalación de MySQL) (4.240083ms)
+  ✔ marcar como leído: solo el destinatario (ajeno -> 404) (4.744791ms)
+  ✔ la base sigue íntegra: nadie se envía mensajes a sí mismo (control 12) (0.356834ms)
+✔ Mensajes (23.867209ms)
+▶ HU-013 — Buscador de destinatarios
+  ✔ sin sesión 401 (4.861583ms)
+  ✔ con menos de 2 letras (o sin texto) no busca: lista vacía (5.751542ms)
+  ✔ sin distinguir mayúsculas ni tildes, con el detalle de cada uno (5.2965ms)
+  ✔ varias palabras en cualquier orden, y también por correo (3.57325ms)
+  ✔ "%" y "_" se buscan literalmente (no listan a todos) (3.774542ms)
+  ✔ nunca aparece uno mismo, y como máximo 8 resultados (4.606583ms)
+  ✔ alumno: encuentra a los docentes de su sección y al personal, nunca a otros alumnos (5.773541ms)
+  ✔ docente: solo los alumnos de las secciones donde dicta o es tutor (6.298709ms)
+  ✔ docente: el alumno retirado ya no aparece (3.169ms)
+✔ HU-013 — Buscador de destinatarios (529.982ms)
+▶ HU-013 — Envío a varios destinatarios
+  ✔ un mensaje por destinatario (sin repetir) y le llega a cada uno (10.257416ms)
+  ✔ lista inválida -> 400 sin guardar nada (5.218208ms)
+  ✔ fuera de su alcance o inexistente -> 404 con el mismo texto, y no se envía a NADIE de la lista (8.920583ms)
+  ✔ la regla es simétrica: el alumno puede responderle a su docente (3.084875ms)
+  ✔ la base sigue íntegra: nadie se envía mensajes a sí mismo (control 12) (0.443625ms)
+✔ HU-013 — Envío a varios destinatarios (28.174083ms)
+▶ HU-013 — Contador de mensajes no leídos
+  ✔ sin sesión 401 (1.197458ms)
+  ✔ cuenta solo los recibidos sin abrir del propio usuario (1.690459ms)
+  ✔ sube cuando otro le escribe, no con lo que uno envía, y baja al marcarlo como leído (11.504458ms)
+  ✔ un envío a varios suma 1 a cada destinatario (7.201458ms)
+✔ HU-013 — Contador de mensajes no leídos (21.791583ms)
+▶ Permisos del Registrador
+  ✔ sin sesión -> 401; docente y jefe -> 403 en registros y matrículas (14.744542ms)
+  ✔ el alta de alumno desde Calificaciones ya no existe (lo hace el Registrador) (1.56575ms)
+✔ Permisos del Registrador (391.738583ms)
+▶ HU-002 — Registro de personas
+  ✔ CA-003: sin nombre no registra y responde "El nombre es obligatorio" (2.753167ms)
+  ✔ CA-001: registra un apoderado con fecha peruana y aparece en el listado (10.376917ms)
+  ✔ un nombre con HTML se rechaza (400) y no llega a la base (XSS almacenado) (1.825333ms)
+  ✔ DNI repetido -> 409 y no se duplica (2.352667ms)
+  ✔ docente: crea USUARIO + DOCENTE y puede iniciar sesión con la contraseña inicial (227.248541ms)
+  ✔ correo ya usado -> 409 y la transacción no deja un docente a medias (3.684208ms)
+  ✔ CA-002: alumno sin sus campos propios -> 400 con el detalle (3.204ms)
+  ✔ alumno sin sección: queda registrado sin matrícula y con su apoderado existente (113.838417ms)
+  ✔ alumno con grado y sección: queda matriculado y con su fila en Calificaciones (120.319417ms)
+  ✔ sección inexistente -> 400 y NO queda el alumno creado (rollback) (3.225542ms)
+  ✔ apoderado nuevo sin teléfono -> 400 y no se crea nada (2.846375ms)
+✔ HU-002 — Registro de personas (492.211334ms)
+▶ HU-003 — Registro de matrícula
+  ✔ CA-003: falta un campo (*) -> 400 con el mensaje exacto, sin insertar (7.392458ms)
+  ✔ CA-002: grado que no corresponde al nivel -> 400 (1.358667ms)
+  ✔ turno distinto al de la sección -> 400 (2.178625ms)
+  ✔ alumno nuevo sin fecha de nacimiento -> 400 y no se crea nada (2.613125ms)
+  ✔ CA-001: alumno nuevo -> crea alumno, apoderado y matrícula activa con código correlativo (117.49725ms)
+  ✔ el mismo alumno otra vez en el mismo año -> 409 (una matrícula por alumno y año) (2.839041ms)
+  ✔ alumno ya registrado (sin sección) -> se le matricula sin pedir fecha ni sexo (6.2815ms)
+  ✔ concurrencia: 5 matrículas simultáneas reciben 5 códigos distintos y consecutivos (557.093916ms)
+✔ HU-003 — Registro de matrícula (697.64925ms)
+▶ HU-004 — Consulta y estado de matrículas
+  ✔ CA-001: filtra por estado (4.732042ms)
+  ✔ busca por nombre o documento (3.41525ms)
+  ✔ CA-003: búsqueda sin resultados -> lista vacía (1.601291ms)
+  ✔ CA-002: activa -> inactiva conserva el código y deja al alumno inactivo (6.816667ms)
+  ✔ CA-002: inactiva -> activa reactiva al alumno en su sección (6.898ms)
+  ✔ matrícula inexistente -> 404; id inválido -> 400 (7.663208ms)
+  ✔ el alumno inactivo deja de aparecer en la asistencia del docente (14.564167ms)
+✔ HU-004 — Consulta y estado de matrículas (46.104083ms)
+✔ sin sesión -> 401 (31.470833ms)
+✔ docente: tarjetas sin "?" y coherentes con la BD (150.655292ms)
+✔ alumno: promedio, tareas pendientes, % asistencia y puesto en el grupo (126.097209ms)
+✔ jefe y registrador: contadores administrativos (241.838958ms)
+✔ perfil del docente: especialidad, DNI y grupos reales (114.169917ms)
+✔ perfil del alumno: matrícula, grupo, tutor y ciclo (115.136791ms)
+✔ POST entregas sin sesión responde 401 (37.731583ms)
+✔ POST entregas como alumno responde 403 (122.782209ms)
+✔ POST entregas de un docente que no dicta en la sección responde 403 (117.020625ms)
+✔ POST entregas del docente de la sección guarda la entrega (201) (115.157125ms)
+✔ JSON mal formado responde 400 en JSON (116.166291ms)
+✔ una ruta de API inexistente responde 404 en JSON (2.413833ms)
+▶ GET /api/tareas — CA-002
+  ✔ sin sesión -> 401; alumno -> 403 (5.643708ms)
+  ✔ cada tarea trae materia (especialidad del autor), tipo, grupo y estado derivado (7.219417ms)
+  ✔ CA-002: filtra por estado (4.278916ms)
+  ✔ grupo inválido -> 400; grupo ajeno -> 403; el jefe ve todo (8.059417ms)
+✔ GET /api/tareas — CA-002 (520.545208ms)
+▶ POST /api/tareas — CA-001
+  ✔ sin sesión -> 401; alumno y jefe -> 403 (3.778542ms)
+  ✔ datos inválidos -> 400 con el detalle, sin insertar nada (9.587291ms)
+  ✔ grupo inexistente -> 404; grupo donde no dicta -> 403 (3.374291ms)
+  ✔ caso feliz: inserta con el docente de la sesión aunque el cuerpo diga otro (4.496041ms)
+  ✔ valor límite: fecha límite = hoy es válida; sin tipo usa "Tarea" (3.527291ms)
+✔ POST /api/tareas — CA-001 (25.062459ms)
+▶ Seguimiento de entregas por alumno (docente)
+  ✔ GET lista a los 5 alumnos activos del grupo con su estado (4.043625ms)
+  ✔ GET: alumno 403; tarea inexistente 404; id inválido 400; grupo ajeno 403 (5.460833ms)
+  ✔ POST: datos inválidos -> 400/404 y no se guarda nada (10.264417ms)
+  ✔ POST: el alumno retirado no puede entregar (tarea 5 del 5-A, alumno 9) (1.883791ms)
+  ✔ marcar a los 5 alumnos cambia la tarea a "entregada" en la lista (18.992042ms)
+  ✔ DELETE desmarca: la tarea vuelve a "pendiente"; desmarcar dos veces -> 404 (6.875959ms)
+  ✔ DELETE: alumno 403; grupo ajeno 403 (2.883792ms)
+  ✔ la base sigue íntegra: ninguna entrega de un alumno ajeno a la sección de la tarea (control 07) (0.541417ms)
+✔ Seguimiento de entregas por alumno (docente) (51.297084ms)
+✔ logica-docente.js y js/logica-docente.js son idénticos (1.395125ms)
+✔ logica-registro.js y js/logica-registro.js son idénticos (0.936958ms)
+✔ logica-alumno.js y js/logica-alumno.js son idénticos (0.349875ms)
+✔ logica-comunicacion.js y js/logica-comunicacion.js son idénticos (0.203792ms)
+▶ Paso 1 — Iniciar sesión como docente (HU-001)
+  ✔ con correo y contraseña completos se puede intentar el ingreso (0.575417ms)
+  ✔ sin contraseña, o solo con espacios, no se permite (0.093125ms)
+  ✔ el rol elegido debe ser válido y coincidir con el del usuario (0.100125ms)
+✔ Paso 1 — Iniciar sesión como docente (HU-001) (1.554208ms)
+▶ Paso 2 — Elegir grupo y fecha (HU-008 CA-001 / CA-002)
+  ✔ grupo válido: id entero positivo (viene como texto del <select>) (0.15925ms)
+  ✔ grupo inválido: vacío, cero, negativo, decimal o texto (0.130917ms)
+  ✔ fecha válida con formato AAAA-MM-DD (0.121834ms)
+  ✔ fecha inválida por formato (0.1045ms)
+  ✔ valores límite del calendario: 29 de febrero y días 31 inexistentes (0.072291ms)
+  ✔ valor límite: hoy no es futuro, mañana sí (0.075292ms)
+✔ Paso 2 — Elegir grupo y fecha (HU-008 CA-001 / CA-002) (0.829459ms)
+▶ Paso 3 — Marcar a todos presentes y cambiar a alguien (HU-008 CA-003)
+  ✔ "Marcar a todos" deja a cada alumno del grupo como presente (0.149459ms)
+  ✔ solo existen 3 estados: presente, ausente y tardanza (0.08425ms)
+✔ Paso 3 — Marcar a todos presentes y cambiar a alguien (HU-008 CA-003) (0.303541ms)
+▶ Paso 4 — Validar el pase de lista antes de guardar (HU-008)
+  ✔ camino feliz: pase completo con los tres estados es válido (1.421917ms)
+  ✔ lista vacía o que no es lista: inválida (0.08725ms)
+  ✔ alumno que no pertenece al grupo: se rechaza y el mensaje dice cuál (0.19775ms)
+  ✔ alumno repetido: se rechaza (el segundo no pisa al primero en silencio) (0.065834ms)
+  ✔ varios errores a la vez: los junta todos en vez de parar en el primero (0.050958ms)
+✔ Paso 4 — Validar el pase de lista antes de guardar (HU-008) (1.94275ms)
+▶ Paso 5 — Porcentaje de asistencia (HU-008)
+  ✔ la tardanza cuenta como asistencia (0.092125ms)
+  ✔ redondea al entero más cercano (2 de 3 = 67) (0.035833ms)
+  ✔ MySQL devuelve SUM() como texto y aun así calcula bien (0.0445ms)
+  ✔ sin días registrados devuelve null (sin datos), no 100 % (0.041167ms)
+✔ Paso 5 — Porcentaje de asistencia (HU-008) (0.287167ms)
+▶ HU-009 — calendario mensual
+  ✔ CA-001: título con mes y año en curso y todos los días del mes (0.607166ms)
+  ✔ CA-001: días hábiles transcurridos con su estado registrado (incluido hoy) (0.098834ms)
+  ✔ CA-002: sábados y domingos son no lectivos aunque tengan registro (0.113375ms)
+  ✔ CA-002: el día siguiente a hoy ya es futuro (valor límite) (0.081709ms)
+  ✔ día hábil pasado sin pase de lista: "sin-registro", no un presente inventado (0.086667ms)
+  ✔ febrero bisiesto y no bisiesto (0.099292ms)
+✔ HU-009 — calendario mensual (1.966416ms)
+▶ HU-009 CA-003 — indicadores
+  ✔ cuenta días, faltas y tardanzas; la tardanza cuenta como asistencia (0.804625ms)
+  ✔ sin registros: porcentaje null (sin datos) (0.069459ms)
+  ✔ ignora estados que no son del ENUM (0.067541ms)
+✔ HU-009 CA-003 — indicadores (1.05025ms)
+▶ HU-007 — mis calificaciones
+  ✔ recalcula promedio y estado con las reglas oficiales (0.192125ms)
+  ✔ sin notas: "Sin calificar" (0.622167ms)
+✔ HU-007 — mis calificaciones (0.877709ms)
+▶ HU-010 CA-003 — estado de mi tarea
+  ✔ entregada, pendiente o atrasada según mi entrega y la fecha (0.118042ms)
+✔ HU-010 CA-003 — estado de mi tarea (0.162625ms)
+▶ Inicio del alumno — promedio general y puesto en el grupo
+  ✔ promedioGeneral: media de los periodos calificados, 2 decimales (0.125542ms)
+  ✔ lugarEnGrupo: 1 es el mejor; los empates comparten puesto (0.117833ms)
+  ✔ lugarEnGrupo: sin promedio propio no hay puesto (0.038125ms)
+✔ Inicio del alumno — promedio general y puesto en el grupo (0.355791ms)
+▶ HU-001 — credenciales y rol
+  ✔ validarCredenciales exige correo y contraseña (1.340125ms)
+  ✔ validarRol solo acepta los 4 valores del ENUM USUARIO.rol (0.115375ms)
+  ✔ CA-002: rolCoincide rechaza si el rol elegido no es el del usuario (0.0805ms)
+  ✔ obtenerIniciales usa la primera letra de nombre y apellido (0.096083ms)
+  ✔ CA-003: etiquetaRol; el alumno lleva su grupo (0.102542ms)
+✔ HU-001 — credenciales y rol (2.614125ms)
+▶ RNF-02 — bloqueo tras 5 intentos fallidos
+  ✔ debeBloquearCuenta: con 4 intentos no, con 5 sí (0.113083ms)
+  ✔ registrarIntentoFallido: los primeros 4 fallos suman y no bloquean (0.116833ms)
+  ✔ registrarIntentoFallido: el 5.º fallo bloquea 10 minutos y reinicia el contador (0.097083ms)
+  ✔ estaBloqueada: bloqueada antes del vencimiento, libre después y libre si es null (0.094208ms)
+  ✔ minutosRestantes redondea hacia arriba y es 0 si no hay bloqueo (0.077541ms)
+✔ RNF-02 — bloqueo tras 5 intentos fallidos (0.632ms)
+▶ Cambio de contraseña (Mi Perfil)
+  ✔ nueva válida: 8+ caracteres, letra y número, distinta y confirmada (0.187375ms)
+  ✔ largo: 7 no, 8 sí, 72 sí, 73 no (valores límite) (0.16875ms)
+  ✔ sin letra o sin número, igual a la actual o sin confirmar (0.076209ms)
+  ✔ sin contraseña actual (0.054417ms)
+✔ Cambio de contraseña (Mi Perfil) (0.599084ms)
+▶ HU-011 — Reclamos
+  ✔ reclamo completo es válido; tipo y prioridad son opcionales (1.355417ms)
+  ✔ CA-002: sin asunto o sin descripción -> el mensaje de la HU (0.152667ms)
+  ✔ longitudes del esquema en el límite exacto (asunto 120, descripción 500) (0.139833ms)
+  ✔ tipo y prioridad fuera de la lista son inválidos (0.080792ms)
+  ✔ CA-003: secuencia Pendiente -> En revisión -> Resuelto, sin volver a empezar (0.085375ms)
+  ✔ CA-003: etiquetas y filtro por estado (0.10575ms)
+✔ HU-011 — Reclamos (2.831709ms)
+▶ HU-012 — Avisos
+  ✔ CA-001: título y contenido obligatorios (0.155333ms)
+  ✔ longitudes (120 / 500) y destinatarios de la lista (0.082958ms)
+  ✔ CA-001: cada rol ve los avisos que le corresponden (0.091791ms)
+✔ HU-012 — Avisos (0.422125ms)
+▶ Mensajes
+  ✔ mensaje válido (0.22875ms)
+  ✔ destinatario obligatorio, con formato y distinto de uno mismo (0.126166ms)
+  ✔ HU-013: lista de id_usuario de 1 a 20, enteros positivos y sin uno mismo (0.2235ms)
+  ✔ HU-013: máximo 20 destinatarios DISTINTOS (valores límite) (0.807458ms)
+  ✔ HU-013: destinatariosUnicos quita repetidos y conserva el orden (0.083917ms)
+  ✔ contenido de 1 a 1000 caracteres (valores límite) (0.075625ms)
+✔ Mensajes (1.684584ms)
+▶ HU-013 — Buscador de destinatarios
+  ✔ palabrasDeBusqueda: sin espacios de más; [] con menos de 2 caracteres (0.159833ms)
+  ✔ palabrasDeBusqueda: como máximo 4 palabras y 60 caracteres (0.109708ms)
+  ✔ detalleDestinatario: rol y, si corresponde, especialidad o grupo (0.077333ms)
+✔ HU-013 — Buscador de destinatarios (0.413125ms)
+▶ Largo en caracteres (como VARCHAR de MySQL), no en unidades UTF-16
+  ✔ 1000 emoji caben en MENSAJE.contenido VARCHAR(1000); 1001 no (0.215416ms)
+  ✔ 120 emoji caben en el asunto del reclamo (0.160708ms)
+✔ Largo en caracteres (como VARCHAR de MySQL), no en unidades UTF-16 (0.459833ms)
+▶ HU-005 — calcularPromedio / determinarEstado
+  ✔ promedio con las 4 notas completas (0.715583ms)
+  ✔ promedio ignora notas aún no registradas (no las trata como 0) (0.105084ms)
+  ✔ promedio con 2 decimales exactos (no redondea a entero) (0.079459ms)
+  ✔ promedio null si no hay ninguna nota (0.058916ms)
+  ✔ CA-001: 11.00 exacto es Aprobado (no Desaprobado) (0.060792ms)
+  ✔ CA-001: 10.99 es Desaprobado (0.047958ms)
+  ✔ CA-001: 20 es Aprobado, 0 es Desaprobado (0.0535ms)
+  ✔ sin notas registradas -> "Sin calificar", no "Desaprobado" (0.052875ms)
+  ✔ validarNota rechaza fuera de rango 0-20 (0.746334ms)
+  ✔ validarNota: valores límite del rango (0.149042ms)
+  ✔ validarNota: máximo 2 decimales (DECIMAL(4,2)) (0.048875ms)
+  ✔ validarNota: rechaza tipos y textos que Number() aceptaría (0.066625ms)
+  ✔ CA-003: filtrarCalificaciones combina grupo + estado + nombre (0.125041ms)
+✔ HU-005 — calcularPromedio / determinarEstado (3.283666ms)
+▶ HU-006 — Exportar CSV
+  ✔ CA-001: el archivo empieza con BOM UTF-8 y trae las columnas exactas de la HU (0.237708ms)
+  ✔ una fila: notas con 2 decimales, vacías si faltan, promedio y estado oficiales (0.1125ms)
+  ✔ alumno sin notas: promedio vacío y "Sin calificar" (0.0575ms)
+  ✔ escaparCampoCSV: comas, comillas y saltos de línea van entre comillas (RFC 4180) (0.056083ms)
+  ✔ escaparCampoCSV: neutraliza fórmulas de Excel (=, +, -, @) solo en textos (0.051541ms)
+  ✔ escaparCampoCSV: null/undefined -> vacío; 0 -> "0" (0.040917ms)
+✔ HU-006 — Exportar CSV (0.674667ms)
+▶ HU-008 — Asistencia
+  ✔ CA-002: el grupo debe ser un id_seccion entero positivo (vacío, 0, texto o decimal no) (0.16675ms)
+  ✔ CA-002: fecha con formato exacto YYYY-MM-DD (0.12925ms)
+  ✔ CA-002: fecha que no existe en el calendario es inválida (valores límite) (0.061583ms)
+  ✔ esFechaFutura: hoy no es futuro; mañana sí (valor límite) (0.053459ms)
+  ✔ fechaLocalISO usa la fecha local (no UTC) y rellena con ceros (0.041041ms)
+  ✔ CA-003: marcarAsistenciaTodos marca a todos los ids recibidos (0.068125ms)
+  ✔ validarEstadoAsistencia solo acepta los 3 valores del ENUM (0.047959ms)
+  ✔ CA-003: pase de lista completo y correcto es válido (0.126625ms)
+  ✔ CA-003: lista vacía o que no es lista es inválida (0.044583ms)
+  ✔ CA-003: rechaza al alumno que no pertenece al grupo (0.054917ms)
+  ✔ CA-003: rechaza al alumno repetido (el último no puede pisar al primero en silencio) (0.044125ms)
+  ✔ CA-003: rechaza estado inválido e id de alumno inválido, y junta todos los errores (0.041333ms)
+  ✔ calcularPorcentajeAsistencia: la tardanza cuenta como asistencia y redondea (0.059833ms)
+  ✔ calcularPorcentajeAsistencia: sin días registrados es null (sin datos), no 100% (0.034417ms)
+✔ HU-008 — Asistencia (1.14475ms)
+▶ HU-010 — Tareas
+  ✔ CA-001: tarea completa sí es válida (0.184125ms)
+  ✔ CA-001: una tarea sin grupo, sin título o sin fecha no es válida (0.120917ms)
+  ✔ CA-001: fecha límite — hoy sí, ayer no, inexistente no (valores límite) (0.065875ms)
+  ✔ CA-001: longitudes de TAREA (título 100, descripción 300) en el límite exacto (0.093833ms)
+  ✔ CA-001: tipo opcional, pero si viene debe ser uno de los 4 (0.050083ms)
+  ✔ determinarEstadoEntrega: fecha límite futura -> pendiente (0.056333ms)
+  ✔ determinarEstadoEntrega: fecha límite pasada y sin entrega -> atrasada (0.0325ms)
+  ✔ determinarEstadoEntrega: si ya se entregó, siempre es "entregada" (aunque esté vencida) (0.031166ms)
+  ✔ validarTipoTarea acepta los 4 tipos del selector y rechaza cualquier otro (0.047084ms)
+  ✔ CA-002: filtrarTareasPorEstado (0.062583ms)
+✔ HU-010 — Tareas (0.874375ms)
+▶ Inicio del docente — día del horario
+  ✔ diaDeHorario: lunes a viernes como en HORARIO.dia_semana; fin de semana sin clases (0.061ms)
+✔ Inicio del docente — día del horario (0.09375ms)
+▶ Consultas del docente — horario y desempeño
+  ✔ organizarHorario: grilla día x hora ordenada (0.110042ms)
+  ✔ etiquetaDesempeno: valores límite 18, 16 y 11 (0.070875ms)
+✔ Consultas del docente — horario y desempeño (0.222375ms)
+▶ Validaciones de datos personales
+  ✔ validarDni: exactamente 8 dígitos (valores límite) (0.699042ms)
+  ✔ validarCorreo: mismo patrón que el CHECK y máximo 100 caracteres (0.216625ms)
+  ✔ normalizarTelefono: acepta espacios y guiones, guarda solo dígitos y + (0.195ms)
+  ✔ separarNombreCompleto: 2, 3 y 4 palabras; 1 palabra no alcanza (0.808583ms)
+  ✔ edadEn: cumple años el mismo día, no un día antes (0.133584ms)
+✔ Validaciones de datos personales (2.950708ms)
+▶ HU-003 CA-002 — grados según el nivel
+  ✔ Primaria 1-6, Secundaria 1-5, sin nivel ninguno (0.145958ms)
+  ✔ validarGradoDeNivel: 6.° de Secundaria no existe (valor límite) (0.830959ms)
+✔ HU-003 CA-002 — grados según el nivel (1.077541ms)
+▶ HU-002 — revisarRegistro
+  ✔ CA-003: sin nombre el único error es "El nombre es obligatorio" (0.322583ms)
+  ✔ CA-001: alumno completo es válido; grado y sección son opcionales pero van juntos (0.51575ms)
+  ✔ CA-002: los campos de alumno solo se exigen para el tipo alumno (0.1035ms)
+  ✔ alumno: fecha de nacimiento, sexo, nivel y apoderado son obligatorios (0.151667ms)
+  ✔ alumno: edad entre 3 y 20 años (valores límite) (0.144959ms)
+  ✔ docente: el correo es obligatorio (necesita cuenta para entrar) (0.06925ms)
+  ✔ apoderado: teléfono obligatorio; admite un solo nombre largo de hasta 120 (0.068208ms)
+  ✔ tipo inválido, nombre de una palabra y nombres de más de 60 caracteres (0.085709ms)
+✔ HU-002 — revisarRegistro (1.627167ms)
+▶ HU-003 — revisarMatricula
+  ✔ matrícula completa es válida (0.2305ms)
+  ✔ CA-003: falta cualquier campo (*) -> el mensaje exacto de la HU (0.130917ms)
+  ✔ CA-002: el grado debe corresponder al nivel (0.0875ms)
+  ✔ año lectivo: actual-1 a actual+1 (valores límite) (0.087417ms)
+  ✔ procedencia, turno, observaciones y fecha de nacimiento opcionales pero válidos si vienen (0.121542ms)
+✔ HU-003 — revisarMatricula (0.741709ms)
+▶ HU-003 CA-001 — código correlativo MAT-0001
+  ✔ formatearCodigoMatricula: relleno a 4 dígitos y límites del CHECK (0.084542ms)
+  ✔ siguienteCodigoMatricula: sigue al mayor, ignora códigos mal formados (0.126583ms)
+  ✔ numeroDeCodigo (0.038875ms)
+✔ HU-003 CA-001 — código correlativo MAT-0001 (0.308834ms)
+▶ HU-004 — estado, búsqueda y filtro de matrículas
+  ✔ CA-002: alterna activa <-> inactiva (0.073292ms)
+  ✔ CA-001: filtra por estado (0.101042ms)
+  ✔ busca por nombre, DNI, código o sección (0.074292ms)
+  ✔ CA-003: una búsqueda sin resultados devuelve lista vacía (0.044333ms)
+  ✔ fechaPeruana: dd/mm/aaaa (0.094417ms)
+  ✔ filtrarRegistros por tipo y por nombre/DNI/correo (0.089667ms)
+✔ HU-004 — estado, búsqueda y filtro de matrículas (0.572166ms)
+▶ Nombres de persona (defensa contra HTML/scripts en el nombre)
+  ✔ acepta tildes, ñ, diéresis, apóstrofo, punto y guion (0.074458ms)
+  ✔ rechaza etiquetas, signos y números (0.043958ms)
+  ✔ revisarRegistro y revisarMatricula rechazan el nombre con HTML (0.114708ms)
+✔ Nombres de persona (defensa contra HTML/scripts en el nombre) (0.284958ms)
+▶ escaparHtml
+  ✔ neutraliza etiquetas y manejadores de eventos (0.705625ms)
+  ✔ escapa comillas simples (rompen atributos con comilla simple) (0.093292ms)
+  ✔ escapa & primero, sin dobles escapes (0.076583ms)
+  ✔ deja intactos tildes, ñ y texto normal (0.086709ms)
+  ✔ null/undefined -> cadena vacía; números -> texto (0.07375ms)
+✔ escaparHtml (2.430875ms)
+▶ iniciales
+  ✔ primera letra de las dos primeras palabras, en mayúscula (0.224292ms)
+✔ iniciales (0.285708ms)
+ℹ tests 331
+ℹ suites 59
+ℹ pass 331
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13200.844959
+ℹ start of coverage report
+ℹ --------------------------------------------------------------------------------------------------
+ℹ file                    | line % | branch % | funcs % | uncovered lines
+ℹ --------------------------------------------------------------------------------------------------
+ℹ config                  |        |          |         | 
+ℹ  db.js                  | 100.00 |    50.00 |  100.00 | 
+ℹ datos                   |        |          |         | 
+ℹ  consultas.js           | 100.00 |    75.00 |  100.00 | 
+ℹ  destinatarios.js       |  98.94 |    93.75 |  100.00 | 44
+ℹ  registro.js            | 100.00 |    91.43 |  100.00 | 
+ℹ  transaccion.js         | 100.00 |    83.33 |  100.00 | 
+ℹ js                      |        |          |         | 
+ℹ  logica-alumno.js       |  98.35 |    82.35 |  100.00 | 14-15
+ℹ  logica-comunicacion.js |  98.89 |    89.47 |  100.00 | 14-15
+ℹ  logica-docente.js      |  99.48 |    88.48 |  100.00 | 17-18
+ℹ  logica-registro.js     |  98.20 |    86.71 |  100.00 | 16-17 148-149 151-152
+ℹ  utilidades-html.js     |  94.29 |    86.67 |  100.00 | 14-15
+ℹ logica-alumno.js        |  83.47 |    70.97 |   81.25 | 14-15 26-27 39-54
+ℹ logica-auth.js          |  97.66 |    94.00 |  100.00 | 14-15 88
+ℹ logica-comunicacion.js  |  98.89 |    79.31 |  100.00 | 14-15
+ℹ logica-docente.js       |  93.72 |    84.40 |   89.19 | 17-18 114-119 126-130 134-136 143-149 287
+ℹ logica-registro.js      |  96.71 |    68.87 |  100.00 | 16-17 124-125 148-149 151-152 237-238 270
+ℹ middleware              |        |          |         | 
+ℹ  auth.js                | 100.00 |    86.36 |  100.00 | 
+ℹ  errores.js             |  95.83 |    50.00 |  100.00 | 35 45
+ℹ routes                  |        |          |         | 
+ℹ  asistencia.js          |  96.55 |    87.50 |  100.00 | 73-74 112-113
+ℹ  auth.js                |  97.12 |    78.79 |  100.00 | 101-102 130-131
+ℹ  avisos.js              |  91.67 |    62.50 |  100.00 | 24-25 44-45
+ℹ  calificaciones.js      |  95.74 |    88.57 |  100.00 | 46-47 87-88
+ℹ  consultas.js           |  95.49 |    71.43 |  100.00 | 29-30 75-76 129-130
+ℹ  matriculas.js          |  98.57 |    92.50 |  100.00 | 45-46
+ℹ  mensajes.js            |  91.15 |    80.65 |  100.00 | 31-32 44-45 54-55 94-95 109-110
+ℹ  mi.js                  |  92.65 |    71.43 |  100.00 | 42-43 57-58 88-89 116-117 132-133
+ℹ  reclamos.js            |  94.81 |    84.21 |  100.00 | 32-33 53-54
+ℹ  registros.js           |  98.20 |    83.87 |  100.00 | 53-54
+ℹ  resumen.js             |  97.93 |    53.33 |  100.00 | 154-155 189-190
+ℹ  secciones.js           |  92.31 |    66.67 |  100.00 | 22-23
+ℹ  tareas.js              |  95.58 |    81.69 |  100.00 | 83-84 125-126 160-161 199-200 222-223
+ℹ server.js               |  91.80 |    40.00 |   25.00 | 17-18 57-59
+ℹ --------------------------------------------------------------------------------------------------
+ℹ all files               |  96.49 |    82.04 |   97.06 | 
+ℹ --------------------------------------------------------------------------------------------------
+ℹ end of coverage report

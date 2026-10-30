@@ -1,0 +1,47 @@
+{
+  "fecha": "2026-10-30T00:11:02.833Z",
+  "tags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa"
+  ],
+  "pantallas": [
+    {
+      "pantalla": "Inicio de sesión",
+      "url": "http://localhost:3101/dashboard.html",
+      "axe": "4.14.0",
+      "violaciones": [],
+      "totales": {
+        "violaciones": 0,
+        "nodosAfectados": 0,
+        "revisionManual": 0,
+        "aprobadas": 13
+      }
+    },
+    {
+      "pantalla": "Registro (HU-002)",
+      "url": "http://localhost:3101/dashboard.html",
+      "axe": "4.14.0",
+      "violaciones": [],
+      "totales": {
+        "violaciones": 0,
+        "nodosAfectados": 0,
+        "revisionManual": 1,
+        "aprobadas": 19
+      }
+    },
+    {
+      "pantalla": "Matrícula (HU-003 / HU-004)",
+      "url": "http://localhost:3101/dashboard.html",
+      "axe": "4.14.0",
+      "violaciones": [],
+      "totales": {
+        "violaciones": 0,
+        "nodosAfectados": 0,
+        "revisionManual": 1,
+        "aprobadas": 21
+      }
+    }
+  ]
+}
