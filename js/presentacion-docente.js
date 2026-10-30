@@ -1,0 +1,614 @@
+/**
+ * ACADEMIA DECAM — CAPA DE PRESENTACIÓN (rol Docente)
+ * ---------------------------------------------------------
+ * Este archivo se carga DESPUÉS del script original de dashboard.html (ver los <script>
+ * agregados antes de </body>). En JavaScript clásico (sin módulos), una función declarada
+ * de nuevo con el mismo nombre reemplaza a la anterior en el ámbito global: por eso podemos
+ * "corregir" calcAvg, getStatus, filterGrades, loadAttGroup, renderTasks, etc. sin tocar ni
+ * una línea del <script> original ni del HTML.
+ *
+ * QUÉ CAMBIÓ EN ESTA VERSIÓN
+ * --------------------------
+ * Los datos ya no viven en memoria del navegador (el prototipo usaba arrays en un archivo
+ * aparte, ya eliminado). TODO sale de la API REST del backend Express, que lee y escribe en MySQL:
+ *
+ *     Presentación (este archivo)  ->  fetch()  ->  Express (routes/*.js)  ->  MySQL
+ *                                                        |
+ *                                                        +-> logica-docente.js (reglas puras)
+ *
+ * La capa de Lógica (js/logica-docente.js) son funciones puras sin DOM, y se ejecuta en los dos
+ * lados (navegador y servidor) con el mismo archivo.
+ *
+ * ATENCIÓN con el ámbito: dashboard.html declara CU, allGrades, allTasks y taskFilter con
+ * `let` a nivel global. Un `let` global NO crea propiedad en window (a diferencia de var y
+ * de function), así que window.CU o window.allGrades salen undefined. Sí se ven como
+ * identificadores sueltos desde otro <script> clásico como este, porque comparten el ámbito
+ * léxico global — por eso abajo se escribe `CU` y `allGrades`, nunca `window.CU`.
+ * Escribir en el binding compartido además mantiene funcionando lo que ya usaba esas
+ * variables en dashboard.html (openEditGrade, exportGrades, buildDashboard...).
+ *
+ * Dependencias globales que ya existen en dashboard.html y que esta capa reutiliza:
+ *   CU (usuario logueado), taskFilter, av(), showToast(), openModal(), closeModal(),
+ *   renderGrades(), buildGradesHeader(), populateSelects(), showPage(), initPortal().
+ */
+(function () {
+  'use strict';
+  var L = window.LogicaDocente;
+  // Todo dato de la BD que se pinte con innerHTML pasa por esc() (ver js/utilidades-html.js).
+  var esc = window.UtilidadesHtml.escaparHtml;
+  var iniciales = window.UtilidadesHtml.iniciales;
+
+  // ===============================================================
+  // ACCESO A LA API REST
+  // ===============================================================
+
+  // Cliente HTTP compartido por todos los roles (js/api-cliente.js).
+  var pedir = window.ApiCliente.pedir;
+  var enviarJson = window.ApiCliente.enviarJson;
+  var parametros = window.ApiCliente.parametros;
+  var avisarError = window.ApiCliente.avisarError;
+
+  var API = {
+    secciones: function () {
+      return pedir('/api/secciones');
+    },
+    calificaciones: function (filtros) {
+      return pedir('/api/calificaciones' + parametros(filtros || {}));
+    },
+    actualizarNota: function (idCalificacion, campo, valor) {
+      return enviarJson('/api/calificaciones/' + idCalificacion, 'PATCH', { campo: campo, valor: valor });
+    },
+    asistencia: function (idSeccion, fecha) {
+      return pedir('/api/asistencia' + parametros({ id_seccion: idSeccion, fecha: fecha }));
+    },
+    guardarAsistencia: function (datos) {
+      return enviarJson('/api/asistencia', 'POST', datos);
+    },
+    tareas: function (filtros) {
+      return pedir('/api/tareas' + parametros(filtros || {}));
+    },
+    publicarTarea: function (datos) {
+      return enviarJson('/api/tareas', 'POST', datos);
+    },
+    entregas: function (idTarea) {
+      return pedir('/api/tareas/' + idTarea + '/entregas');
+    },
+    registrarEntrega: function (idTarea, idAlumno) {
+      return enviarJson('/api/tareas/' + idTarea + '/entregas', 'POST', { id_alumno: idAlumno });
+    },
+    desmarcarEntrega: function (idTarea, idAlumno) {
+      return pedir('/api/tareas/' + idTarea + '/entregas/' + idAlumno, { method: 'DELETE' });
+    }
+  };
+
+  // ---------------------------------------------------------------
+  // Utilidades comunes
+  // ---------------------------------------------------------------
+
+  function valorDe(id) {
+    var el = document.getElementById(id);
+    return el ? el.value : '';
+  }
+
+  /** MySQL devuelve los DECIMAL como texto ("15.00"); la interfaz necesita números. */
+  function aNumero(v) {
+    return (v === null || v === undefined || v === '') ? null : Number(v);
+  }
+
+  function estadoVacio(colspan, titulo, texto) {
+    return '<tr><td colspan="' + colspan + '"><div class="empty-state"><h3>' + esc(titulo) + '</h3>' +
+      (texto ? '<p>' + esc(texto) + '</p>' : '') + '</div></td></tr>';
+  }
+
+  // ---------------------------------------------------------------
+  // Secciones (tabla SECCION) — reemplazan a la lista fija CFG.groups
+  // ---------------------------------------------------------------
+
+  var SECCIONES = [];
+  var ETIQUETA_SECCION = {}; // id_seccion -> '6-A'
+  var promesaSecciones = null;
+
+  /** Se pide una sola vez y se reutiliza; todas las pantallas dependen de este mapa. */
+  function cargarSecciones() {
+    if (!promesaSecciones) {
+      promesaSecciones = API.secciones().then(function (filas) {
+        SECCIONES = filas;
+        ETIQUETA_SECCION = {};
+        filas.forEach(function (s) { ETIQUETA_SECCION[s.id_seccion] = s.grupo; });
+        return filas;
+      }).catch(function (e) {
+        promesaSecciones = null; // permite reintentar en la siguiente interacción
+        throw e;
+      });
+    }
+    return promesaSecciones;
+  }
+
+  function etiquetaSeccion(idSeccion) {
+    return ETIQUETA_SECCION[idSeccion] || String(idSeccion);
+  }
+
+  // Los combos de grupo de las 3 HU pasan a llevar el id_seccion REAL como value
+  // (es la clave foránea que esperan CALIFICACION, ASISTENCIA y TAREA) y el '6-A' como texto.
+  window.populateSelects = function () {
+    if (!CU || CU.role !== 'teacher') return; // los combos de grupo son del Docente
+    cargarSecciones().then(function () {
+      var opciones = SECCIONES.map(function (s) {
+        return '<option value="' + esc(s.id_seccion) + '">' + esc(s.grupo) + '</option>';
+      }).join('');
+      ['grades-group-filter', 'att-group-filter', 'task-group-sel'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        var base = el.options[0] && el.options[0].value === '' ? el.options[0].outerHTML : '';
+        el.innerHTML = base + opciones;
+      });
+    }).catch(avisarError);
+  };
+
+  // ---------------------------------------------------------------
+  // HU-005 — Calificaciones
+  // ---------------------------------------------------------------
+
+  // Reemplaza calcAvg: ahora usa la regla oficial (2 decimales) en vez de redondear a entero.
+  window.calcAvg = function (s) {
+    return L.calcularPromedio({ examen1: s.e1, examen2: s.e2, tareas: s.tarea, proyecto: s.proyecto });
+  };
+
+  // Reemplaza getStatus: CA-001 exige exactamente 2 estados posibles (>= 11.00 / < 11.00).
+  window.getStatus = function (avg) {
+    return L.determinarEstado(avg);
+  };
+
+  // Colores de la insignia y de la barra alineados al estado oficial (antes tenían 4 niveles
+  // que ya no correspondían con "Aprobado/Desaprobado").
+  window.getBadge = function (avg) {
+    var estado = L.determinarEstado(avg);
+    if (estado === 'Sin calificar') return 'b-gray';
+    return estado === 'Aprobado' ? 'b-success' : 'b-danger';
+  };
+  window.getBar = function (avg) {
+    var estado = L.determinarEstado(avg);
+    if (estado === 'Sin calificar') return 'bf-poor';
+    return estado === 'Aprobado' ? 'bf-ex' : 'bf-poor';
+  };
+
+  /** Traduce una fila de CALIFICACION (forma SQL) a la forma interna que pinta renderGrades. */
+  function aFilaDeTabla(r) {
+    return {
+      id: r.id_calificacion,      // renderGrades lo usa para updGrade() y openEditGrade()
+      id_alumno: r.id_alumno,
+      id_seccion: r.id_seccion,
+      name: r.nombreAlumno,
+      group: etiquetaSeccion(r.id_seccion),
+      initials: iniciales(r.nombreAlumno),
+      e1: aNumero(r.examen1),
+      e2: aNumero(r.examen2),
+      tarea: aNumero(r.tareas),
+      proyecto: aNumero(r.proyecto),
+      periodo: r.periodo
+    };
+  }
+
+  // Reemplaza la vista del docente de renderGrades: el original pegaba nombre, grupo e iniciales
+  // en innerHTML tal cual llegaban de la BD. Misma estructura de tabla, con cada dato escapado.
+  // La vista del alumno sigue en el renderGrades original.
+  var renderGradesOriginal = window.renderGrades;
+  var ICONO_EDITAR = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';
+  window.renderGrades = function (data) {
+    if (!CU || CU.role !== 'teacher') return renderGradesOriginal(data);
+    var tb = document.getElementById('grades-tbody');
+    if (!tb) return;
+    if (!data.length) {
+      tb.innerHTML = estadoVacio(9, 'Sin datos', 'Ajusta los filtros o registra datos.');
+      return;
+    }
+    function celdaNota(s, campo) {
+      return '<td><input class="grade-input" value="' + (s[campo] != null ? esc(s[campo]) : '') +
+        '" type="number" min="0" max="20" step="0.5" onchange="updGrade(' + Number(s.id) + ',\'' + campo + '\',this.value)"></td>';
+    }
+    tb.innerHTML = data.map(function (s, i) {
+      var promedio = calcAvg(s);
+      return '<tr><td>' + (i + 1) + '</td>' +
+        '<td><div style="display:flex;align-items:center;gap:8px">' + av(esc(s.initials)) +
+        '<span class="td-bold">' + esc(s.name) + '</span></div></td>' +
+        '<td><span class="badge b-gray">' + esc(s.group) + '</span></td>' +
+        celdaNota(s, 'e1') + celdaNota(s, 'e2') + celdaNota(s, 'tarea') + celdaNota(s, 'proyecto') +
+        '<td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill ' + getBar(promedio) +
+        '" style="width:' + (promedio ? promedio * 5 : 0) + '%"></div></div><span class="td-bold">' +
+        (promedio !== null ? promedio.toFixed(2) : '—') + '</span></div></td>' +
+        '<td><span class="badge ' + getBadge(promedio) + '">' + getStatus(promedio) + '</span></td>' +
+        '<td><button class="btn btn-sm" onclick="openEditGrade(' + Number(s.id) + ')" title="Modificar notas" style="padding:5px 8px">' + ICONO_EDITAR + '</button></td></tr>';
+    }).join('');
+  };
+
+  /**
+   * CA-003: los 3 filtros (grupo, estado, nombre) ahora viajan a la API.
+   * El grupo se resuelve en SQL (WHERE id_seccion = ?) y estado/nombre los aplica la MISMA
+   * función pura filtrarCalificaciones, pero ejecutándose en el servidor.
+   */
+  async function cargarCalificaciones(busqueda) {
+    var tb = document.getElementById('grades-tbody');
+    if (!tb) return;
+    try {
+      await cargarSecciones();
+      var texto = busqueda !== undefined && busqueda !== null && busqueda !== ''
+        ? busqueda
+        : valorDe('grades-search');
+      var filas = await API.calificaciones({
+        id_seccion: valorDe('grades-group-filter'),
+        estado: valorDe('grades-status-filter'),
+        busqueda: texto
+      });
+      // Se escribe el binding global compartido (sin window.): así exportGrades() y
+      // openEditGrade() de dashboard.html siguen viendo exactamente las mismas filas.
+      allGrades = filas.map(aFilaDeTabla);
+      buildGradesHeader();
+      renderGrades(allGrades);
+    } catch (e) {
+      avisarError(e);
+      tb.innerHTML = estadoVacio(9, 'No se pudo cargar desde la base de datos', e.message);
+    }
+  }
+  window.cargarCalificaciones = cargarCalificaciones;
+
+  // El buscador dispara en cada tecla (oninput): se espera un momento para no lanzar
+  // una consulta por letra tecleada.
+  var temporizadorBusqueda = null;
+  window.filterGrades = function (q) {
+    clearTimeout(temporizadorBusqueda);
+    temporizadorBusqueda = setTimeout(function () { cargarCalificaciones(q); }, 180);
+  };
+
+  // HU-006: exporta las filas que el docente está viendo (mismos filtros). CA-002: sin filas no
+  // se genera el archivo y se muestra el mensaje exacto de la HU. El CSV lo arma la capa
+  // de Lógica (BOM UTF-8, RFC 4180, sin fórmulas); aquí solo se descarga como archivo.
+  window.exportGrades = function () {
+    if (!allGrades || !allGrades.length) { showToast('Sin calificaciones para exportar'); return; }
+    var csv = L.exportarCalificacionesCSV(allGrades.map(function (s) {
+      return { nombreAlumno: s.name, grupo: s.group, examen1: s.e1, examen2: s.e2, tareas: s.tarea, proyecto: s.proyecto };
+    }));
+    var enlace = document.createElement('a');
+    enlace.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    var grupo = valorDe('grades-group-filter') ? '-' + etiquetaSeccion(valorDe('grades-group-filter')) : '';
+    enlace.download = 'calificaciones' + grupo + '-' + L.fechaLocalISO(new Date()) + '.csv';
+    document.body.appendChild(enlace);
+    enlace.click();
+    document.body.removeChild(enlace);
+    setTimeout(function () { URL.revokeObjectURL(enlace.href); }, 1000);
+    showToast('CSV exportado (' + allGrades.length + ' alumnos)');
+  };
+
+  // CA-001: modificar una nota en la tabla ahora hace PATCH y el promedio lo recalcula
+  // (y lo persiste) el servidor con la misma función calcularPromedio.
+  var CAMPO_SQL = { e1: 'examen1', e2: 'examen2', tarea: 'tareas', proyecto: 'proyecto' };
+  window.updGrade = async function (idCalificacion, campo, valor) {
+    try {
+      var nota = valor === '' ? null : parseFloat(valor);
+      if (!L.validarNota(nota)) { showToast('La nota debe estar entre 0 y 20'); await cargarCalificaciones(); return; }
+      var r = await API.actualizarNota(idCalificacion, CAMPO_SQL[campo] || campo, nota);
+      await cargarCalificaciones();
+      showToast('Nota guardada — promedio ' + (r.promedio !== null ? r.promedio : '—') + ' (' + r.estado + ')');
+    } catch (e) {
+      avisarError(e);
+      await cargarCalificaciones(); // devuelve la celda al valor real de la BD
+    }
+  };
+
+  // CA-001: el modal "Editar notas" manda las 4 notas y luego relee desde la BD.
+  window.saveEditGrade = async function () {
+    var fila = (allGrades || []).filter(function (g) { return g.id === editingGradeId; })[0];
+    if (!fila) { closeModal('modal-edit-grade'); return; }
+
+    var campos = [
+      ['examen1', valorDe('eg-e1')],
+      ['examen2', valorDe('eg-e2')],
+      ['tareas', valorDe('eg-tarea')],
+      ['proyecto', valorDe('eg-proyecto')]
+    ];
+    var invalida = campos.filter(function (c) { return !L.validarNota(c[1]); })[0];
+    if (invalida) { showToast('La nota de ' + invalida[0] + ' debe estar entre 0 y 20'); return; }
+
+    try {
+      for (var i = 0; i < campos.length; i++) {
+        await API.actualizarNota(fila.id, campos[i][0], campos[i][1] === '' ? null : parseFloat(campos[i][1]));
+      }
+      closeModal('modal-edit-grade');
+      await cargarCalificaciones();
+      showToast('Notas de ' + fila.name + ' actualizadas correctamente');
+    } catch (e) {
+      avisarError(e);
+    }
+  };
+
+  // El modal "Modificar notas" pinta el promedio "en vivo" mientras se teclean las notas. El
+  // original redondeaba a entero y usaba 4 niveles; se alinea con CA-001 para que el modal no diga
+  // algo distinto a lo que después muestra la tabla.
+  window.previewEditAvg = function () {
+    var promedio = L.calcularPromedio({
+      examen1: valorDe('eg-e1'), examen2: valorDe('eg-e2'),
+      tareas: valorDe('eg-tarea'), proyecto: valorDe('eg-proyecto')
+    });
+    var elValor = document.getElementById('eg-avg-val');
+    var elInsignia = document.getElementById('eg-avg-badge');
+    if (elValor) elValor.textContent = promedio === null ? '—' : promedio.toFixed(2);
+    if (elInsignia) {
+      elInsignia.className = 'badge ' + window.getBadge(promedio);
+      elInsignia.textContent = promedio === null ? '—' : L.determinarEstado(promedio);
+    }
+  };
+
+  // ---------------------------------------------------------------
+  // HU-008 — Asistencia
+  // ---------------------------------------------------------------
+
+  var ESTADO_POR_LETRA = { P: 'presente', A: 'ausente', L: 'tardanza' };
+  var LETRA_POR_ESTADO = { presente: 'P', ausente: 'A', tardanza: 'L' };
+  var CLASE_POR_LETRA = { P: 'sel-p', A: 'sel-a', L: 'sel-l' };
+
+  // CA-001: carga según grupo Y fecha (el original solo miraba el grupo), leyendo de ASISTENCIA.
+  window.loadAttGroup = async function () {
+    var tb = document.getElementById('att-tbody');
+    if (!tb) return;
+    var idSeccion = valorDe('att-group-filter');
+    var fecha = valorDe('att-date');
+
+    // CA-002: sin grupo o sin fecha válida no se consulta nada (misma regla que valida el servidor)
+    if (!L.validarGrupoSeleccionado(idSeccion)) {
+      tb.innerHTML = estadoVacio(6, 'Selecciona un grupo', 'Elige el grupo para registrar asistencia.');
+      return;
+    }
+    if (!L.validarFechaAsistencia(fecha)) {
+      tb.innerHTML = estadoVacio(6, 'Selecciona una fecha', 'Elige la fecha del pase de lista.');
+      return;
+    }
+    if (L.esFechaFutura(fecha, new Date())) {
+      tb.innerHTML = estadoVacio(6, 'Fecha futura', 'No se puede pasar lista de un día que aún no llega.');
+      return;
+    }
+
+    var filas;
+    try {
+      filas = await API.asistencia(idSeccion, fecha);
+    } catch (e) {
+      avisarError(e);
+      tb.innerHTML = estadoVacio(6, 'No se pudo cargar la asistencia', e.message);
+      return;
+    }
+    if (!filas.length) {
+      tb.innerHTML = estadoVacio(6, 'Sin alumnos en este grupo', 'Registra alumnos en la sección para pasar lista.');
+      return;
+    }
+
+    // Si ya se guardó asistencia para esta fecha, la tabla la refleja; si no, el servidor
+    // devolvió "presente" por defecto para todos (calculado con marcarAsistenciaTodos).
+    tb.innerHTML = filas.map(function (f, i) {
+      var letraSel = LETRA_POR_ESTADO[f.estado] || 'P';
+      function btn(letra, texto) {
+        var sel = letra === letraSel ? ' ' + CLASE_POR_LETRA[letra] : '';
+        return '<button class="att-r' + sel + '" onclick="setAtt(this,\'' + letra + '\')">' + texto + '</button>';
+      }
+      // null = el alumno aún no tiene días registrados: se muestra "sin datos", no un % inventado.
+      var pct = f.porcentajeAsistencia;
+      var sinDatos = pct === null || pct === undefined;
+      var claseBarra = sinDatos ? 'bf-poor' : pct >= 90 ? 'bf-ex' : pct >= 75 ? 'bf-avg' : 'bf-poor';
+      var insignia = sinDatos ? ['b-gray', 'Sin datos']
+        : pct >= 90 ? ['b-success', 'Normal'] : pct >= 75 ? ['b-warning', 'Regular'] : ['b-danger', 'Riesgo'];
+      return '<tr data-id-alumno="' + Number(f.id_alumno) + '"><td>' + (i + 1) + '</td>' +
+        '<td><div style="display:flex;align-items:center;gap:8px">' + av(esc(iniciales(f.nombreAlumno))) +
+        '<span class="td-bold">' + esc(f.nombreAlumno) + '</span></div></td>' +
+        '<td><div class="att-rg">' + btn('P', 'P') + btn('A', 'A') + btn('L', 'T') + '</div></td>' +
+        '<td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill ' + claseBarra + '" style="width:' + (sinDatos ? 0 : pct) + '%"></div></div><span>' + (sinDatos ? '—' : pct + '%') + '</span></div></td>' +
+        '<td>' + Number(f.faltas) + '</td>' +
+        '<td><span class="badge ' + insignia[0] + '">' + insignia[1] + '</span></td></tr>';
+    }).join('');
+  };
+
+  // Mismo nombre y firma que ya usaba el botón "Todos presentes" (markAll('P')): sigue siendo
+  // 100% cliente (solo pinta), y el cálculo de "a quién marcar" lo hace la capa de Lógica.
+  window.markAll = function (letra) {
+    var filas = document.querySelectorAll('#att-tbody tr[data-id-alumno]');
+    var ids = Array.prototype.map.call(filas, function (tr) { return tr.getAttribute('data-id-alumno'); });
+    var resultado = L.marcarAsistenciaTodos(ids, ESTADO_POR_LETRA[letra]); // capa de Lógica (pura)
+    var resultadoPorId = {};
+    resultado.forEach(function (r) { resultadoPorId[r.id_alumno] = r.estado; });
+
+    filas.forEach(function (tr) {
+      var id = tr.getAttribute('data-id-alumno');
+      var letraFila = LETRA_POR_ESTADO[resultadoPorId[id]] || letra;
+      tr.querySelectorAll('.att-r').forEach(function (b) { b.classList.remove('sel-p', 'sel-a', 'sel-l'); });
+      var objetivo = tr.querySelector('[onclick*="\'' + letraFila + '\'"]');
+      if (objetivo) objetivo.classList.add(CLASE_POR_LETRA[letraFila]);
+    });
+    // El profesor puede seguir cambiando filas individuales antes de guardar.
+  };
+
+  // CA-003: guarda el pase de lista completo en ASISTENCIA (INSERT ... ON DUPLICATE KEY UPDATE).
+  window.guardarAsistencia = async function () {
+    var idSeccion = valorDe('att-group-filter');
+    var fecha = valorDe('att-date');
+    if (!L.validarGrupoSeleccionado(idSeccion)) { showToast('Selecciona un grupo antes de guardar'); return; }
+    if (!L.validarFechaAsistencia(fecha)) { showToast('Selecciona una fecha válida'); return; }
+    if (L.esFechaFutura(fecha, new Date())) { showToast('No se puede pasar lista de una fecha futura'); return; }
+
+    var filas = document.querySelectorAll('#att-tbody tr[data-id-alumno]');
+    if (!filas.length) { showToast('No hay alumnos que registrar'); return; }
+
+    var registros = Array.prototype.map.call(filas, function (tr) {
+      var seleccionado = tr.querySelector('.att-r.sel-p, .att-r.sel-a, .att-r.sel-l');
+      var letra = seleccionado && seleccionado.classList.contains('sel-a') ? 'A'
+        : seleccionado && seleccionado.classList.contains('sel-l') ? 'L' : 'P';
+      return { id_alumno: Number(tr.getAttribute('data-id-alumno')), estado: ESTADO_POR_LETRA[letra] };
+    });
+
+    try {
+      var r = await API.guardarAsistencia({
+        id_seccion: idSeccion,
+        fecha: fecha,
+        registros: registros
+      });
+      await loadAttGroup(); // relee de la BD: los % y faltas se actualizan con lo recién guardado
+      showToast('Asistencia guardada en la base de datos (' + r.guardados + ' alumnos)');
+    } catch (e) {
+      avisarError(e);
+    }
+  };
+
+  // ---------------------------------------------------------------
+  // HU-010 — Tareas
+  // ---------------------------------------------------------------
+
+  // Las pestañas del prototipo usan all/pending/done/late; la capa de Lógica y la BD hablan
+  // en español. Este mapa es el único punto de traducción.
+  var FILTRO_A_ESTADO = { all: 'todas', pending: 'pendiente', done: 'entregada', late: 'atrasada' };
+  var CLASE_POR_ESTADO = {
+    pendiente: { badge: 'b-info', due: 'due-soon', texto: 'Pendiente' },
+    atrasada: { badge: 'b-danger', due: 'due-late', texto: 'Atrasada' },
+    entregada: { badge: 'b-success', due: 'due-ok', texto: 'Entregada' }
+  };
+
+  /** Trae las tareas de la BD; el estado (pendiente/atrasada/entregada) lo calcula el servidor
+   *  con determinarEstadoEntrega, así que no queda congelado como en el prototipo. */
+  async function cargarTareas() {
+    var el = document.getElementById('tasks-list');
+    if (!el) return;
+    try {
+      await cargarSecciones();
+      allTasks = await API.tareas({}); // binding global compartido, igual que allGrades
+      renderTasks();
+    } catch (e) {
+      avisarError(e);
+      el.innerHTML = '<div class="empty-state"><h3>No se pudieron cargar las tareas</h3><p>' + esc(e.message) + '</p></div>';
+    }
+  }
+  window.cargarTareas = cargarTareas;
+
+  // Reemplaza renderTasks: pinta la caché que vino de la API (ya no arma nada en memoria).
+  window.renderTasks = function () {
+    var el = document.getElementById('tasks-list');
+    if (!el) return;
+    var estadoBuscado = FILTRO_A_ESTADO[taskFilter] || 'todas';
+    // CA-002: el filtro por estado lo resuelve la capa de Lógica (la misma del servidor)
+    var visibles = L.filtrarTareasPorEstado(allTasks || [], estadoBuscado);
+
+    if (!visibles.length) {
+      var msg = taskFilter === 'late' ? 'Sin tareas atrasadas!'
+        : taskFilter === 'done' ? 'Sin tareas entregadas.'
+        : taskFilter === 'pending' ? 'Sin tareas pendientes.'
+        : 'Sin tareas registradas.';
+      el.innerHTML = '<div class="empty-state"><h3>' + msg + '</h3></div>';
+      return;
+    }
+
+    el.innerHTML = visibles.map(function (t) {
+      var c = CLASE_POR_ESTADO[t.estado] || CLASE_POR_ESTADO.pendiente;
+      var entregada = t.estado === 'entregada';
+      // Seguimiento del cumplimiento (HU-010): el check abre la lista del grupo para marcar quién entregó.
+      return '<div class="task-item">' +
+        '<div class="task-check editable ' + (entregada ? 'done' : '') + '" onclick="abrirEntregas(' + Number(t.id_tarea) + ')" ' +
+        'title="Marcar entregas por alumno">' + (entregada ? '&#10003;' : '') + '</div>' +
+        '<div style="flex:1"><div class="task-title" style="' + (entregada ? 'text-decoration:line-through;opacity:.5' : '') + '">' +
+        esc(t.titulo) + '</div>' +
+        // Diseño de Figma: "materia · tipo". La materia es la especialidad del docente autor.
+        '<div class="task-meta">' + esc(t.materia || 'General') + ' · ' + esc(t.tipo || 'Tarea') +
+        ' · ' + esc(t.grupo) + ' · ' + Number(t.entregas) + '/' + Number(t.totalAlumnos) + ' entregas</div></div>' +
+        '<span class="task-due ' + c.due + '">' + esc(t.fecha_entrega) + '</span>' +
+        '<span class="badge ' + c.badge + '" style="margin-left:8px">' + c.texto + '</span></div>';
+    }).join('');
+  };
+
+  // CA-001: el botón "Publicar" inserta la tarea en la tabla TAREA.
+  window.guardarTarea = async function () {
+    var datos = {
+      titulo: valorDe('tn-titulo').trim(),
+      descripcion: valorDe('tn-desc').trim(),
+      tipo: valorDe('tn-tipo'),
+      id_seccion: valorDe('task-group-sel'),
+      fecha_entrega: valorDe('tn-fecha')
+    };
+    // Misma revisión que hace el servidor (capa de Lógica compartida).
+    var revision = L.revisarTarea(datos, new Date());
+    if (!revision.valido) { showToast(revision.errores[0]); return; }
+
+    try {
+      await API.publicarTarea(datos);
+      ['tn-titulo', 'tn-fecha', 'tn-desc'].forEach(function (id) { document.getElementById(id).value = ''; });
+      document.getElementById('task-group-sel').value = '';
+      closeModal('modal-new-task');
+      await cargarTareas();
+      showToast('Tarea publicada correctamente');
+    } catch (e) {
+      avisarError(e);
+    }
+  };
+
+  // Seguimiento de entregas (HU-010): lista del grupo con un check por alumno. Marcar = POST, desmarcar = DELETE.
+  var tareaAbierta = null;
+  var ESTADO_ENTREGA = {
+    entregada: ['b-success', 'Entregada'],
+    pendiente: ['b-info', 'Pendiente'],
+    atrasada: ['b-danger', 'Atrasada']
+  };
+
+  async function pintarEntregas() {
+    var lista = document.getElementById('entregas-lista');
+    try {
+      var filas = await API.entregas(tareaAbierta.id_tarea);
+      if (!filas.length) {
+        lista.innerHTML = '<div class="empty-state"><h3>Sin alumnos en este grupo</h3></div>';
+        return;
+      }
+      lista.innerHTML = filas.map(function (f) {
+        var entregada = f.estado === 'entregada';
+        var insignia = ESTADO_ENTREGA[f.estado] || ESTADO_ENTREGA.pendiente;
+        return '<label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer">' +
+          '<input type="checkbox" ' + (entregada ? 'checked' : '') +
+          ' onchange="marcarEntrega(' + Number(f.id_alumno) + ', this.checked)">' +
+          av(esc(iniciales(f.nombreAlumno))) +
+          '<span class="td-bold" style="flex:1">' + esc(f.nombreAlumno) + '</span>' +
+          (f.fecha_entrega_real ? '<span style="font-size:11px;color:var(--muted)">' + esc(f.fecha_entrega_real) + '</span>' : '') +
+          '<span class="badge ' + insignia[0] + '">' + insignia[1] + '</span></label>';
+      }).join('');
+    } catch (e) {
+      avisarError(e);
+      lista.innerHTML = '<div class="empty-state"><h3>No se pudieron cargar las entregas</h3><p>' + esc(e.message) + '</p></div>';
+    }
+  }
+
+  window.abrirEntregas = async function (idTarea) {
+    tareaAbierta = (allTasks || []).filter(function (t) { return t.id_tarea === idTarea; })[0];
+    if (!tareaAbierta) return;
+    document.getElementById('entregas-titulo').textContent =
+      tareaAbierta.titulo + ' — ' + tareaAbierta.grupo + ' — vence ' + tareaAbierta.fecha_entrega;
+    document.getElementById('entregas-lista').innerHTML = '';
+    openModal('modal-entregas');
+    await pintarEntregas();
+  };
+
+  window.marcarEntrega = async function (idAlumno, entregada) {
+    if (!tareaAbierta) return;
+    try {
+      if (entregada) await API.registrarEntrega(tareaAbierta.id_tarea, idAlumno);
+      else await API.desmarcarEntrega(tareaAbierta.id_tarea, idAlumno);
+    } catch (e) {
+      avisarError(e);
+    }
+    // Siempre se relee de la BD: la lista y el contador de la tarea reflejan lo que quedó guardado.
+    await pintarEntregas();
+    await cargarTareas();
+  };
+
+  // ---------------------------------------------------------------
+  // Enganche con la navegación del dashboard
+  // ---------------------------------------------------------------
+
+  // showPage original pinta la página con la caché en memoria; aquí se le encadena la
+  // recarga real desde la API, para que entrar a una pestaña siempre traiga datos frescos.
+  var showPageOriginal = window.showPage;
+  window.showPage = function (id) {
+    showPageOriginal(id);
+    if (!CU || CU.role !== 'teacher') return;
+    if (id === 'calificaciones') cargarCalificaciones();
+    if (id === 'asistencia') loadAttGroup();
+    if (id === 'tareas') cargarTareas();
+  };
+})();
