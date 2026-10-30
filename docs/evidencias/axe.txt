@@ -1,0 +1,55 @@
+
+> academia-decam-backend@1.0.0 test:a11y
+> node tests/a11y/axe.js
+
+Análisis de accesibilidad con axe-core 4.14.0 — reglas: wcag2a, wcag2aa, wcag21a, wcag21aa
+
+== Inicio de sesión ==
+   1 reglas violadas (5 elementos) · 13 aprobadas · 0 para revisión manual
+   - [serious] color-contrast (wcag2aa, wcag143): Elements must meet minimum color contrast ratio thresholds — 5 elemento(s)
+       .login-brand-sub
+       .login-sub
+       #tab-student
+       #tab-jefe
+       #tab-registrador
+
+== Registro (HU-002) ==
+   3 reglas violadas (90 elementos) · 13 aprobadas · 1 para revisión manual
+   - [serious] color-contrast (wcag2aa, wcag143): Elements must meet minimum color contrast ratio thresholds — 83 elemento(s)
+       .sidebar-sub
+       .u-role
+       .sidebar-bottom > .nav-sec
+       .sidebar-logout
+       #page-registro > .topbar > div > .page-sub
+       … y 78 más
+   - [critical] label (wcag2a, wcag412): Form elements must have labels — 1 elemento(s)
+       #ci-reg-fechanac
+   - [critical] select-name (wcag2a, wcag412): Select element must have an accessible name — 6 elemento(s)
+       #ci-reg-tipo
+       #ci-reg-sexo
+       #ci-reg-nivel
+       #ci-reg-grado
+       #ci-reg-seccionletra
+       … y 1 más
+
+== Matrícula (HU-003 / HU-004) ==
+   3 reglas violadas (87 elementos) · 15 aprobadas · 1 para revisión manual
+   - [serious] color-contrast (wcag2aa, wcag143): Elements must meet minimum color contrast ratio thresholds — 78 elemento(s)
+       .sidebar-sub
+       .u-role
+       .sidebar-bottom > .nav-sec
+       .sidebar-logout
+       #page-matricula > .topbar > div > .page-sub
+       … y 73 más
+   - [critical] label (wcag2a, wcag412): Form elements must have labels — 2 elemento(s)
+       #ci-mat-fechanac
+       #ci-mat-anio
+   - [critical] select-name (wcag2a, wcag412): Select element must have an accessible name — 7 elemento(s)
+       #ci-mat-sexo
+       #ci-mat-procedencia
+       #ci-mat-nivel
+       #ci-mat-grado
+       #ci-mat-seccion
+       … y 2 más
+
+Total: 7 violaciones en 3 pantallas. Detalle en docs/evidencias/axe.json

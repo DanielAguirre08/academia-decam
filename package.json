@@ -10,6 +10,9 @@
     "test:api": "npm run db:reset:test && node --test --test-concurrency=1 \"tests/api/**/*.test.js\"",
     "test": "npm run test:unit && npm run test:api",
     "test:coverage": "npm run db:reset:test && node --test --test-concurrency=1 --experimental-test-coverage --test-coverage-exclude=\"tests/**\" \"tests/*.test.js\" \"tests/api/**/*.test.js\"",
+    "test:e2e": "node --test --test-reporter=spec tests/e2e/flujo-principal.selenium.js",
+    "test:a11y": "node tests/a11y/axe.js",
+    "test:carga": "node scripts/carga.js",
     "db:reset": "mysql --default-character-set=utf8mb4 -u root < database/reset.sql && mysql --default-character-set=utf8mb4 -u root < database/schema.sql && mysql --default-character-set=utf8mb4 -u root < database/seed.sql",
     "db:reset:test": "node scripts/preparar-bd-pruebas.js",
     "db:check": "mysql --default-character-set=utf8mb4 -u root < database/verificar-integridad.sql",
@@ -24,6 +27,8 @@
     "mysql2": "^3.11.0"
   },
   "devDependencies": {
+    "@axe-core/webdriverjs": "^4.14.0",
+    "selenium-webdriver": "^4.51.0",
     "supertest": "^7.3.1"
   }
 }

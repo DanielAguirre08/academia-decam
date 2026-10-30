@@ -1,0 +1,1044 @@
+{
+  "fecha": "2026-10-29T23:57:45.321Z",
+  "tags": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa"
+  ],
+  "pantallas": [
+    {
+      "pantalla": "Inicio de sesión",
+      "url": "http://localhost:3101/dashboard.html",
+      "axe": "4.14.0",
+      "violaciones": [
+        {
+          "regla": "color-contrast",
+          "impacto": "serious",
+          "descripcion": "Elements must meet minimum color contrast ratio thresholds",
+          "wcag": [
+            "wcag2aa",
+            "wcag143"
+          ],
+          "ayuda": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=webdriverjs",
+          "nodos": [
+            {
+              "selector": ".login-brand-sub",
+              "html": "<div class=\"login-brand-sub\">Plataforma institucional</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": ".login-sub",
+              "html": "<div class=\"login-sub\">Accede con tu cuenta institucional</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#tab-student",
+              "html": "<button class=\"role-tab\" id=\"tab-student\" onclick=\"selectRole('student')\">",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.4pt (12.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#tab-jefe",
+              "html": "<button class=\"role-tab\" id=\"tab-jefe\" onclick=\"selectRole('jefe')\">",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.4pt (12.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#tab-registrador",
+              "html": "<button class=\"role-tab\" id=\"tab-registrador\" onclick=\"selectRole('registrador')\">",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.4pt (12.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ],
+      "totales": {
+        "violaciones": 1,
+        "nodosAfectados": 5,
+        "revisionManual": 0,
+        "aprobadas": 13
+      }
+    },
+    {
+      "pantalla": "Registro (HU-002)",
+      "url": "http://localhost:3101/dashboard.html",
+      "axe": "4.14.0",
+      "violaciones": [
+        {
+          "regla": "color-contrast",
+          "impacto": "serious",
+          "descripcion": "Elements must meet minimum color contrast ratio thresholds",
+          "wcag": [
+            "wcag2aa",
+            "wcag143"
+          ],
+          "ayuda": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=webdriverjs",
+          "nodos": [
+            {
+              "selector": ".sidebar-sub",
+              "html": "<div class=\"sidebar-sub\">Plataforma institucional</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.7 (foreground color: #575d6a, background color: #0f172a, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": ".u-role",
+              "html": "<div class=\"u-role\">Registrador</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 3.69 (foreground color: #767b86, background color: #1b2335, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": ".sidebar-bottom > .nav-sec",
+              "html": "<div class=\"nav-sec\">Cuenta</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.24 (foreground color: #4b515f, background color: #0f172a, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": ".sidebar-logout",
+              "html": "<div class=\"sidebar-logout\" onclick=\"askLogout()\">",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 3.2 (foreground color: #636875, background color: #0f172a, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-registro > .topbar > div > .page-sub",
+              "html": "<div class=\"page-sub\">Módulo de registro — Registrador</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-registro > div:nth-child(2) > span:nth-child(1)",
+              "html": "<span style=\"font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em\">Capas del módulo:</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-registro > div:nth-child(2) > span:nth-child(5)",
+              "html": "<span style=\"font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#16a34a;font-weight:600;border:1px solid rgba(22,163,74,.2)\">● DT.Registro</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 3.14 (foreground color: #16a34a, background color: #f0fdf4, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-registro > div:nth-child(2) > span:nth-child(6)",
+              "html": "<span style=\"font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#16a34a;font-weight:600;border:1px solid rgba(22,163,74,.2)\">● Registro</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 3.14 (foreground color: #16a34a, background color: #f0fdf4, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-registro > .card > .card-header > span",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">Boundary — Interfaz de navegación</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.29 (foreground color: #94a3b8, background color: #eef2ff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-registro > .two-col > div:nth-child(1) > .card > .card-header > span",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">Boundary — Formulario de entrada</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.29 (foreground color: #94a3b8, background color: #eef2ff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-registro > .two-col > div:nth-child(2) > .card:nth-child(1) > .card-header > span",
+              "html": "<span style=\"font-size:11px;color:#7c3aed;opacity:.7\">Control — Lógica de negocio</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.94 (foreground color: #9e6ff2, background color: #ede9fe, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#registro-count",
+              "html": "<span style=\"font-size:12px;color:var(--muted)\" id=\"registro-count\">33 registros</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-registro > .two-col > div:nth-child(2) > .card:nth-child(2) > .card-header > h2",
+              "html": "<h2 style=\"color:#16a34a\">",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 3.14 (foreground color: #16a34a, background color: #f0fdf4, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-registro > .two-col > div:nth-child(2) > .card:nth-child(2) > .card-header > span",
+              "html": "<span style=\"font-size:11px;color:#16a34a;opacity:.7\">Entity — Detalle del registro seleccionado</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.21 (foreground color: #57be7d, background color: #f0fdf4, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#dt-registro-detalle > div",
+              "html": "<div style=\"font-size:12px;color:var(--muted);text-align:center;padding:12px 0\">Selecciona un registro de la lista para ver su detalle.</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-registro > .two-col > div:nth-child(2) > .card:nth-child(3) > .card-header > h2",
+              "html": "<h2 style=\"color:#16a34a\">",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 3.14 (foreground color: #16a34a, background color: #f0fdf4, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-registro > .two-col > div:nth-child(2) > .card:nth-child(3) > .card-header > span",
+              "html": "<span style=\"font-size:11px;color:#16a34a;opacity:.7\">Entity — Tabla de registros</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.21 (foreground color: #57be7d, background color: #f0fdf4, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',7)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">alumno@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',7)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',1)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">ana.torres@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',1)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',11)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">andres.flores@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',11)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',10)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">camila.huaman@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',10)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',4)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">carlos.ruiz@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',4)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('docente',4)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">carmen.vilca@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('docente',4)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',14)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">daniela.rios@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',14)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',6)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">diego.salas@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',6)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',5)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000105</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',5)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',12)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000112</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',12)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',13)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">gabriel.ortiz@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',13)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',11)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000111</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',11)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',6)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000106</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',6)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('docente',3)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">jorge.mendoza@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('docente',3)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',2)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000102</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',2)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',12)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">lucia.paredes@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',12)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',10)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000110</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',10)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',2)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">luis.perez@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',2)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',3)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">maria.gomez@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',3)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',1)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000101</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',1)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',9)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">mateo.castro@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',9)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',13)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000113</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',13)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',7)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000107</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',7)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',4)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000104</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',4)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('docente',1)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">prof@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('docente',1)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',14)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000114</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',14)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('docente',2)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">rosa.quispe@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('docente',2)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',3)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000103</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',3)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',15)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">sebastian.leon@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',15)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',5)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">sofia.vargas@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',5)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',9)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000109</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',9)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',8)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">valeria.rojas@acadecam.edu.pe</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('alumno',8)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',8)\"] > div:nth-child(1) > div:nth-child(2)",
+              "html": "<div style=\"font-size:12px;color:var(--muted)\">999000108</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "div[onclick=\"verRegistro('apoderado',8)\"] > div:nth-child(2) > span:nth-child(2)",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">29/10/2026</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        },
+        {
+          "regla": "label",
+          "impacto": "critical",
+          "descripcion": "Form elements must have labels",
+          "wcag": [
+            "wcag2a",
+            "wcag412"
+          ],
+          "ayuda": "https://dequeuniversity.com/rules/axe/4.14/label?application=webdriverjs",
+          "nodos": [
+            {
+              "selector": "#ci-reg-fechanac",
+              "html": "<input type=\"date\" class=\"form-input\" id=\"ci-reg-fechanac\">",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            }
+          ]
+        },
+        {
+          "regla": "select-name",
+          "impacto": "critical",
+          "descripcion": "Select element must have an accessible name",
+          "wcag": [
+            "wcag2a",
+            "wcag412"
+          ],
+          "ayuda": "https://dequeuniversity.com/rules/axe/4.14/select-name?application=webdriverjs",
+          "nodos": [
+            {
+              "selector": "#ci-reg-tipo",
+              "html": "<select class=\"form-input\" id=\"ci-reg-tipo\" onchange=\"toggleRegistroAlumnoFields()\">\n                <option value=\"alumno\">Alumno</option>\n                <option value=\"docente\">Docente</option>\n                <option value=\"apoderado\">Apoderado</option>\n              </select>",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "selector": "#ci-reg-sexo",
+              "html": "<select class=\"form-input\" id=\"ci-reg-sexo\">\n                  <option value=\"\">Seleccionar...</option>\n                  <option value=\"M\">Masculino</option>\n                  <option value=\"F\">Femenino</option>\n                </select>",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "selector": "#ci-reg-nivel",
+              "html": "<select class=\"form-input\" id=\"ci-reg-nivel\" onchange=\"updateGradoOptions('ci-reg-nivel','ci-reg-grado')\">",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "selector": "#ci-reg-grado",
+              "html": "<select class=\"form-input\" id=\"ci-reg-grado\" disabled=\"\">\n                  <option value=\"\">Nivel primero</option>\n                </select>",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "selector": "#ci-reg-seccionletra",
+              "html": "<select class=\"form-input\" id=\"ci-reg-seccionletra\">\n                  <option value=\"\">Seleccionar...</option>\n                  <option value=\"A\">A</option>\n                  <option value=\"B\">B</option>\n                  <option value=\"C\">C</option>\n                </select>",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "selector": "#registro-filter-tipo",
+              "html": "<select class=\"form-input\" style=\"width:auto;padding:6px 10px;font-size:12px\" id=\"registro-filter-tipo\" onchange=\"filterRegistro()\">",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            }
+          ]
+        }
+      ],
+      "totales": {
+        "violaciones": 3,
+        "nodosAfectados": 90,
+        "revisionManual": 1,
+        "aprobadas": 13
+      }
+    },
+    {
+      "pantalla": "Matrícula (HU-003 / HU-004)",
+      "url": "http://localhost:3101/dashboard.html",
+      "axe": "4.14.0",
+      "violaciones": [
+        {
+          "regla": "color-contrast",
+          "impacto": "serious",
+          "descripcion": "Elements must meet minimum color contrast ratio thresholds",
+          "wcag": [
+            "wcag2aa",
+            "wcag143"
+          ],
+          "ayuda": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=webdriverjs",
+          "nodos": [
+            {
+              "selector": ".sidebar-sub",
+              "html": "<div class=\"sidebar-sub\">Plataforma institucional</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.7 (foreground color: #575d6a, background color: #0f172a, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": ".u-role",
+              "html": "<div class=\"u-role\">Registrador</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 3.69 (foreground color: #767b86, background color: #1b2335, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": ".sidebar-bottom > .nav-sec",
+              "html": "<div class=\"nav-sec\">Cuenta</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.24 (foreground color: #4b515f, background color: #0f172a, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": ".sidebar-logout",
+              "html": "<div class=\"sidebar-logout\" onclick=\"askLogout()\">",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 3.2 (foreground color: #636875, background color: #0f172a, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-matricula > .topbar > div > .page-sub",
+              "html": "<div class=\"page-sub\">Módulo de matrícula — Registrador</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-matricula > div:nth-child(2) > span:nth-child(1)",
+              "html": "<span style=\"font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em\">Capas del módulo:</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-matricula > div:nth-child(2) > span:nth-child(5)",
+              "html": "<span style=\"font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#16a34a;font-weight:600;border:1px solid rgba(22,163,74,.2)\">● Matricula</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 3.14 (foreground color: #16a34a, background color: #f0fdf4, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-matricula > div:nth-child(2) > span:nth-child(6)",
+              "html": "<span style=\"font-size:11px;padding:3px 10px;border-radius:20px;background:#f0fdf4;color:#16a34a;font-weight:600;border:1px solid rgba(22,163,74,.2)\">● DT.Matricula</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 3.14 (foreground color: #16a34a, background color: #f0fdf4, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-matricula > .card > .card-header > span",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">Boundary — Interfaz de navegación</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.29 (foreground color: #94a3b8, background color: #eef2ff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-matricula > .two-col > div:nth-child(1) > .card > .card-header > span",
+              "html": "<span style=\"font-size:11px;color:var(--muted)\">Boundary — Formulario de matrícula</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.29 (foreground color: #94a3b8, background color: #eef2ff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-matricula > .two-col > div:nth-child(2) > .card:nth-child(1) > .card-header > span",
+              "html": "<span style=\"font-size:11px;color:#7c3aed;opacity:.7\">Control — Lógica de negocio</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.94 (foreground color: #9e6ff2, background color: #ede9fe, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#matricula-count",
+              "html": "<span style=\"font-size:12px;color:var(--muted)\" id=\"matricula-count\">15 matrículas</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-matricula > .two-col > div:nth-child(2) > .card:nth-child(2) > .card-header > h2",
+              "html": "<h2 style=\"color:#16a34a\">",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 3.14 (foreground color: #16a34a, background color: #f0fdf4, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-matricula > .two-col > div:nth-child(2) > .card:nth-child(2) > .card-header > span",
+              "html": "<span style=\"font-size:11px;color:#16a34a;opacity:.7\">Entity — Tabla de matrículas</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.21 (foreground color: #57be7d, background color: #f0fdf4, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#matricula-tbody > tr:nth-child(1) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0015</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(1) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">3-A Secundaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(1) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(1) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">03/03/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(2) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0014</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(2) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">3-A Secundaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(2) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(2) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">02/03/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(3) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0013</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(3) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">3-A Secundaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(3) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(3) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">02/03/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(4) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0012</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(4) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">6-B Primaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(4) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(4) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">26/02/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(5) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0011</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(5) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">6-B Primaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(5) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(5) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">26/02/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(6) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0010</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(6) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">6-B Primaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(6) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(6) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">25/02/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(7) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0009</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(7) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">5-A Primaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(7) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(7) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">24/02/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(8) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0008</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(8) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">5-A Primaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(8) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(8) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">23/02/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(9) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0007</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(9) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">6-A Primaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(9) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(9) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">23/02/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(10) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0006</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(10) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">5-A Primaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(10) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(10) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">19/02/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(11) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0005</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(11) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">5-A Primaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(11) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(11) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">19/02/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(12) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0004</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(12) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">6-A Primaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(12) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(12) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">18/02/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(13) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0003</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(13) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">6-A Primaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(13) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(13) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">17/02/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(14) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0002</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(14) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">6-A Primaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(14) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(14) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">16/02/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(15) > td:nth-child(1)",
+              "html": "<td style=\"padding:10px 16px;font-size:12px;color:var(--muted);white-space:nowrap\">MAT-0001</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(15) > td:nth-child(3) > .b-gray.badge",
+              "html": "<span class=\"badge b-gray\">6-A Primaria</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 8.6pt (11.5px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(15) > td:nth-child(4)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted)\">2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "tr:nth-child(15) > td:nth-child(5)",
+              "html": "<td style=\"padding:10px 16px;font-size:13px;color:var(--muted);white-space:nowrap\">16/02/2026</td>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.8pt (13px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-matricula > .two-col > div:nth-child(2) > .card:nth-child(3) > .card-header > h2",
+              "html": "<h2 style=\"color:#16a34a\">",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 3.14 (foreground color: #16a34a, background color: #f0fdf4, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#page-matricula > .two-col > div:nth-child(2) > .card:nth-child(3) > .card-header > span",
+              "html": "<span style=\"font-size:11px;color:#16a34a;opacity:.7\">Entity — Detalle de matrícula seleccionada</span>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.21 (foreground color: #57be7d, background color: #f0fdf4, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "#dt-matricula-detalle > div",
+              "html": "<div style=\"font-size:12px;color:var(--muted);text-align:center;padding:12px 0\">Haz clic en <b>Ver</b> en la tabla para ver el detalle completo de una matrícula.</div>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1"
+            },
+            {
+              "selector": "b",
+              "html": "<b>Ver</b>",
+              "resumen": "Fix any of the following:\n  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        },
+        {
+          "regla": "label",
+          "impacto": "critical",
+          "descripcion": "Form elements must have labels",
+          "wcag": [
+            "wcag2a",
+            "wcag412"
+          ],
+          "ayuda": "https://dequeuniversity.com/rules/axe/4.14/label?application=webdriverjs",
+          "nodos": [
+            {
+              "selector": "#ci-mat-fechanac",
+              "html": "<input type=\"date\" class=\"form-input\" id=\"ci-mat-fechanac\">",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "selector": "#ci-mat-anio",
+              "html": "<input type=\"text\" class=\"form-input\" id=\"ci-mat-anio\" value=\"2026\">",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element has no placeholder attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            }
+          ]
+        },
+        {
+          "regla": "select-name",
+          "impacto": "critical",
+          "descripcion": "Select element must have an accessible name",
+          "wcag": [
+            "wcag2a",
+            "wcag412"
+          ],
+          "ayuda": "https://dequeuniversity.com/rules/axe/4.14/select-name?application=webdriverjs",
+          "nodos": [
+            {
+              "selector": "#ci-mat-sexo",
+              "html": "<select class=\"form-input\" id=\"ci-mat-sexo\">\n                  <option value=\"\">Seleccionar...</option>\n                  <option value=\"M\">Masculino</option>\n                  <option value=\"F\">Femenino</option>\n                </select>",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "selector": "#ci-mat-procedencia",
+              "html": "<select class=\"form-input\" id=\"ci-mat-procedencia\">\n                  <option value=\"nuevo\">Alumno nuevo</option>\n                  <option value=\"traslado\">Traslado de otro colegio</option>\n                  <option value=\"promocion\">Promoción interna</option>\n                </select>",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "selector": "#ci-mat-nivel",
+              "html": "<select class=\"form-input\" id=\"ci-mat-nivel\" onchange=\"updateGradoOptions('ci-mat-nivel','ci-mat-grado')\">",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "selector": "#ci-mat-grado",
+              "html": "<select class=\"form-input\" id=\"ci-mat-grado\" disabled=\"\">\n                  <option value=\"\">Selecciona nivel primero</option>\n                </select>",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "selector": "#ci-mat-seccion",
+              "html": "<select class=\"form-input\" id=\"ci-mat-seccion\">\n                  <option value=\"\">Seleccionar...</option>\n                  <option value=\"A\">A</option>\n                  <option value=\"B\">B</option>\n                  <option value=\"C\">C</option>\n                </select>",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "selector": "#ci-mat-turno",
+              "html": "<select class=\"form-input\" id=\"ci-mat-turno\">\n                  <option value=\"\">Según la sección</option>\n                  <option value=\"Mañana\">Mañana</option>\n                  <option value=\"Tarde\">Tarde</option>\n                </select>",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            },
+            {
+              "selector": "#matricula-filter-estado",
+              "html": "<select class=\"form-input\" style=\"width:auto;padding:6px 10px;font-size:12px\" id=\"matricula-filter-estado\" onchange=\"filterMatriculas()\">",
+              "resumen": "Fix any of the following:\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            }
+          ]
+        }
+      ],
+      "totales": {
+        "violaciones": 3,
+        "nodosAfectados": 87,
+        "revisionManual": 1,
+        "aprobadas": 15
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+
+> academia-decam-backend@1.0.0 test:carga
+> node scripts/carga.js
+
+Prueba de carga contra http://localhost:3101 — timeout por petición: 8 s
+
+• Cambio de nota — 1 usuario × 20 (en serie): 20/20 correctas en 0.2 s
+• Cambio de nota — 8 simultáneos (misma nota): 8/8 correctas en 0.9 s
+• Consulta de notas — 40 simultáneos: 40/40 correctas en 4.4 s
+• Inicio de sesión — 40 simultáneos: 40/40 correctas en 4.2 s
+
+| Escenario                                   | Correctas | Mediana |     p95 |  Máximo |
+|---------------------------------------------|----------:|--------:|--------:|--------:|
+| Cambio de nota — 1 usuario × 20 (en serie)  |     20/20 |    2 ms |    4 ms |   10 ms |
+| Cambio de nota — 8 simultáneos (misma nota) |       8/8 |   14 ms |   18 ms |   18 ms |
+| Consulta de notas — 40 simultáneos          |     40/40 |   12 ms |   15 ms |   15 ms |
+| Inicio de sesión — 40 simultáneos           |     40/40 | 4190 ms | 4191 ms | 4192 ms |
+
+--- Reproducción de defecto (no forma parte de la medición de rendimiento) ---
+
+• DEF-01: 40 cambios de nota simultáneos: 1/40 correctas en 20.3 s
+    ✗ 39 × timeout 8 s
+    Colgadas (sin respuesta en 8 s): 39 de 40
+    Inmediatamente después, con un timeout de 8 s:
+    GET /api/calificaciones (usa la base): NO responde (timeout 8 s)
+    GET /api/auth/me (no usa la base): responde (HTTP 200, 4 ms)
+
+| Escenario                              | Correctas | Mediana |     p95 |  Máximo |
+|----------------------------------------|----------:|--------:|--------:|--------:|
+| DEF-01: 40 cambios de nota simultáneos |      1/40 | 8005 ms | 8007 ms | 8007 ms |
