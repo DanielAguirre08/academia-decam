@@ -1,0 +1,256 @@
+(node:49313) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)
+newman
+
+Academia Decam · API REST
+
+❏ 0. Frontend
+↳ Página principal redirige al sistema
+  GET http://localhost:3101/ [200 OK, 12.96MB, 25ms]
+
+↳ dashboard.html contiene la pantalla de inicio de sesión
+  GET http://localhost:3101/dashboard.html [200 OK, 12.96MB, 10ms]
+
+↳ Script del cliente de la API
+  GET http://localhost:3101/js/api-cliente.js [200 OK, 3.13kB, 2ms]
+
+↳ No expone el código del servidor (server.js)
+  GET http://localhost:3101/server.js [404 Not Found, 749B, 2ms]
+
+↳ No expone la configuración (.env)
+  GET http://localhost:3101/.env [404 Not Found, 744B, 1ms]
+
+❏ 1. Autenticación (HU-001)
+↳ Sin sesión no se puede consultar /me
+  GET http://localhost:3101/api/auth/me [401 Unauthorized, 1.03kB, 1ms]
+
+↳ Login sin datos
+  POST http://localhost:3101/api/auth/login [400 Bad Request, 1.04kB, 6ms]
+
+↳ Login con contraseña incorrecta
+  POST http://localhost:3101/api/auth/login [401 Unauthorized, 1.04kB, 68ms]
+
+↳ Login con el rol equivocado (docente en pestaña Alumno)
+  POST http://localhost:3101/api/auth/login [401 Unauthorized, 1.04kB, 53ms]
+
+↳ Iniciar sesión como Docente
+  POST http://localhost:3101/api/auth/login [200 OK, 1.37kB, 54ms]
+
+↳ ¿Quién soy? (/me con sesión)
+  GET http://localhost:3101/api/auth/me [200 OK, 1.19kB, 1ms]
+
+❏ 2. Docente (HU-005 a HU-010)
+↳ Listar mis grupos
+  GET http://localhost:3101/api/secciones [200 OK, 1.5kB, 2ms]
+
+↳ Ver calificaciones del grupo 6-A
+  GET http://localhost:3101/api/calificaciones?id_seccion=1 [200 OK, 1.98kB, 4ms]
+
+↳ Registrar una nota válida (17)
+  PATCH http://localhost:3101/api/calificaciones/5 [200 OK, 1.05kB, 3ms]
+
+↳ Rechaza una nota mayor que 20
+  PATCH http://localhost:3101/api/calificaciones/5 [400 Bad Request, 1.07kB, 0µs]
+
+↳ Rechaza una nota con 3 decimales (valor límite)
+  PATCH http://localhost:3101/api/calificaciones/5 [400 Bad Request, 1.07kB, 0µs]
+
+↳ Rechaza una nota que no es número
+  PATCH http://localhost:3101/api/calificaciones/5 [400 Bad Request, 1.07kB, 1ms]
+
+↳ Restaurar la nota original
+  PATCH http://localhost:3101/api/calificaciones/5 [200 OK, 1.05kB, 3ms]
+
+↳ Ver la lista de asistencia de hoy
+  GET http://localhost:3101/api/asistencia?id_seccion=1&fecha=2026-11-25 [200 OK, 1.73kB, 3ms]
+
+↳ Guardar la asistencia de hoy
+  POST http://localhost:3101/api/asistencia [200 OK, 1.04kB, 3ms]
+
+↳ Rechaza asistencia de una fecha futura
+  POST http://localhost:3101/api/asistencia [400 Bad Request, 1.05kB, 1ms]
+
+↳ Rechaza un estado de asistencia inválido
+  POST http://localhost:3101/api/asistencia [400 Bad Request, 1.12kB, 2ms]
+
+↳ Listar tareas del grupo
+  GET http://localhost:3101/api/tareas?id_seccion=1&estado=todas [200 OK, 2.03kB, 3ms]
+
+↳ Crear una tarea
+  POST http://localhost:3101/api/tareas [201 Created, 1.13kB, 3ms]
+
+↳ Rechaza una tarea sin título
+  POST http://localhost:3101/api/tareas [400 Bad Request, 1.08kB, 1ms]
+
+↳ Ver entregas de la tarea creada
+  GET http://localhost:3101/api/tareas/9/entregas [200 OK, 1.49kB, 3ms]
+
+↳ Buscar una tarea de otro grupo (6-B)
+  GET http://localhost:3101/api/tareas?id_seccion=3&estado=todas [200 OK, 1.34kB, 3ms]
+
+↳ Mi horario
+  GET http://localhost:3101/api/horario [200 OK, 4.17kB, 1ms]
+
+↳ Mis alumnos
+  GET http://localhost:3101/api/alumnos [200 OK, 4.29kB, 6ms]
+
+↳ Resumen de inicio del docente
+  GET http://localhost:3101/api/resumen [200 OK, 1.92kB, 5ms]
+
+↳ Cerrar sesión
+  POST http://localhost:3101/api/auth/logout [200 OK, 1.07kB, 1ms]
+
+❏ 3. Alumno (HU-007, HU-009, HU-010)
+↳ Iniciar sesión como Alumno
+  POST http://localhost:3101/api/auth/login [200 OK, 1.38kB, 62ms]
+
+↳ Mis calificaciones
+  GET http://localhost:3101/api/mi/calificaciones [200 OK, 1.2kB, 2ms]
+
+↳ Mi asistencia
+  GET http://localhost:3101/api/mi/asistencia [200 OK, 2.08kB, 2ms]
+
+↳ Mis tareas (incluye la que creó el docente)
+  GET http://localhost:3101/api/mi/tareas [200 OK, 2.19kB, 3ms]
+
+↳ Marcar la tarea como entregada
+  POST http://localhost:3101/api/mi/tareas/9/entrega [201 Created, 1.03kB, 3ms]
+
+↳ Desmarcar la entrega
+  DELETE http://localhost:3101/api/mi/tareas/9/entrega [200 OK, 1.02kB, 2ms]
+
+↳ Cerrar sesión
+  POST http://localhost:3101/api/auth/logout [200 OK, 1.07kB, 0µs]
+
+❏ 4. Registrador (HU-002, HU-003)
+↳ Iniciar sesión como Registrador
+  POST http://localhost:3101/api/auth/login [200 OK, 1.39kB, 55ms]
+
+↳ Listar personas registradas
+  GET http://localhost:3101/api/registros?tipo=all [200 OK, 13.07kB, 3ms]
+
+↳ Listar matrículas
+  GET http://localhost:3101/api/matriculas?estado=all [200 OK, 9kB, 2ms]
+
+↳ Rechaza un registro con datos inválidos
+  POST http://localhost:3101/api/registros [400 Bad Request, 1.07kB, 1ms]
+
+↳ Cerrar sesión
+  POST http://localhost:3101/api/auth/logout [200 OK, 1.07kB, 1ms]
+
+❏ 5. Jefe Académico (HU-011, HU-012)
+↳ Iniciar sesión como Jefe Académico
+  POST http://localhost:3101/api/auth/login [200 OK, 1.4kB, 54ms]
+
+↳ Ver reclamos
+  GET http://localhost:3101/api/reclamos [200 OK, 3.09kB, 1ms]
+
+↳ Ver avisos
+  GET http://localhost:3101/api/avisos [200 OK, 2.23kB, 2ms]
+
+↳ Consultar notas de un grupo (solo lectura)
+  GET http://localhost:3101/api/calificaciones?id_seccion=1 [200 OK, 1.98kB, 2ms]
+
+↳ Cerrar sesión
+  POST http://localhost:3101/api/auth/logout [200 OK, 1.07kB, 1ms]
+
+❏ 6. Seguridad (OWASP Top 10)
+↳ A01 · Sin sesión no se ven notas
+  GET http://localhost:3101/api/calificaciones?id_seccion=1 [401 Unauthorized, 1.03kB, 0µs]
+
+↳ A01 · Sin sesión no se cambian notas
+  PATCH http://localhost:3101/api/calificaciones/1 [401 Unauthorized, 1.03kB, 0µs]
+
+↳ A03 · Inyección SQL en el login
+  POST http://localhost:3101/api/auth/login [401 Unauthorized, 1.04kB, 54ms]
+
+↳ Iniciar sesión como Alumno
+  POST http://localhost:3101/api/auth/login [200 OK, 1.38kB, 52ms]
+
+↳ A01 · El alumno NO puede cambiar notas
+  PATCH http://localhost:3101/api/calificaciones/5 [403 Forbidden, 1.05kB, 0µs]
+
+↳ A01 · El alumno NO ve las notas de todo el grupo
+  GET http://localhost:3101/api/calificaciones?id_seccion=1 [403 Forbidden, 1.05kB, 0µs]
+
+↳ A01 · IDOR: pedir las notas de otro alumno (?id_alumno=1)
+  GET http://localhost:3101/api/mi/calificaciones?id_alumno=1 [200 OK, 1.2kB, 2ms]
+
+↳ A01 · IDOR: entregar una tarea de otro grupo
+  POST http://localhost:3101/api/mi/tareas/6/entrega [404 Not Found, 1.04kB, 1ms]
+
+↳ Cerrar sesión
+  POST http://localhost:3101/api/auth/logout [200 OK, 1.07kB, 1ms]
+
+↳ A07 · Tras cerrar sesión la cookie ya no sirve
+  GET http://localhost:3101/api/auth/me [401 Unauthorized, 1.03kB, 0µs]
+
+↳ Iniciar sesión como Docente
+  POST http://localhost:3101/api/auth/login [200 OK, 1.37kB, 53ms]
+
+↳ A03 · Inyección SQL en un parámetro (id_seccion)
+  GET http://localhost:3101/api/calificaciones?id_seccion=1 OR 1 [400 Bad Request, 1.03kB, 1ms]
+
+↳ A03 · Inyección en el nombre del campo de nota
+  PATCH http://localhost:3101/api/calificaciones/5 [400 Bad Request, 1.03kB, 1ms]
+
+↳ A01 · El docente NO puede registrar personas
+  GET http://localhost:3101/api/registros [403 Forbidden, 1.05kB, 0µs]
+
+↳ A01 · El docente NO puede publicar avisos
+  POST http://localhost:3101/api/avisos [403 Forbidden, 1.05kB, 0µs]
+
+↳ A01 · El docente NO opera en un grupo inexistente
+  GET http://localhost:3101/api/calificaciones?id_seccion=999 [403 Forbidden, 1.03kB, 1ms]
+
+↳ Cerrar sesión
+  POST http://localhost:3101/api/auth/logout [200 OK, 1.07kB, 0µs]
+
+↳ A05 · Los errores no muestran detalles internos
+  GET http://localhost:3101/api/ruta-que-no-existe [404 Not Found, 1.03kB, 0µs]
+
+❏ 7. Cabeceras de seguridad y CORS (SEG-16 y SEG-18)
+↳ SEG-16 · Cabeceras de seguridad HTTP
+  GET http://localhost:3101/dashboard.html [200 OK, 12.96MB, 11ms]
+
+↳ SEG-18 · CORS no autoriza a un sitio externo
+  GET http://localhost:3101/api/auth/me [401 Unauthorized, 1.03kB, 1ms]
+
+❏ 8. Bloqueo por fuerza bruta (RNF-02)
+↳ Intento fallido 1 de 5
+  POST http://localhost:3101/api/auth/login [401 Unauthorized, 1.04kB, 54ms]
+
+↳ Intento fallido 2 de 5
+  POST http://localhost:3101/api/auth/login [401 Unauthorized, 1.04kB, 53ms]
+
+↳ Intento fallido 3 de 5
+  POST http://localhost:3101/api/auth/login [401 Unauthorized, 1.04kB, 52ms]
+
+↳ Intento fallido 4 de 5
+  POST http://localhost:3101/api/auth/login [401 Unauthorized, 1.04kB, 54ms]
+
+↳ Intento fallido 5 de 5: la cuenta se bloquea
+  POST http://localhost:3101/api/auth/login [423 Locked, 1.09kB, 54ms]
+
+↳ Ni la contraseña correcta entra mientras está bloqueada
+  POST http://localhost:3101/api/auth/login [423 Locked, 1.09kB, 1ms]
+
+┌─────────────────────────┬──────────────────┬──────────────────┐
+│                         │         executed │           failed │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              iterations │                1 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│                requests │               74 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│            test-scripts │              148 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│      prerequest-scripts │                3 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              assertions │              235 │                0 │
+├─────────────────────────┴──────────────────┴──────────────────┤
+│ total run duration: 3.2s                                      │
+├───────────────────────────────────────────────────────────────┤
+│ total data received: 38.92MB (approx)                         │
+├───────────────────────────────────────────────────────────────┤
+│ average response time: 14ms [min: 1ms, max: 68ms, s.d.: 21ms] │
+└───────────────────────────────────────────────────────────────┘

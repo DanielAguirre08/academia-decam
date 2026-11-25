@@ -1,0 +1,3085 @@
+{
+  "info": {
+    "name": "Academia Decam · API REST",
+    "description": "Pruebas funcionales y de seguridad de la API de Academia Decam (Calidad y Pruebas de Software, Grupo 3).\n\nCómo usarla: arranca el servidor con `npm start`, revisa la variable baseUrl (por defecto http://localhost:3001) y ejecuta la colección completa con Run collection. Las carpetas van en orden: cada una inicia sesión con el rol que necesita.\n\nLos datos de acceso son las cuentas de prueba de database/seed.sql.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Se aplica a TODAS las peticiones (requisito RNF-01: menos de 2 segundos)",
+          "pm.test(\"Responde en menos de 2 segundos (RNF-01)\", () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "correoDocente",
+      "value": "prof@acadecam.edu.pe",
+      "type": "string"
+    },
+    {
+      "key": "claveDocente",
+      "value": "decam2024",
+      "type": "string"
+    },
+    {
+      "key": "correoAlumno",
+      "value": "alumno@acadecam.edu.pe",
+      "type": "string"
+    },
+    {
+      "key": "claveAlumno",
+      "value": "alumno2024",
+      "type": "string"
+    },
+    {
+      "key": "correoRegistrador",
+      "value": "registrador@acadecam.edu.pe",
+      "type": "string"
+    },
+    {
+      "key": "claveRegistrador",
+      "value": "reg2024",
+      "type": "string"
+    },
+    {
+      "key": "correoJefe",
+      "value": "jefe@acadecam.edu.pe",
+      "type": "string"
+    },
+    {
+      "key": "claveJefe",
+      "value": "jefe2024",
+      "type": "string"
+    },
+    {
+      "key": "correoBloqueo",
+      "value": "jorge.mendoza@acadecam.edu.pe",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Frontend",
+      "description": "Comprueba que el servidor entrega la interfaz y que no expone archivos internos.",
+      "item": [
+        {
+          "name": "Página principal redirige al sistema",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Carga la página (200)\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Es HTML\", () => pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/html\"));",
+                  "pm.test(\"Título «Academia Decam»\", () => pm.expect(pm.response.text()).to.include(\"<title>Academia Decam</title>\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "dashboard.html contiene la pantalla de inicio de sesión",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard.html",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard.html"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const html = pm.response.text();",
+                  "pm.test(\"Tiene el formulario de login (correo y contraseña)\", () => {",
+                  "  pm.expect(html).to.include('id=\"login-email\"');",
+                  "  pm.expect(html).to.include('id=\"login-pass\"');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Script del cliente de la API",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/js/api-cliente.js",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "js",
+                "api-cliente.js"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Es JavaScript\", () => pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"javascript\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "No expone el código del servidor (server.js)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/server.js",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "server.js"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"server.js no es accesible (404)\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "No expone la configuración (.env)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/.env",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ".env"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\".env no es accesible (404)\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1. Autenticación (HU-001)",
+      "description": "Inicio y cierre de sesión, y rechazo de credenciales incorrectas (CA-001, CA-002, RNF-02).",
+      "item": [
+        {
+          "name": "Sin sesión no se puede consultar /me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"iniciar sesión\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login sin datos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"\",\n  \"contrasena\": \"\",\n  \"rol\": \"docente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login con contraseña incorrecta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoDocente}}\",\n  \"contrasena\": \"clave-equivocada\",\n  \"rol\": \"docente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"Correo o contraseña incorrectos\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login con el rol equivocado (docente en pestaña Alumno)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoDocente}}\",\n  \"contrasena\": \"{{claveDocente}}\",\n  \"rol\": \"alumno\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"Correo o contraseña incorrectos\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Iniciar sesión como Docente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoDocente}}\",\n  \"contrasena\": \"{{claveDocente}}\",\n  \"rol\": \"docente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Inicio de sesión correcto (200)\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"El rol de la sesión es docente\", () => pm.expect(j.rol).to.eql(\"docente\"));",
+                  "pm.test(\"No devuelve la contraseña ni su hash\", () => {",
+                  "  const t = pm.response.text();",
+                  "  pm.expect(t).to.not.include(\"contrasena_hash\");",
+                  "  pm.expect(t).to.not.include(\"$2b$\");",
+                  "});",
+                  "pm.test(\"Crea la cookie de sesión decam.sid\", () => pm.expect(pm.cookies.has(\"decam.sid\")).to.be.true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "¿Quién soy? (/me con sesión)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve el correo del docente\", () => pm.expect(pm.response.json().correo).to.eql(pm.collectionVariables.get(\"correoDocente\")));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Docente (HU-005 a HU-010)",
+      "description": "Flujo del docente: grupos, notas, asistencia y tareas. Las notas que se modifican se restauran al final.",
+      "item": [
+        {
+          "name": "Listar mis grupos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/secciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "secciones"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve la lista de grupos\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});",
+                  "const g = pm.response.json().find((s) => s.grupo === \"6-A\");",
+                  "pm.test(\"Incluye el grupo 6-A\", () => pm.expect(g).to.be.an(\"object\"));",
+                  "pm.collectionVariables.set(\"idSeccion\", g.id_seccion);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ver calificaciones del grupo 6-A",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones?id_seccion={{idSeccion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones"
+              ],
+              "query": [
+                {
+                  "key": "id_seccion",
+                  "value": "{{idSeccion}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve las notas de los alumnos\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});",
+                  "const c = pm.response.json()[0];",
+                  "pm.test(\"Cada fila trae alumno, notas y promedio\", () => pm.expect(c).to.include.keys(\"id_calificacion\", \"nombreAlumno\", \"examen1\", \"examen2\", \"tareas\", \"proyecto\", \"promedio\"));",
+                  "pm.collectionVariables.set(\"idCalificacion\", c.id_calificacion);",
+                  "pm.collectionVariables.set(\"notaOriginal\", c.examen1 === null ? \"null\" : c.examen1);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Registrar una nota válida (17)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones/{{idCalificacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones",
+                "{{idCalificacion}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campo\": \"examen1\",\n  \"valor\": 17\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Recalcula el promedio (número entre 0 y 20)\", () => pm.expect(j.promedio).to.be.within(0, 20));",
+                  "pm.test(\"Indica si está Aprobado o Desaprobado\", () => pm.expect([\"Aprobado\", \"Desaprobado\"]).to.include(j.estado));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechaza una nota mayor que 20",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones/{{idCalificacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones",
+                "{{idCalificacion}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campo\": \"examen1\",\n  \"valor\": 25\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"entre 0 y 20\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechaza una nota con 3 decimales (valor límite)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones/{{idCalificacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones",
+                "{{idCalificacion}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campo\": \"examen1\",\n  \"valor\": 10.999\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"máximo 2 decimales\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechaza una nota que no es número",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones/{{idCalificacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones",
+                "{{idCalificacion}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campo\": \"examen1\",\n  \"valor\": \"abc\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Restaurar la nota original",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones/{{idCalificacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones",
+                "{{idCalificacion}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campo\": \"examen1\",\n  \"valor\": {{notaOriginal}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"La nota vuelve a su valor original (200)\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ver la lista de asistencia de hoy",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/asistencia?id_seccion={{idSeccion}}&fecha={{hoy}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "asistencia"
+              ],
+              "query": [
+                {
+                  "key": "id_seccion",
+                  "value": "{{idSeccion}}"
+                },
+                {
+                  "key": "fecha",
+                  "value": "{{hoy}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = new Date();",
+                  "const f = (x) => String(x).padStart(2, \"0\");",
+                  "pm.collectionVariables.set(\"hoy\", d.getFullYear() + \"-\" + f(d.getMonth() + 1) + \"-\" + f(d.getDate()));",
+                  "const e = new Date(d.getTime() + 14 * 86400000);",
+                  "pm.collectionVariables.set(\"fechaEntrega\", e.getFullYear() + \"-\" + f(e.getMonth() + 1) + \"-\" + f(e.getDate()));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve los alumnos del grupo\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});",
+                  "const filas = pm.response.json();",
+                  "pm.test(\"Cada alumno tiene un estado válido\", () => filas.forEach((a) => pm.expect([\"presente\", \"ausente\", \"tardanza\"]).to.include(a.estado)));",
+                  "pm.collectionVariables.set(\"registrosAsistencia\", JSON.stringify(filas.map((a) => ({ id_alumno: a.id_alumno, estado: a.estado }))));",
+                  "pm.collectionVariables.set(\"totalAlumnos\", filas.length);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Guardar la asistencia de hoy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/asistencia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "asistencia"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_seccion\": {{idSeccion}},\n  \"fecha\": \"{{hoy}}\",\n  \"registros\": {{registrosAsistencia}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Guarda a todos los alumnos del grupo\", () => pm.expect(pm.response.json().guardados).to.eql(Number(pm.collectionVariables.get(\"totalAlumnos\"))));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechaza asistencia de una fecha futura",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/asistencia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "asistencia"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_seccion\": 1,\n  \"fecha\": \"2030-01-01\",\n  \"registros\": [\n    {\n      \"id_alumno\": 1,\n      \"estado\": \"presente\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"fecha futura\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechaza un estado de asistencia inválido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/asistencia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "asistencia"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_seccion\": {{idSeccion}},\n  \"fecha\": \"{{hoy}}\",\n  \"registros\": [{ \"id_alumno\": 1, \"estado\": \"feriado\" }]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"inválido\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar tareas del grupo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tareas?id_seccion={{idSeccion}}&estado=todas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tareas"
+              ],
+              "query": [
+                {
+                  "key": "id_seccion",
+                  "value": "{{idSeccion}}"
+                },
+                {
+                  "key": "estado",
+                  "value": "todas"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve las tareas del grupo\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear una tarea",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tareas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tareas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Tarea de prueba (Postman)\",\n  \"descripcion\": \"Creada automáticamente por la colección de Postman\",\n  \"tipo\": \"Tarea\",\n  \"id_seccion\": {{idSeccion}},\n  \"fecha_entrega\": \"{{fechaEntrega}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = new Date();",
+                  "const f = (x) => String(x).padStart(2, \"0\");",
+                  "pm.collectionVariables.set(\"hoy\", d.getFullYear() + \"-\" + f(d.getMonth() + 1) + \"-\" + f(d.getDate()));",
+                  "const e = new Date(d.getTime() + 14 * 86400000);",
+                  "pm.collectionVariables.set(\"fechaEntrega\", e.getFullYear() + \"-\" + f(e.getMonth() + 1) + \"-\" + f(e.getDate()));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Tarea creada (201)\", () => pm.response.to.have.status(201));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Devuelve el id de la tarea y estado pendiente\", () => { pm.expect(j.id_tarea).to.be.a(\"number\"); pm.expect(j.estado).to.eql(\"pendiente\"); });",
+                  "pm.collectionVariables.set(\"idTarea\", j.id_tarea);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechaza una tarea sin título",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tareas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tareas"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"\",\n  \"tipo\": \"Tarea\",\n  \"id_seccion\": {{idSeccion}},\n  \"fecha_entrega\": \"{{fechaEntrega}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"título es obligatorio\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ver entregas de la tarea creada",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tareas/{{idTarea}}/entregas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tareas",
+                "{{idTarea}}",
+                "entregas"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Buscar una tarea de otro grupo (6-B)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tareas?id_seccion=3&estado=todas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tareas"
+              ],
+              "query": [
+                {
+                  "key": "id_seccion",
+                  "value": "3"
+                },
+                {
+                  "key": "estado",
+                  "value": "todas"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Hay tareas en el grupo 6-B\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});",
+                  "pm.collectionVariables.set(\"idTareaOtroGrupo\", pm.response.json()[0].id_tarea);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mi horario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/horario",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "horario"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Trae días y horas\", () => pm.expect(pm.response.json()).to.include.keys(\"dias\", \"horas\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mis alumnos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/alumnos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alumnos"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve el directorio de alumnos\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Resumen de inicio del docente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/resumen",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "resumen"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Es el resumen del docente\", () => pm.expect(pm.response.json().rol).to.eql(\"docente\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cerrar sesión",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Responde ok: true\", () => pm.expect(pm.response.json().ok).to.be.true);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Alumno (HU-007, HU-009, HU-010)",
+      "description": "El alumno solo ve SUS datos y no puede tocar los de otros.",
+      "item": [
+        {
+          "name": "Iniciar sesión como Alumno",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoAlumno}}\",\n  \"contrasena\": \"{{claveAlumno}}\",\n  \"rol\": \"alumno\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Inicio de sesión correcto (200)\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"El rol de la sesión es alumno\", () => pm.expect(j.rol).to.eql(\"alumno\"));",
+                  "pm.test(\"No devuelve la contraseña ni su hash\", () => {",
+                  "  const t = pm.response.text();",
+                  "  pm.expect(t).to.not.include(\"contrasena_hash\");",
+                  "  pm.expect(t).to.not.include(\"$2b$\");",
+                  "});",
+                  "pm.test(\"Crea la cookie de sesión decam.sid\", () => pm.expect(pm.cookies.has(\"decam.sid\")).to.be.true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mis calificaciones",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/mi/calificaciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "mi",
+                "calificaciones"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve sus notas\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});",
+                  "const c = pm.response.json()[0];",
+                  "pm.test(\"Trae promedio y estado\", () => pm.expect(c).to.include.keys(\"promedio\", \"estado\"));",
+                  "pm.collectionVariables.set(\"idCalificacionAlumno\", c.id_calificacion);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mi asistencia",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/mi/asistencia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "mi",
+                "asistencia"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Trae la lista de registros\", () => pm.expect(pm.response.json().registros).to.be.an(\"array\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mis tareas (incluye la que creó el docente)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/mi/tareas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "mi",
+                "tareas"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve sus tareas\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});",
+                  "pm.test(\"Aparece la tarea creada por el docente en esta corrida\", () => {",
+                  "  const id = Number(pm.collectionVariables.get(\"idTarea\"));",
+                  "  pm.expect(pm.response.json().map((t) => t.id_tarea)).to.include(id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Marcar la tarea como entregada",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/mi/tareas/{{idTarea}}/entrega",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "mi",
+                "tareas",
+                "{{idTarea}}",
+                "entrega"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Queda entregada\", () => pm.expect(pm.response.json().estado).to.eql(\"entregada\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Desmarcar la entrega",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/mi/tareas/{{idTarea}}/entrega",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "mi",
+                "tareas",
+                "{{idTarea}}",
+                "entrega"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Vuelve a pendiente\", () => pm.expect(pm.response.json().estado).to.eql(\"pendiente\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cerrar sesión",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Responde ok: true\", () => pm.expect(pm.response.json().ok).to.be.true);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Registrador (HU-002, HU-003)",
+      "description": "Consulta de registros y matrículas, y validación del formulario de registro.",
+      "item": [
+        {
+          "name": "Iniciar sesión como Registrador",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoRegistrador}}\",\n  \"contrasena\": \"{{claveRegistrador}}\",\n  \"rol\": \"registrador\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Inicio de sesión correcto (200)\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"El rol de la sesión es registrador\", () => pm.expect(j.rol).to.eql(\"registrador\"));",
+                  "pm.test(\"No devuelve la contraseña ni su hash\", () => {",
+                  "  const t = pm.response.text();",
+                  "  pm.expect(t).to.not.include(\"contrasena_hash\");",
+                  "  pm.expect(t).to.not.include(\"$2b$\");",
+                  "});",
+                  "pm.test(\"Crea la cookie de sesión decam.sid\", () => pm.expect(pm.cookies.has(\"decam.sid\")).to.be.true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar personas registradas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/registros?tipo=all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "registros"
+              ],
+              "query": [
+                {
+                  "key": "tipo",
+                  "value": "all"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve alumnos, docentes y apoderados\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar matrículas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/matriculas?estado=all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matriculas"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "all"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve las matrículas\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});",
+                  "pm.test(\"Cada matrícula tiene código MAT-\", () => pm.response.json().forEach((m) => pm.expect(m.codigo).to.match(/^MAT-\\d+/)));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechaza un registro con datos inválidos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/registros",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "registros"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"alumno\",\n  \"nombre\": \"\",\n  \"dni\": \"123\",\n  \"correo\": \"correo-malo\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cerrar sesión",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Responde ok: true\", () => pm.expect(pm.response.json().ok).to.be.true);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Jefe Académico (HU-011, HU-012)",
+      "description": "Supervisión: reclamos, avisos y consulta de notas.",
+      "item": [
+        {
+          "name": "Iniciar sesión como Jefe Académico",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoJefe}}\",\n  \"contrasena\": \"{{claveJefe}}\",\n  \"rol\": \"jefe_academico\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Inicio de sesión correcto (200)\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"El rol de la sesión es jefe_academico\", () => pm.expect(j.rol).to.eql(\"jefe_academico\"));",
+                  "pm.test(\"No devuelve la contraseña ni su hash\", () => {",
+                  "  const t = pm.response.text();",
+                  "  pm.expect(t).to.not.include(\"contrasena_hash\");",
+                  "  pm.expect(t).to.not.include(\"$2b$\");",
+                  "});",
+                  "pm.test(\"Crea la cookie de sesión decam.sid\", () => pm.expect(pm.cookies.has(\"decam.sid\")).to.be.true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ver reclamos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reclamos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reclamos"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve los reclamos\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ver avisos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/avisos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avisos"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Devuelve los avisos\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar notas de un grupo (solo lectura)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones?id_seccion=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones"
+              ],
+              "query": [
+                {
+                  "key": "id_seccion",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"El jefe puede ver las notas\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.be.an(\"array\");",
+                  "  pm.expect(j.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cerrar sesión",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Responde ok: true\", () => pm.expect(pm.response.json().ok).to.be.true);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "6. Seguridad (OWASP Top 10)",
+      "description": "Control de acceso, inyección y manejo de sesión.",
+      "item": [
+        {
+          "name": "A01 · Sin sesión no se ven notas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones?id_seccion=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones"
+              ],
+              "query": [
+                {
+                  "key": "id_seccion",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"iniciar sesión\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A01 · Sin sesión no se cambian notas",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones",
+                "1"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campo\": \"examen1\",\n  \"valor\": 20\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A03 · Inyección SQL en el login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"' OR 1=1 -- \",\n  \"contrasena\": \"x\",\n  \"rol\": \"docente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"Correo o contraseña incorrectos\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Iniciar sesión como Alumno",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoAlumno}}\",\n  \"contrasena\": \"{{claveAlumno}}\",\n  \"rol\": \"alumno\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Inicio de sesión correcto (200)\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"El rol de la sesión es alumno\", () => pm.expect(j.rol).to.eql(\"alumno\"));",
+                  "pm.test(\"No devuelve la contraseña ni su hash\", () => {",
+                  "  const t = pm.response.text();",
+                  "  pm.expect(t).to.not.include(\"contrasena_hash\");",
+                  "  pm.expect(t).to.not.include(\"$2b$\");",
+                  "});",
+                  "pm.test(\"Crea la cookie de sesión decam.sid\", () => pm.expect(pm.cookies.has(\"decam.sid\")).to.be.true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A01 · El alumno NO puede cambiar notas",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones/{{idCalificacionAlumno}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones",
+                "{{idCalificacionAlumno}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campo\": \"examen1\",\n  \"valor\": 20\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"No tienes permiso\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A01 · El alumno NO ve las notas de todo el grupo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones?id_seccion=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones"
+              ],
+              "query": [
+                {
+                  "key": "id_seccion",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A01 · IDOR: pedir las notas de otro alumno (?id_alumno=1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/mi/calificaciones?id_alumno=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "mi",
+                "calificaciones"
+              ],
+              "query": [
+                {
+                  "key": "id_alumno",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"El servidor ignora el parámetro y devuelve SOLO las notas propias\", () => {",
+                  "  const ids = pm.response.json().map((c) => c.id_calificacion);",
+                  "  pm.expect(ids).to.eql([Number(pm.collectionVariables.get(\"idCalificacionAlumno\"))]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A01 · IDOR: entregar una tarea de otro grupo",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/mi/tareas/{{idTareaOtroGrupo}}/entrega",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "mi",
+                "tareas",
+                "{{idTareaOtroGrupo}}",
+                "entrega"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"no existe\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cerrar sesión",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Responde ok: true\", () => pm.expect(pm.response.json().ok).to.be.true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A07 · Tras cerrar sesión la cookie ya no sirve",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Iniciar sesión como Docente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoDocente}}\",\n  \"contrasena\": \"{{claveDocente}}\",\n  \"rol\": \"docente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Inicio de sesión correcto (200)\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"El rol de la sesión es docente\", () => pm.expect(j.rol).to.eql(\"docente\"));",
+                  "pm.test(\"No devuelve la contraseña ni su hash\", () => {",
+                  "  const t = pm.response.text();",
+                  "  pm.expect(t).to.not.include(\"contrasena_hash\");",
+                  "  pm.expect(t).to.not.include(\"$2b$\");",
+                  "});",
+                  "pm.test(\"Crea la cookie de sesión decam.sid\", () => pm.expect(pm.cookies.has(\"decam.sid\")).to.be.true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A03 · Inyección SQL en un parámetro (id_seccion)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones?id_seccion=1 OR 1=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones"
+              ],
+              "query": [
+                {
+                  "key": "id_seccion",
+                  "value": "1 OR 1"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"Grupo inválido\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A03 · Inyección en el nombre del campo de nota",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones/{{idCalificacion}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones",
+                "{{idCalificacion}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campo\": \"promedio; DROP TABLE usuario\",\n  \"valor\": 12\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 400\", () => pm.response.to.have.status(400));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"Campo inválido\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A01 · El docente NO puede registrar personas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/registros",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "registros"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A01 · El docente NO puede publicar avisos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/avisos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "avisos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"x\",\n  \"contenido\": \"y\",\n  \"destinatarios\": \"todos\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A01 · El docente NO opera en un grupo inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/calificaciones?id_seccion=999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "calificaciones"
+              ],
+              "query": [
+                {
+                  "key": "id_seccion",
+                  "value": "999"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 403\", () => pm.response.to.have.status(403));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cerrar sesión",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Responde ok: true\", () => pm.expect(pm.response.json().ok).to.be.true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "A05 · Los errores no muestran detalles internos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/ruta-que-no-existe",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ruta-que-no-existe"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"Ruta no encontrada\");",
+                  "});",
+                  "pm.test(\"No hay trazas de código ni rutas de archivos\", () => { const t = pm.response.text(); pm.expect(t).to.not.match(/at .*\\.js|node_modules|\\/Users\\//); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "7. Cabeceras de seguridad y CORS (SEG-16 y SEG-18)",
+      "description": "Hallazgos del informe OWASP corregidos: el servidor ya no revela que usa Express, envía cabeceras de seguridad con helmet (nosniff, anti-clickjacking y Content-Security-Policy) y CORS ya no acepta cualquier origen. Antes de la corrección estas 4 verificaciones fallaban.",
+      "item": [
+        {
+          "name": "SEG-16 · Cabeceras de seguridad HTTP",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard.html",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard.html"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const h = (k) => pm.response.headers.get(k);",
+                  "pm.test(\"No revela la tecnología (sin X-Powered-By)\", () => pm.expect(h(\"X-Powered-By\")).to.be.undefined);",
+                  "pm.test(\"Tiene X-Content-Type-Options: nosniff\", () => pm.expect(h(\"X-Content-Type-Options\")).to.eql(\"nosniff\"));",
+                  "pm.test(\"Tiene protección contra clickjacking (X-Frame-Options o CSP frame-ancestors)\", () => pm.expect(h(\"X-Frame-Options\") || (h(\"Content-Security-Policy\") || \"\").includes(\"frame-ancestors\")).to.be.ok);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "SEG-18 · CORS no autoriza a un sitio externo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.request.headers.upsert({ key: \"Origin\", value: \"https://sitio-externo.example\" });"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"No responde Access-Control-Allow-Origin para un sitio externo\", () => pm.expect(pm.response.headers.get(\"Access-Control-Allow-Origin\")).to.be.undefined);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "8. Bloqueo por fuerza bruta (RNF-02)",
+      "description": "Cinco contraseñas incorrectas bloquean la cuenta de jorge.mendoza durante 10 minutos. Para desbloquearla antes: npm run db:reset. Va al final para no afectar el resto.",
+      "item": [
+        {
+          "name": "Intento fallido 1 de 5",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoBloqueo}}\",\n  \"contrasena\": \"clave-equivocada-1\",\n  \"rol\": \"docente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rechazado (401, o 423 si ya estaba bloqueada)\", () => pm.expect(pm.response.code).to.be.oneOf([401, 423]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Intento fallido 2 de 5",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoBloqueo}}\",\n  \"contrasena\": \"clave-equivocada-2\",\n  \"rol\": \"docente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rechazado (401, o 423 si ya estaba bloqueada)\", () => pm.expect(pm.response.code).to.be.oneOf([401, 423]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Intento fallido 3 de 5",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoBloqueo}}\",\n  \"contrasena\": \"clave-equivocada-3\",\n  \"rol\": \"docente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rechazado (401, o 423 si ya estaba bloqueada)\", () => pm.expect(pm.response.code).to.be.oneOf([401, 423]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Intento fallido 4 de 5",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoBloqueo}}\",\n  \"contrasena\": \"clave-equivocada-4\",\n  \"rol\": \"docente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rechazado (401, o 423 si ya estaba bloqueada)\", () => pm.expect(pm.response.code).to.be.oneOf([401, 423]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Intento fallido 5 de 5: la cuenta se bloquea",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoBloqueo}}\",\n  \"contrasena\": \"clave-equivocada-5\",\n  \"rol\": \"docente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 423\", () => pm.response.to.have.status(423));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"bloqueada\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ni la contraseña correcta entra mientras está bloqueada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoBloqueo}}\",\n  \"contrasena\": \"{{claveDocente}}\",\n  \"rol\": \"docente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Código HTTP 423\", () => pm.response.to.have.status(423));",
+                  "pm.test(\"Devuelve un mensaje de error claro\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.error).to.be.a(\"string\");",
+                  "  pm.expect(j.error).to.include(\"bloqueada\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

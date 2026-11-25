@@ -1,11 +1,44 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const path = require('path');
 const session = require('express-session');
 
 const app = express();
-app.use(cors());
+
+// --- Cabeceras de seguridad (hallazgo SEG-16, OWASP A05) ---
+// No anunciar la tecnología del servidor (X-Powered-By: Express).
+app.disable('x-powered-by');
+// helmet añade X-Content-Type-Options: nosniff, X-Frame-Options, Referrer-Policy y una
+// Content-Security-Policy. La política se ajusta a lo que usa dashboard.html: scripts propios y
+// en línea (incluidos los onclick), estilos e íconos de jsDelivr, fuentes de Google e imágenes data:.
+app.use(helmet({
+  contentSecurityPolicy: {
+    useDefaults: false,
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrcAttr: ["'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net', 'https://fonts.googleapis.com'],
+      fontSrc: ["'self'", 'data:', 'https://cdn.jsdelivr.net', 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:', 'blob:'],
+      connectSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
+      frameAncestors: ["'none'"] // nadie puede meter el sistema en un marco (clickjacking)
+    }
+  }
+}));
+
+// --- CORS (hallazgo SEG-18) ---
+// El frontend se sirve desde este mismo servidor, así que no necesita CORS. Antes se aceptaba
+// cualquier origen (Access-Control-Allow-Origin: *). Si algún día el frontend vive en otro dominio,
+// se agrega a CORS_ORIGINS en el .env, separado por comas (p. ej. http://localhost:5500).
+const origenesPermitidos = (process.env.CORS_ORIGINS || '').split(',').map((o) => o.trim()).filter(Boolean);
+app.use(cors({ origin: origenesPermitidos.length ? origenesPermitidos : false, credentials: true }));
+
 app.use(express.json());
 
 // --- Sesión (HU-001) ---

@@ -48,3 +48,42 @@ test('una ruta de API inexistente responde 404 en JSON', async () => {
   assert.equal(res.status, 404);
   assert.match(res.headers['content-type'], /json/);
 });
+
+// --- Regresión de los hallazgos SEG-16 y SEG-18 (informe OWASP, corregidos con helmet y CORS) ---
+
+test('SEG-16: no revela la tecnología del servidor (sin X-Powered-By)', async () => {
+  const res = await H.anonimo().get('/dashboard.html');
+  assert.equal(res.status, 200);
+  assert.equal(res.headers['x-powered-by'], undefined);
+});
+
+test('SEG-16: envía las cabeceras de seguridad (nosniff, anti-clickjacking y CSP)', async () => {
+  const res = await H.anonimo().get('/dashboard.html');
+  assert.equal(res.headers['x-content-type-options'], 'nosniff');
+  assert.ok(res.headers['x-frame-options'], 'falta X-Frame-Options');
+  const csp = res.headers['content-security-policy'] || '';
+  assert.match(csp, /frame-ancestors 'none'/);
+  assert.match(csp, /object-src 'none'/);
+  assert.match(csp, /default-src 'self'/);
+});
+
+test('SEG-16: las respuestas de la API también llevan las cabeceras', async () => {
+  const res = await H.anonimo().get('/api/secciones');
+  assert.equal(res.status, 401);
+  assert.equal(res.headers['x-content-type-options'], 'nosniff');
+  assert.equal(res.headers['x-powered-by'], undefined);
+});
+
+test('SEG-18: CORS no autoriza a un sitio externo', async () => {
+  const res = await H.anonimo().get('/api/auth/me').set('Origin', 'https://sitio-externo.example');
+  assert.equal(res.headers['access-control-allow-origin'], undefined);
+  assert.equal(res.headers['access-control-allow-credentials'], undefined);
+});
+
+test('SEG-18: la petición previa (preflight) de un sitio externo tampoco se autoriza', async () => {
+  const res = await H.anonimo().options('/api/calificaciones/1')
+    .set('Origin', 'https://sitio-externo.example')
+    .set('Access-Control-Request-Method', 'PATCH');
+  assert.equal(res.headers['access-control-allow-origin'], undefined);
+  assert.equal(res.headers['access-control-allow-methods'], undefined);
+});
